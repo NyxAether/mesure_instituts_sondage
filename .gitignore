@@ -3,3 +3,4 @@
 *.svg
 elabe/to_delete.py
 tocky.txt
+__pycache__
