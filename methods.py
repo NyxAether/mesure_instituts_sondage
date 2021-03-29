@@ -25,7 +25,7 @@ def error_in_margin(p,n,variation,Za=1.96,double_margin=True):
     # Compute err old values
     old_err=error_p(old_p/100,n,Za)*100
     if double_margin:
-        return (np.abs(variation)<=err+old_err) & variation!=0
+        return (np.abs(variation)<=error_p(p/100,n,2.328)*100) & variation!=0
     else:
         return (np.abs(variation)<=err) & variation!=0
 
@@ -121,14 +121,50 @@ def flatten_xy(df:pd.DataFrame,
             y=np.append(y,sub_y[col_names].to_numpy().flatten())
     return (X.T,y)
 
+def fill_zero_base_values(base:np.array,min_value_base=10):
+    """Move base values from non zeros to zeros values with respect to proportion.
+        In case of ceil values not rounding to the total, transfert of values is taken from the largest proportion
+
+    Args:
+        base (np.array): values of base for each categorie
+        min_value_base (int): value to use in case of zeros
+    """
+    zero_index=np.where(base==0)[0]
+    if len(zero_index)!=0:
+        adjust_prop=base/base.sum()
+        adjust_prop=np.floor(adjust_prop*min_value_base*len(zero_index))
+        # In case ceil does not round to the expect value to transfert
+        if adjust_prop.sum()<min_value_base*len(zero_index):
+            diff=min_value_base*len(zero_index)-adjust_prop.sum()
+            adjust_prop[np.argmax(adjust_prop)]=adjust_prop[np.argmax(adjust_prop)]+diff
+        # Remove values
+        adjust_prop=base-adjust_prop
+        adjust_prop[adjust_prop==0]=min_value_base
+        return adjust_prop
+    else:
+        return base
+
+
 def recompute_base(df,relations,columns,col_base='Base',col_cat='Categorie',col_groupe='Groupe',col_nom='Nom'):
+    """Recalcule la base des groupes fournis dans 'relations' en utilisant les valeurs dans le dataframe
+
+    Args:
+        df (Dateframe): Dataframe dont nous devons recalculer les bases de sondages
+        relations (Tuple): Liste de tuples donc chaque tuples est defini comme suit (catX,groupeX,catY,groupeY)
+        columns (List): Liste des noms de colonnes servant pour le recalcul des bases
+        col_base (str, optional): Nom de colonne pour la base. Defaults to 'Base'.
+        col_cat (str, optional): Nom de colonne pour la catégorie. Defaults to 'Categorie'.
+        col_groupe (str, optional): Nom de colonne pour le groupe. Defaults to 'Groupe'.
+        col_nom (str, optional): Nom de colonne pour le nom de la personnalité. Defaults to 'Nom'.
+
+    Returns:
+        [type]: [description]
+    """
     df_alter=df.copy()
     for r in relations:
         X,y=flatten_xy(df_alter,columns,r[0],r[1],r[2],r[3],col_cat=col_cat,col_groupe=col_groupe,col_nom=col_nom)
         base_y=df_alter[(df_alter[col_cat]==r[2]) & (df_alter[col_groupe]==r[3])][col_base].unique()[0]
-        print(r[1])
         new_base=estimate_base(X,y,base_y)
-        print(new_base)
         for i in range(len(r[1])):
             df_alter.loc[(df_alter[col_cat]==r[0]) & (df_alter[col_groupe]==r[1][i]), 'Base']=new_base[i]
     return df_alter
@@ -171,8 +207,3 @@ def load_data_perso(filepath):
     return all_data
 
 
-# ipsos=load_data('ipsos/data')
-
-# X,y=flatten_xy(ipsos,ipsos.Date.unique()[0],ipsos.columns[4:13],'Sexe',['Homme','Femme'],'ENSEMBLE','ENSEMBLE',col_cat='Categorie')
-
-# print(estimate_base(X,y,971))
