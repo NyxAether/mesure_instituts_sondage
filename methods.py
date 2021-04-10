@@ -182,23 +182,29 @@ def recompute_base(df,relations,columns,col_base='Base',col_cat='Categorie',col_
 ### Chargement de données ###
 #############################
 
-def load_data(filepath):
+def load_data(filepath,rename_cols={},evolution=True):
     filenames=[f.rstrip('.p') for f in os.listdir(filepath)]
     df=pd.read_pickle("{}/{}.p".format(filepath,filenames[0]))
+    if len(rename_cols)>0:
+        df=df.rename(columns=rename_cols)
     all_data=pd.DataFrame(columns=df.columns)
     all_data.Base=all_data.Base.astype(int)
     for fn in filenames:
         df=pd.read_pickle("{}/{}.p".format(filepath,fn))
+        if len(rename_cols)>0:
+            df=df.rename(columns=rename_cols)
         if df.Base.dtype==object:
             df.Base=df.Base.astype(int)
         if 'Date' not in df.columns:
             df['Date']=fn
         all_data=pd.concat([all_data,df],ignore_index=True)
-        in_margin,nb_lines=extract_in_margin(df['ST Favorable'],df['ST Défavorable'],df['Evolution ST Favorable'],df['Evolution ST Défavorable'],df.Base)
+        if evolution:
+            in_margin,nb_lines=extract_in_margin(df['ST Favorable'],df['ST Défavorable'],df['Evolution ST Favorable'],df['Evolution ST Défavorable'],df.Base)
+
     all_data.Date=all_data.Date.astype('datetime64')
     return all_data
 
-def load_data_perso(filepath):
+def load_data_perso(filepath,rename_cols={}):
     filenames=[f.rstrip('.p') for f in os.listdir(filepath)]
     df=pd.read_pickle("{}/{}.p".format(filepath,filenames[0]))
     all_data=pd.DataFrame(columns=df.columns)
@@ -208,7 +214,7 @@ def load_data_perso(filepath):
         if df.Base.dtype==object:
             df.Base=df.Base.astype(int)
         all_data=pd.concat([all_data,df],ignore_index=True)
-    all_data.rename(columns={'Opinion positive':'ST Favorable'},inplace=True)
+    all_data.rename(columns=rename_cols,inplace=True)
     all_data['ST Favorable']=all_data['ST Favorable'].astype(float)
     all_data.Date=all_data.Date.astype('datetime64')
     return all_data
