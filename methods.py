@@ -82,7 +82,11 @@ def estimate_base(X,y,base_y,weighted=True) -> list:
         lr.fit(X,y,w)
     else:
         lr.fit(X,y)
-    return np.floor( lr.coef_*base_y)
+    new_base=np.floor( (lr.coef_/lr.coef_.sum())*base_y)
+    if new_base.sum()< base_y:
+        imax=np.argmax(new_base)
+        new_base[imax]=new_base[imax]+base_y-new_base.sum()
+    return new_base
 
 def flatten_xy(df:pd.DataFrame,
                 col_names:List[str],
@@ -121,14 +125,15 @@ def flatten_xy(df:pd.DataFrame,
             y=np.append(y,sub_y[col_names].to_numpy().flatten())
     return (X.T,y)
 
-def fill_zero_base_values(base:np.array,min_value_base=10):
+def fill_zero_base_values(base:np.array,min_base=0.05):
     """Move base values from non zeros to zeros values with respect to proportion.
         In case of ceil values not rounding to the total, transfert of values is taken from the largest proportion
 
     Args:
-        base (np.array): values of base for each categorie
+        base (np.array): percentages of base for each categorie
         min_value_base (int): value to use in case of zeros
     """
+    min_value_base=int(np.floor(min_base*base.sum()))
     zero_index=np.where(base==0)[0]
     if len(zero_index)!=0:
         adjust_prop=base/base.sum()
@@ -139,7 +144,7 @@ def fill_zero_base_values(base:np.array,min_value_base=10):
             adjust_prop[np.argmax(adjust_prop)]=adjust_prop[np.argmax(adjust_prop)]+diff
         # Remove values
         adjust_prop=base-adjust_prop
-        adjust_prop[adjust_prop==0]=min_value_base
+        adjust_prop[adjust_prop==0.]=min_value_base
         return adjust_prop
     else:
         return base
@@ -165,6 +170,8 @@ def recompute_base(df,relations,columns,col_base='Base',col_cat='Categorie',col_
         X,y=flatten_xy(df_alter,columns,r[0],r[1],r[2],r[3],col_cat=col_cat,col_groupe=col_groupe,col_nom=col_nom)
         base_y=df_alter[(df_alter[col_cat]==r[2]) & (df_alter[col_groupe]==r[3])][col_base].unique()[0]
         new_base=estimate_base(X,y,base_y)
+        new_base=fill_zero_base_values(new_base)
+        print('{}\n{}'.format(r,new_base))
         for i in range(len(r[1])):
             df_alter.loc[(df_alter[col_cat]==r[0]) & (df_alter[col_groupe]==r[1][i]), 'Base']=new_base[i]
     return df_alter
@@ -205,5 +212,3 @@ def load_data_perso(filepath):
     all_data['ST Favorable']=all_data['ST Favorable'].astype(float)
     all_data.Date=all_data.Date.astype('datetime64')
     return all_data
-
-
