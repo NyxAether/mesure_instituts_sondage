@@ -219,5 +219,3 @@ def load_data_perso(filepath,rename_cols={}):
     all_data.Date=all_data.Date.astype('datetime64')
     return all_data
 
-
-a=load_data('ipsos/data')

@@ -2,5 +2,7 @@
 *.png
 *.svg
 elabe/to_delete.py
+.venv
+.vscode
 tocky.txt
 __pycache__
