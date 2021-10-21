@@ -120,9 +120,18 @@ def flatten_xy(df:pd.DataFrame,
         df_nom=df[df[col_nom]==nom]
         sub_x=df_nom[(df_nom[col_cat]==categorie_x) & (df_nom[col_groupe].isin(groupe_x))]
         sub_y=df_nom[(df_nom[col_cat]==categorie_y) & (df_nom[col_groupe]==groupe_y)]
-        if len(sub_x)!=0 and len(sub_y)!=0:
-            X=np.append(X,sub_x[col_names].to_numpy(),axis=1)
-            y=np.append(y,sub_y[col_names].to_numpy().flatten())
+        try:
+            if len(sub_x)!=0 and len(sub_y)!=0:
+                X=np.append(X,sub_x[col_names].to_numpy(),axis=1)
+                y=np.append(y,sub_y[col_names].to_numpy().flatten())
+        except Exception:
+            print(f"Col cat {categorie_x}")
+            print(f"Col groupe {groupe_x}")
+            print({c:c in groupe_x for c in df_nom[col_groupe].unique()})
+            print(sub_x.columns)
+            print(col_names)
+            print(sub_x.shape)
+            print(X.shape)
     return (X.T,y)
 
 def fill_zero_base_values(base:np.array,min_base=0.05):
@@ -167,11 +176,12 @@ def recompute_base(df,relations,columns,col_base='Base',col_cat='Categorie',col_
     """
     df_alter=df.copy()
     for r in relations:
+        # print(f"Current Relation {r}")
         X,y=flatten_xy(df_alter,columns,r[0],r[1],r[2],r[3],col_cat=col_cat,col_groupe=col_groupe,col_nom=col_nom)
         base_y=df_alter[(df_alter[col_cat]==r[2]) & (df_alter[col_groupe]==r[3])][col_base].unique()[0]
         new_base=estimate_base(X,y,base_y)
         new_base=fill_zero_base_values(new_base)
-        print('{}\n{}'.format(r,new_base))
+        # print('{}\n{}'.format(r,new_base))
         for i in range(len(r[1])):
             df_alter.loc[(df_alter[col_cat]==r[0]) & (df_alter[col_groupe]==r[1][i]), 'Base']=new_base[i]
     return df_alter
