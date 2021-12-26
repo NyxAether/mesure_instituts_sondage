@@ -1,6 +1,7 @@
 *.pdf
 *.png
 *.svg
+mesure_erreurs/world_polls.csv
 elabe/to_delete.py
 .venv
 .vscode
