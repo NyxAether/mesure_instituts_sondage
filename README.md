@@ -33,4 +33,11 @@ Régénérer les données d'une page :
 .venv/Scripts/python.exe -m analyses.erreurs
 ```
 
+Les entrées de `analyses.erreurs` (`mesure_erreurs/polls.p` et `bss.p`, non versionnées) se régénèrent depuis `mesure_erreurs/world_polls.tar.gz` (base de Jennings & Wlezien, [*Election polling errors across time and space*](https://www.nature.com/articles/s41562-018-0315-6), Nature Human Behaviour, 2018 ; simulation à graine fixe, quelques minutes) :
+
+```sh
+.venv/Scripts/python.exe -m analyses.taille_equivalente --preparer
+.venv/Scripts/python.exe -m analyses.taille_equivalente --jobs 8
+```
+
 Les PDFs étant la propriété intellectuelle des instituts, ceux-ci ne sont pas disponible sur ce dépot.

@@ -1,9 +1,10 @@
+<!-- Fichier généré par analyses/erreurs.py --individuels : ne pas modifier à la main. -->
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Erreur empirique des sondages</title>
+  <title>Erreur empirique, sondages individuels</title>
   <meta name="description" content="Écart entre sondages et résultats d'élections dans 45 pays : l'erreur empirique comparée à la marge d'erreur théorique.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +20,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 </head>
-<body>
+<body data-donnees="erreurs_individuels">
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="nav-brand">sondages<span>/</span><span class="crumb">erreurs</span></a>
@@ -37,6 +38,7 @@
   <main>
     <span class="page-tag">// erreur des sondages</span>
     <h1>Erreur empirique des <em>sondages</em></h1>
+    <p class="note warning"><strong>Variante de travail.</strong> Mêmes calculs que la page principale, mais sans les lignes où les auteurs de la base ont moyenné plusieurs sondages du même jour (<code>npolls</code> &gt; 1). Les chiffres affichés sont recalculés ; les commentaires rédigés, eux, décrivent la page principale.</p>
     <p class="lede">Les sondages publiés juste avant une élection sont-ils aussi précis que leur marge d'erreur le laisse croire ? Comparaison avec les résultats des scrutins dans 45 pays.</p>
 
     <p class="note warning" id="avertissement-france" hidden><strong>Peu de données pour la France.</strong> Seuls <span data-bind="nuage.nb_sondages"></span> sondages français (<span data-bind="nuage.nb_lignes"></span> lignes) entrent dans les trois premiers graphiques, et <span data-bind="equivalents.nb_proches"></span> dans la fenêtre de 2 semaines de la taille équivalente. Les graphiques ont moins de tranches, le seuil passe à <span data-bind="equivalents.effectif_min"></span> sondages par tranche, et la surface 3D est très extrapolée (ses valeurs négatives sont ramenées à zéro). Les tendances sont donc indicatives. Les commentaires du texte décrivent l'ensemble des pays.</p>
@@ -221,7 +223,7 @@
 
   <footer class="footer">Données : Jennings &amp; Wlezien, <em>Election polling errors across time and space</em>, Nature Human Behaviour (2018) ; calculs dans <code>analyses/</code>.</footer>
 
-  <script src="data/erreurs.js"></script>
+  <script src="data/erreurs_individuels.js"></script>
   <script src="assets/charts.js"></script>
   <script src="assets/erreurs.js"></script>
 </body>

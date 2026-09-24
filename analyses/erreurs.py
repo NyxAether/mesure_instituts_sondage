@@ -14,6 +14,7 @@ from loess.loess_2d import loess_2d
 from scipy.stats import norm
 
 from analyses.export import write_page_data
+from analyses.mimetisme import mimetisme
 
 SOURCES = Path(__file__).resolve().parent.parent / "mesure_erreurs"
 
@@ -30,7 +31,7 @@ MESURES = {
 }
 
 
-# Fenêtres proposées pour le graphe à boîtes : sondages publiés au plus N jours avant le
+# Fenêtres proposées pour le graphe à boîtes : sondages réalisés au plus N jours avant le
 # scrutin (1 semaine, 2 semaines, 1 mois, 3 mois, 1 an). Au-delà, les sondages sont rares.
 FENETRES = (7, 14, 30, 90, 365)
 
@@ -58,7 +59,7 @@ def get_polls() -> pd.DataFrame:
 
 
 def base(df):
-    """Élections depuis 2005, sondages publiés moins de 8 jours avant le scrutin."""
+    """Élections depuis 2005, sondages réalisés moins de 8 jours avant le scrutin (milieu du terrain)."""
     sub = df.query("yr >= 2005 and daysbeforeED < 8").copy()
     sub["hors_marge"] = sub.erreur > Z95 * sigma(sub.vote, sub.n)
     return sub
@@ -88,10 +89,17 @@ def surfaces(sub, frac, nx=40, ny=40):
     ps = np.linspace(0.05, 0.6, nx)
     ns = np.geomspace(500, 10_000, ny)
     P, N = np.meshgrid(ps, ns)
-    Z, _ = loess_2d(
-        sub.vote.values, np.log10(sub.n.values), sub.erreur.values,
-        xnew=P.ravel(), ynew=np.log10(N.ravel()), degree=1, frac=frac, rescale=True,
-    )
+    # Axes centrés-réduits à la main : la rotation automatique de loess_2d (rescale=True) échoue
+    # quand la plupart des sondages ont la même taille (n = 1 000), comme pour les sondages individuels.
+    x, y = sub.vote.values, np.log10(sub.n.values)
+    mx, sx, my, sy = x.mean(), x.std(), y.mean(), y.std()
+    try:
+        Z, _ = loess_2d(
+            (x - mx) / sx, (y - my) / sy, sub.erreur.values,
+            xnew=(P.ravel() - mx) / sx, ynew=(np.log10(N.ravel()) - my) / sy, degree=1, frac=frac,
+        )
+    except np.linalg.LinAlgError:
+        return None  # trop peu de points distincts pour lisser (ex. France, sondages individuels)
     # Avec peu de points, l'extrapolation linéaire locale peut passer sous zéro.
     Z = np.clip(Z.reshape(P.shape), 0, None)
     th = Z_MOYEN * sigma(P, N)
@@ -142,7 +150,7 @@ def boites(df, colonne, tranches, effectif_min, mesures=MESURES):
 def equivalents(bss, cfg):
     proches = bss[bss.daysbeforeED <= 14]
     nb, mini = cfg["tranches"], cfg["effectif_min"]
-    # Boîtes précalculées pour chaque fenêtre de publication avant le scrutin (la simulation
+    # Boîtes précalculées pour chaque fenêtre avant le scrutin (la simulation
     # coûteuse est déjà dans bss.p : filtrer et regrouper ne prend qu'une fraction de seconde).
     facteurs = []
     for fenetre in FENETRES:
@@ -187,14 +195,52 @@ def perimetre(df, bss, cfg):
         "surfaces": surfaces(sub, cfg["frac"]),
         "par_taille": par_taille(sub, cfg["tranches_taille"]),
         "equivalents": equivalents(bss, cfg),
+        "mimetisme": mimetisme(df),
     }
 
 
-def build():
+def build(individuels=False):
+    """`individuels` : écarte les lignes où les auteurs de la base ont moyenné plusieurs sondages du même jour."""
     df = get_polls()
     bss = pd.read_pickle(SOURCES / "bss.p")
+    if individuels:
+        df = df[df.npolls == 1]
+        bss = bss[bss.id.isin(df.idpoll)]
     return {nom: perimetre(df, bss, cfg) for nom, cfg in PERIMETRES.items()}
 
 
+def ecrire_page_individuels():
+    """Variante personnelle de docs/erreurs.html (non liée depuis l'index), générée pour rester synchronisée."""
+    docs = Path(__file__).resolve().parent.parent / "docs"
+    html = (docs / "erreurs.html").read_text(encoding="utf-8")
+    remplacements = {
+        "<title>Erreur empirique des sondages</title>": "<title>Erreur empirique, sondages individuels</title>",
+        "<body>": '<body data-donnees="erreurs_individuels">',
+        '<script src="data/erreurs.js"></script>': '<script src="data/erreurs_individuels.js"></script>',
+        '    <p class="lede">': (
+            '    <p class="note warning"><strong>Variante de travail.</strong> Mêmes calculs que la page principale, '
+            "mais sans les lignes où les auteurs de la base ont moyenné plusieurs sondages du même jour "
+            "(<code>npolls</code> &gt; 1). Les chiffres affichés sont recalculés ; les commentaires rédigés, eux, "
+            "décrivent la page principale.</p>\n"
+            '    <p class="lede">'
+        ),
+    }
+    for avant, apres in remplacements.items():
+        assert html.count(avant) == 1, avant
+        html = html.replace(avant, apres)
+    sortie = docs / "erreurs_individuels.html"
+    sortie.write_text("<!-- Fichier généré par analyses/erreurs.py --individuels : ne pas modifier à la main. -->\n" + html, encoding="utf-8", newline="\n")
+    return sortie
+
+
 if __name__ == "__main__":
-    print(f"Écrit : {write_page_data('erreurs', build())}")
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--individuels", action="store_true", help="variante sans les moyennes journalières (npolls > 1)")
+    args = parser.parse_args()
+    if args.individuels:
+        print(f"Écrit : {write_page_data('erreurs_individuels', build(individuels=True))}")
+        print(f"Écrit : {ecrire_page_individuels()}")
+    else:
+        print(f"Écrit : {write_page_data('erreurs', build())}")

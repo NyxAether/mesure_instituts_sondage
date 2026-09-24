@@ -3,7 +3,8 @@
 // (tous pays / France) ; le filtre de la barre de navigation bascule tous les graphiques.
 (function () {
   const { fmt, mount, frame, table, bind } = Charts;
-  const ALL = window.DATA.erreurs;
+  // La page peut désigner un autre jeu de données (variante « sondages individuels »).
+  const ALL = window.DATA[document.body.dataset.donnees || "erreurs"];
   const $ = (sel, root = document) => root.querySelector(sel);
 
   let D = ALL.tous;
@@ -24,7 +25,16 @@
     "equivalents.nb_proches": fmt.int,
     "equivalents.median_reel": fmt.int,
     "equivalents.medianes.optimal_kl": fmt.int,
+    "mimetisme.nb_elections": fmt.int,
+    "mimetisme.part_consensus": (v) => fmt.pct(v, 0),
+    "mimetisme.part_resserrement": (v) => fmt.pct(v, 0),
+    "mimetisme.consensus_median": (v) => fmt.num(v, 2),
+    "mimetisme.consensus_hasard_median": (v) => fmt.num(v, 2),
+    "mimetisme.resserrement_median": (v) => fmt.num(v, 2),
   };
+
+  // Valeur absente (ex. surface impossible à lisser) : tiret plutôt que « NaN ».
+  const sansVide = Object.fromEntries(Object.entries(formats).map(([k, f]) => [k, (v) => (v == null ? "—" : f(v))]));
 
   const pts = (v, digits = 1) => `${fmt.num(v * 100, digits)} pt`;
   const logN = { type: "log", label: "Taille d'échantillon (n)", labelAnchor: "center", labelArrow: "none", tickFormat: fmt.int, ticks: 5 };
@@ -146,6 +156,7 @@
     /** Grandeurs dérivées du périmètre courant (en points de %). */
     function derive() {
       const src = D.surfaces;
+      if (!src) return null;
       const enPts = (m) => m.map((ligne) => ligne.map((v) => v * 100));
       const obs = enPts(src.obs);
       const th = enPts(src.th);
@@ -216,6 +227,7 @@
 
     const chart = mount($(".plot", fig), (t, width) => {
       if (gd) Plotly.purge(gd);
+      if (!S) { gd = null; return vide("Trop peu de sondages pour lisser une surface sur ce périmètre."); }
       const el = document.createElement("div");
       gd = el;
       // Plotly mesure son conteneur : le tracé attend que le nœud soit inséré par mount().
@@ -236,6 +248,12 @@
 
     onScope.push(() => {
       S = derive();
+      if (!S) {
+        horsCadre.textContent = "surface indisponible";
+        chart.redraw();
+        table($("details", fig), [{ label: "Données", value: (r) => r }], []);
+        return;
+      }
       horsCadre.textContent = S.horsCadre === 0 ? "aucun écart ne dépasse 8 pt"
         : `${fmt.int(S.horsCadre)} écart${S.horsCadre > 1 ? "s" : ""} de plus de 8 pt ${S.horsCadre > 1 ? "sont" : "est"} hors cadre`;
       chart.redraw();
@@ -300,7 +318,7 @@
     const lignes = () => D.equivalents.boites.filter((b) => String(b.fenetre) === choix.fenetre && b.facteur === choix.facteur && b.mesure === choix.mesure);
     const texteContexte = () => {
       const n = fmt.int(D.equivalents.effectifs_fenetres[choix.fenetre]);
-      const qui = `Sondages publiés au plus ${choix.fenetre} jours avant le scrutin (${n})`;
+      const qui = `Sondages réalisés au plus ${choix.fenetre} jours avant le scrutin (${n})`;
       return facteurs[choix.facteur].tranches ? `${qui}, en tranches d'effectifs comparables.` : `${qui}.`;
     };
 
@@ -344,13 +362,68 @@
     onScope.push(refresh);
   }
 
+  // --- Consensus d'erreur et resserrement ----------------------------------
+  {
+    const fig = $("#fig-mimetisme");
+    const SEUIL = 0.05;
+    const categories = ["Compatible avec le hasard", "Resserrement anormal seul", "Consensus anormal", "Consensus et resserrement anormaux"];
+    const categorie = (e) => {
+      const c = e.rang_consensus < SEUIL, r = e.rang_resserrement < SEUIL;
+      return c && r ? categories[3] : c ? categories[2] : r ? categories[1] : categories[0];
+    };
+    const libelle = (e) => `${e.pays} ${e.annee} · ${e.election === "Presidential" ? "présidentielle" : "législatives"}${e.tour === 2 ? " (2d tour)" : ""}`;
+    const rang = (v) => (v < 0.001 ? "< 0,1 %" : fmt.pct(v, 1));
+
+    const chart = mount($(".plot", fig), (t, width) => {
+      const M = D.mimetisme;
+      if (!M.elections.length) return vide("Aucune élection ne compte assez de sondages pour ce périmètre.");
+      // Points compatibles avec le hasard dessinés en premier, sous les autres.
+      const rows = M.elections.map((e) => ({ ...e, cat: categorie(e), nom: libelle(e) }))
+        .sort((a, b) => categories.indexOf(a.cat) - categories.indexOf(b.cat));
+      const [rMin, rMax] = d3.extent(rows, (e) => e.resserrement);
+      return Plot.plot(frame(t, width, {
+        height: width < 520 ? 320 : 400,
+        x: { label: "Consensus d'erreur (0 : erreurs équilibrées, 1 : toutes du même côté)", labelAnchor: "center", labelArrow: "none", domain: [0, 1], tickFormat: fmt.tick },
+        y: { type: "log", label: "Resserrement (1 : dispersion du hasard)", labelArrow: "none", domain: [Math.min(0.1, rMin * 0.8), Math.max(10, rMax * 1.2)], tickFormat: fmt.tick },
+        color: { domain: categories, range: [t.deemph, t.series[1], t.series[0], t.series[2]] },
+        marks: [
+          Plot.ruleY([1], { stroke: t.axis }),
+          Plot.ruleX([M.consensus_hasard_median], { stroke: t.muted, strokeDasharray: "4 3" }),
+          Plot.text([M.consensus_hasard_median], { x: (d) => d, frameAnchor: "top", dy: -14, dx: 4, textAnchor: "start", text: () => "hasard (médiane)", fill: t.ink2 }),
+          Plot.dot(rows, { x: "consensus", y: "resserrement", fill: "cat", r: 4.5, stroke: t.surface, strokeWidth: 1.5 }),
+          Plot.tip(rows, Plot.pointer({
+            x: "consensus", y: "resserrement",
+            channels: { élection: "nom", sondages: "sondages", "hasard (consensus)": "consensus_hasard", "rang consensus": "rang_consensus", "rang resserrement": "rang_resserrement" },
+            format: {
+              élection: true, x: (v) => fmt.num(v, 2), y: (v) => fmt.num(v, 2), sondages: fmt.int,
+              "hasard (consensus)": (v) => fmt.num(v, 2), "rang consensus": rang, "rang resserrement": rang,
+            },
+          })),
+        ],
+      }));
+    });
+    onScope.push(() => {
+      chart.redraw();
+      table($("details", fig), [
+        { label: "Élection", value: libelle },
+        { label: "Sondages", value: (e) => fmt.int(e.sondages) },
+        { label: "Erreur moyenne", value: (e) => pts(e.erreur_moyenne, 2) },
+        { label: "Consensus", value: (e) => fmt.num(e.consensus, 2) },
+        { label: "Hasard", value: (e) => fmt.num(e.consensus_hasard, 2) },
+        { label: "Rang consensus", value: (e) => rang(e.rang_consensus) },
+        { label: "Resserrement", value: (e) => fmt.num(e.resserrement, 2) },
+        { label: "Rang resserrement", value: (e) => rang(e.rang_resserrement) },
+      ], [...D.mimetisme.elections].sort((a, b) => a.pays.localeCompare(b.pays, "fr") || a.annee - b.annee || a.tour - b.tour));
+    });
+  }
+
   // --- Filtre de périmètre -------------------------------------------------
   const avertissement = $("#avertissement-france");
   radio($(".scope"), (value) => {
     D = ALL[value];
     document.documentElement.dataset.scope = value;
     avertissement.hidden = value !== "france";
-    bind(document, D, formats);
+    bind(document, D, sansVide);
     for (const f of onScope) f();
   });
 

@@ -33,5 +33,6 @@ def write_page_data(name: str, data: dict) -> Path:
         "// Fichier généré par analyses/ — ne pas modifier à la main.\n"
         f"window.DATA = window.DATA || {{}};\nwindow.DATA[{json.dumps(name)}] = {payload};\n",
         encoding="utf-8",
+        newline="\n",  # LF sur tous les systèmes : sinon Windows écrit du CRLF et tout le fichier diffère
     )
     return path
