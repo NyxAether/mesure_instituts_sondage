@@ -91,7 +91,7 @@
     <p>L'erreur attendue diminue en $1/\sqrt n$ ; l'erreur observée, elle, reste entre 1,5 et 2,3 points quelle que soit la taille. Elle est déjà deux fois trop grande pour les petits échantillons, et quatre à cinq fois trop grande pour les plus gros. Traduit en taille équivalente, un sondage se comporte comme un tirage aléatoire de quelques centaines de personnes (voir la colonne « taille équivalente » du tableau et l'<a href="#a-tranches">annexe C</a>).</p>
 
     <h2 id="taille-proportion">Erreur selon la taille et la proportion</h2>
-    <p>L'erreur théorique dépend aussi de $p$ : elle est maximale à 50 % et plus faible pour les petits partis. Le lissage LOESS en deux dimensions estime l'erreur moyenne observée pour chaque couple (proportion, taille), qu'on peut comparer à l'erreur attendue (<a href="#a-loess">annexe D</a>).</p>
+    <p>L'erreur théorique dépend aussi de $p$, le résultat réel du parti à l'élection : elle est maximale à 50 % et plus faible pour les petits partis. Le lissage LOESS en deux dimensions estime l'erreur moyenne observée pour chaque couple (proportion, taille), qu'on peut comparer à l'erreur attendue (<a href="#a-loess">annexe D</a>).</p>
 
     <figure class="chart" id="fig-carte">
       <p class="chart-title">Erreur moyenne selon la proportion et la taille d'échantillon</p>
@@ -99,7 +99,7 @@
       <div class="controls">
         <div class="presets" role="group" aria-label="Grandeur affichée">
           <button type="button" data-value="obs">erreur observée</button>
-          <button type="button" data-value="comp">observée et attendue</button>
+          <button type="button" data-value="comp" aria-pressed="true">observée et attendue</button>
           <button type="button" data-value="ratio">rapport observée / attendue</button>
         </div>
       </div>
@@ -212,91 +212,107 @@
     <h2 id="annexe">Annexe : méthodes et métriques</h2>
     <p>Cette annexe détaille chaque mesure utilisée dans la page. Les calculs sont dans <code>analyses/erreurs.py</code>, <code>analyses/taille_equivalente.py</code> et <code>analyses/mimetisme.py</code>.</p>
 
-    <h3 id="a-donnees">A. Données et sélections</h3>
-    <ul>
-      <li><strong>Source</strong> : base de Jennings et Wlezien (2018). Une ligne correspond à un parti ou un candidat dans un sondage, avec son intention de vote $\hat p$, son résultat $p$ et la taille d'échantillon $n$. La base ne contient que les partis ayant obtenu au moins 5 % des voix ; les intentions de vote excluent les indécis et les refus de répondre.</li>
-      <li><strong>Datation</strong> : chaque sondage est daté du milieu de sa période de terrain ; le délai avant le scrutin se compte à partir de cette date.</li>
-      <li><strong>Sondages regroupés</strong> : quand plusieurs sondages tombent le même jour, les auteurs de la base les remplacent par leur moyenne (colonne <code>npolls</code> &gt; 1). La taille d'échantillon de ces lignes vaut, d'après les données, la somme des échantillons. Elles sont traitées comme des sondages ordinaires.</li>
-      <li><strong>Identification</strong> : un sondage est défini par son pays, sa date, le type d'élection, le système, le mode de scrutin, le tour, l'année et la date du scrutin ; une élection, par son pays, son type, sa date et son tour.</li>
-      <li><strong>Filtres</strong> : seules les lignes dont la taille d'échantillon est connue sont conservées. Toutes les analyses retiennent les élections depuis 2000, avec la généralisation des sondages par internet ; les chiffres de présentation de la base portent, eux, sur toutes les années. Les parties « écarts » et « taille et proportion » retiennent en outre les sondages réalisés moins de 8 jours avant le scrutin. La taille équivalente utilise une fenêtre au choix (1 semaine à 1 an ; 14 jours par défaut). Le consensus d'erreur et le resserrement portent sur les sondages réalisés au plus 14 jours avant le scrutin, et sur les élections qui en comptent au moins 3.</li>
-    </ul>
+    <details class="annexe" id="a-donnees">
+      <summary><h3>A. Données et sélections</h3></summary>
+      <ul>
+        <li><strong>Source</strong> : base de Jennings et Wlezien (2018). Une ligne correspond à un parti ou un candidat dans un sondage, avec son intention de vote $\hat p$, son résultat $p$ et la taille d'échantillon $n$. La base ne contient que les partis ayant obtenu au moins 5 % des voix ; les intentions de vote excluent les indécis et les refus de répondre.</li>
+        <li><strong>Datation</strong> : chaque sondage est daté du milieu de sa période de terrain ; le délai avant le scrutin se compte à partir de cette date.</li>
+        <li><strong>Sondages regroupés</strong> : quand plusieurs sondages tombent le même jour, les auteurs de la base les remplacent par leur moyenne (colonne <code>npolls</code> &gt; 1). La taille d'échantillon de ces lignes vaut, d'après les données, la somme des échantillons. Elles sont traitées comme des sondages ordinaires.</li>
+        <li><strong>Identification</strong> : un sondage est défini par son pays, sa date, le type d'élection, le système, le mode de scrutin, le tour, l'année et la date du scrutin ; une élection, par son pays, son type, sa date et son tour.</li>
+        <li><strong>Filtres</strong> : seules les lignes dont la taille d'échantillon est connue sont conservées. Toutes les analyses retiennent les élections depuis 2000, avec la généralisation des sondages par internet ; les chiffres de présentation de la base portent, eux, sur toutes les années. Les parties « écarts » et « taille et proportion » retiennent en outre les sondages réalisés moins de 8 jours avant le scrutin. La taille équivalente utilise une fenêtre au choix (1 semaine à 1 an ; 14 jours par défaut). Le consensus d'erreur et le resserrement portent sur les sondages réalisés au plus 14 jours avant le scrutin, et sur les élections qui en comptent au moins 3.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-marge">B. Marge d'erreur et erreur attendue</h3>
-    <ul>
-      <li><strong>Écart-type théorique</strong> d'une proportion estimée sur un échantillon aléatoire simple : $$\sigma = \sqrt{\frac{p\,(1-p)}{n}}$$ Il est calculé avec le résultat réel $p$ ; les instituts utilisent leur estimation $\hat p$, ce qui ne change presque rien.</li>
-      <li><strong>Marge d'erreur à 95 %</strong> : $L_{95} = 1{,}96\,\sigma$. L'entonnoir du nuage de points trace $\pm L_{95}$ pour $p = 50\,\%$, la marge la plus large.</li>
-      <li><strong>Erreur</strong> d'un sondage sur un parti : $e = |\hat p - p|$, en points de pourcentage.</li>
-      <li><strong>Part hors marge</strong> : proportion des lignes où $e &gt; L_{95}$, chaque ligne avec sa propre marge. Pour de vrais tirages aléatoires, elle vaudrait 5 %.</li>
-      <li><strong>Erreur moyenne attendue</strong> d'un tirage aléatoire (espérance de la valeur absolue d'une loi normale) : $$\mathbb{E}\,|\hat p - p| = \sqrt{\tfrac{2}{\pi}}\;\sigma \approx 0{,}80\,\sigma$$ Le notebook d'origine utilisait $0{,}67\,\sigma$, qui est l'erreur <em>médiane</em> ; la page compare des moyennes et utilise donc $0{,}80\,\sigma$.</li>
-    </ul>
+    <details class="annexe" id="a-marge">
+      <summary><h3>B. Marge d'erreur et erreur attendue</h3></summary>
+      <ul>
+        <li><strong>Écart-type théorique</strong> d'une proportion estimée sur un échantillon aléatoire simple : $$\sigma = \sqrt{\frac{p\,(1-p)}{n}}$$ Il est calculé avec le résultat réel $p$ ; les instituts utilisent leur estimation $\hat p$, ce qui ne change presque rien.</li>
+        <li><strong>Marge d'erreur à 95 %</strong> : $L_{95} = 1{,}96\,\sigma$. L'entonnoir du nuage de points trace $\pm L_{95}$ pour $p = 50\,\%$, la marge la plus large.</li>
+        <li><strong>Erreur</strong> d'un sondage sur un parti : $e = |\hat p - p|$, en points de pourcentage.</li>
+        <li><strong>Part hors marge</strong> : proportion des lignes où $e &gt; L_{95}$, chaque ligne avec sa propre marge. Pour de vrais tirages aléatoires, elle vaudrait 5 %.</li>
+        <li><strong>Erreur moyenne attendue</strong> d'un tirage aléatoire (espérance de la valeur absolue d'une loi normale) : $$\mathbb{E}\,|\hat p - p| = \sqrt{\tfrac{2}{\pi}}\;\sigma \approx 0{,}80\,\sigma$$ Le notebook d'origine utilisait $0{,}67\,\sigma$, qui est l'erreur <em>médiane</em> ; la page compare des moyennes et utilise donc $0{,}80\,\sigma$.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-tranches">C. Erreur par tranche de taille et taille équivalente analytique</h3>
-    <ul>
-      <li>Les lignes sont réparties en 8 tranches de taille d'échantillon d'effectifs comparables (quantiles ; les tranches en double sont fusionnées). Chaque tranche est placée à sa taille médiane.</li>
-      <li><strong>Erreur observée</strong> : moyenne de $e$ sur la tranche. <strong>Erreur attendue</strong> : moyenne de $0{,}80\,\sigma$ sur les mêmes lignes.</li>
-      <li><strong>Taille équivalente analytique</strong> : taille d'un échantillon aléatoire dont l'erreur moyenne attendue égalerait l'erreur observée $\bar e$ de la tranche, $$n_{eq} = \frac{2}{\pi}\,\frac{\overline{p\,(1-p)}}{\bar e^{\,2}}$$ où $\overline{p\,(1-p)}$ est la moyenne sur la tranche.</li>
-    </ul>
+    <details class="annexe" id="a-tranches">
+      <summary><h3>C. Erreur par tranche de taille et taille équivalente analytique</h3></summary>
+      <ul>
+        <li>Les lignes sont réparties en 8 tranches de taille d'échantillon d'effectifs comparables (quantiles ; les tranches en double sont fusionnées). Chaque tranche est placée à sa taille médiane.</li>
+        <li><strong>Erreur observée</strong> : moyenne de $e$ sur la tranche. <strong>Erreur attendue</strong> : moyenne de $0{,}80\,\sigma$ sur les mêmes lignes.</li>
+        <li><strong>Taille équivalente analytique</strong> : taille d'un échantillon aléatoire dont l'erreur moyenne attendue égalerait l'erreur observée $\bar e$ de la tranche, $$n_{eq} = \frac{2}{\pi}\,\frac{\overline{p\,(1-p)}}{\bar e^{\,2}}$$ où $\overline{p\,(1-p)}$ est la moyenne sur la tranche.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-loess">D. Surface lissée (LOESS en deux dimensions)</h3>
-    <ul>
-      <li>Lissage des erreurs $e$ en fonction de la proportion $p$ et de $\log_{10} n$, avec <code>loess_2d</code> (Cappellari et al., 2013, d'après Cleveland et Devlin, 1988) : régression locale de degré 1 sur 40 % des points les plus proches.</li>
-      <li>Les deux variables sont centrées et réduites avant le lissage, pour qu'une unité de proportion et une unité de $\log n$ pèsent autant dans le voisinage.</li>
-      <li>La surface est évaluée sur une grille de 40 × 40 points : $p$ de 5 % à 60 %, $n$ de 500 à 10 000 en échelle logarithmique. Les zones sans observations sont extrapolées, et les valeurs négatives éventuelles sont ramenées à zéro.</li>
-      <li>Ce lissage est <em>robuste</em> : il réduit le poids des écarts extrêmes. Il estime donc une valeur située entre la moyenne et la médiane des erreurs, et sous-estime probablement un peu l'erreur moyenne.</li>
-      <li><strong>Rapport</strong> : erreur lissée ÷ erreur moyenne attendue $0{,}80\,\sigma(p, n)$. Dans la vue « erreur observée », l'axe vertical s'arrête à 8 points : les écarts plus grands sont hors cadre.</li>
-    </ul>
+    <details class="annexe" id="a-loess">
+      <summary><h3>D. Surface lissée (LOESS en deux dimensions)</h3></summary>
+      <ul>
+        <li>Lissage des erreurs $e$ en fonction de la proportion $p$ et de $\log_{10} n$, avec <code>loess_2d</code> (Cappellari et al., 2013, d'après Cleveland et Devlin, 1988) : régression locale de degré 1 sur 40 % des points les plus proches.</li>
+        <li>Les deux variables sont centrées et réduites avant le lissage, pour qu'une unité de proportion et une unité de $\log n$ pèsent autant dans le voisinage.</li>
+        <li>La surface est évaluée sur une grille de 40 × 40 points : $p$ de 5 % à 60 %, $n$ de 500 à 10 000 en échelle logarithmique. Les zones sans observations sont extrapolées, et les valeurs négatives éventuelles sont ramenées à zéro.</li>
+        <li>Ce lissage est <em>robuste</em> : il réduit le poids des écarts extrêmes. Il estime donc une valeur située entre la moyenne et la médiane des erreurs, et sous-estime probablement un peu l'erreur moyenne.</li>
+        <li><strong>Rapport</strong> : erreur lissée ÷ erreur moyenne attendue $0{,}80\,\sigma(p, n)$. Dans la vue « erreur observée », l'axe vertical s'arrête à 8 points : les écarts plus grands sont hors cadre.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-simulation">E. Taille équivalente par simulation</h3>
-    <ul>
-      <li><strong>Distributions</strong> : pour un sondage, $y$ est le vecteur des résultats réels des partis et $\hat y$ celui des intentions de vote, en proportions. Si les partis ne totalisent pas 100 %, une catégorie « autres » est ajoutée aux deux ($1 - \sum y$ et $1 - \sum \hat y$, ramenée à 0 si négative). Les valeurs nulles de $\hat y$ sont remplacées par $10^{-5}$.</li>
-      <li><strong>Tirages</strong> : pour une taille $k$, on tire 1 000 échantillons multinomiaux de $k$ personnes selon $y$ (normalisé à 1), on convertit les comptes en proportions (comptes nuls remplacés par $10^{-5}$), et on calcule la mesure $D$ de chaque échantillon. $M(k)$ est la médiane de ces 1 000 valeurs.</li>
-      <li><strong>Recherche</strong> : soit $R = D(y, \hat y)$ la mesure du sondage réel, et $n$ sa taille. On part de $k = n$. Tant que le sondage fait mieux que le hasard ($R &lt; M(k)$), on double $k$, sans dépasser $16\,n$. Puis, par dichotomie, on cherche la plus petite taille $k$ telle que $M(k) \le R$. Cette taille est la taille équivalente : le sondage est aussi proche du résultat qu'un tirage aléatoire médian de $k$ personnes.</li>
-    </ul>
-    <p id="a-mesures">Les quatre mesures, sommées sur les catégories $i$ :</p>
-    <ul>
-      <li><strong>Divergence de Kullback-Leibler</strong> : $D = \sum_i \big( y_i \ln \tfrac{y_i}{\hat y_i} - y_i + \hat y_i \big)$</li>
-      <li><strong>Entropie croisée</strong> : $D = -\sum_i y_i \ln \hat y_i$</li>
-      <li><strong>Erreur quadratique</strong> : $D = \sum_i (\hat y_i - y_i)^2$</li>
-      <li><strong>Erreur absolue</strong> : $D = \sum_i |\hat y_i - y_i|$</li>
-    </ul>
-    <ul>
-      <li id="a-temoin"><strong>Témoin</strong> : on remplace le sondage réel par <em>un seul</em> tirage aléatoire de $n$ personnes selon $y$, et on applique la même recherche (divergence KL). Un tirage aléatoire donne en médiane une taille équivalente proche de $n$, mais très dispersée d'un tirage à l'autre : c'est la référence à laquelle comparer les sondages réels.</li>
-      <li><strong>Nombre de partis</strong> : nombre de partis du sondage, plus un si la catégorie « autres » existe.</li>
-      <li>Les tailles équivalentes affichées proviennent du calcul d'origine (<code>mesure_erreurs/bss.p</code>). Le module <code>analyses/taille_equivalente.py</code> reproduit la même méthode avec des tirages multinomiaux et une graine fixe.</li>
-    </ul>
+    <details class="annexe" id="a-simulation">
+      <summary><h3>E. Taille équivalente par simulation</h3></summary>
+      <ul>
+        <li><strong>Distributions</strong> : pour un sondage, $y$ est le vecteur des résultats réels des partis et $\hat y$ celui des intentions de vote, en proportions. Si les partis ne totalisent pas 100 %, une catégorie « autres » est ajoutée aux deux ($1 - \sum y$ et $1 - \sum \hat y$, ramenée à 0 si négative). Les valeurs nulles de $\hat y$ sont remplacées par $10^{-5}$.</li>
+        <li><strong>Tirages</strong> : pour une taille $k$, on tire 1 000 échantillons multinomiaux de $k$ personnes selon $y$ (normalisé à 1), on convertit les comptes en proportions (comptes nuls remplacés par $10^{-5}$), et on calcule la mesure $D$ de chaque échantillon. $M(k)$ est la médiane de ces 1 000 valeurs.</li>
+        <li><strong>Recherche</strong> : soit $R = D(y, \hat y)$ la mesure du sondage réel, et $n$ sa taille. On part de $k = n$. Tant que le sondage fait mieux que le hasard ($R &lt; M(k)$), on double $k$, sans dépasser $16\,n$. Puis, par dichotomie, on cherche la plus petite taille $k$ telle que $M(k) \le R$. Cette taille est la taille équivalente : le sondage est aussi proche du résultat qu'un tirage aléatoire médian de $k$ personnes.</li>
+      </ul>
+      <p id="a-mesures">Les quatre mesures, sommées sur les catégories $i$ :</p>
+      <ul>
+        <li><strong>Divergence de Kullback-Leibler</strong> : $D = \sum_i \big( y_i \ln \tfrac{y_i}{\hat y_i} - y_i + \hat y_i \big)$</li>
+        <li><strong>Entropie croisée</strong> : $D = -\sum_i y_i \ln \hat y_i$</li>
+        <li><strong>Erreur quadratique</strong> : $D = \sum_i (\hat y_i - y_i)^2$</li>
+        <li><strong>Erreur absolue</strong> : $D = \sum_i |\hat y_i - y_i|$</li>
+      </ul>
+      <ul>
+        <li id="a-temoin"><strong>Témoin</strong> : on remplace le sondage réel par <em>un seul</em> tirage aléatoire de $n$ personnes selon $y$, et on applique la même recherche (divergence KL). Un tirage aléatoire donne en médiane une taille équivalente proche de $n$, mais très dispersée d'un tirage à l'autre : c'est la référence à laquelle comparer les sondages réels.</li>
+        <li><strong>Nombre de partis</strong> : nombre de partis du sondage, plus un si la catégorie « autres » existe.</li>
+        <li>Les tailles équivalentes affichées proviennent du calcul d'origine (<code>mesure_erreurs/bss.p</code>). Le module <code>analyses/taille_equivalente.py</code> reproduit la même méthode avec des tirages multinomiaux et une graine fixe.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-glissante">F. Médiane glissante et boîtes à moustaches</h3>
-    <ul>
-      <li><strong>Médiane glissante</strong> : les sondages réalisés au plus 14 jours avant le scrutin sont triés par taille réelle ; pour chaque mesure, on prend la médiane sur une fenêtre centrée de 50 sondages. Le graphe s'arrête à 6 000 personnes et affiche un point sur 10.</li>
-      <li id="a-boites"><strong>Boîtes</strong> : 1<sup>er</sup> quartile, médiane et 3<sup>e</sup> quartile de la taille équivalente. Les moustaches vont jusqu'aux valeurs les plus extrêmes situées à moins de 1,5 écart interquartile de la boîte ; les points au-delà ne sont pas affichés.</li>
-      <li><strong>Tranches</strong> : 5 tranches d'effectifs comparables pour la taille réelle et l'année, 6 pour les jours avant l'élection (calculées à l'intérieur de la fenêtre choisie), une par valeur pour le nombre de partis. Les tranches en double sont fusionnées, et celles de moins de 30 sondages sont retirées.</li>
-      <li><strong>Fenêtres</strong> : sondages réalisés au plus 7, 14, 30, 90 ou 365 jours avant le scrutin.</li>
-    </ul>
+    <details class="annexe" id="a-glissante">
+      <summary><h3>F. Médiane glissante et boîtes à moustaches</h3></summary>
+      <ul>
+        <li><strong>Médiane glissante</strong> : les sondages réalisés au plus 14 jours avant le scrutin sont triés par taille réelle ; pour chaque mesure, on prend la médiane sur une fenêtre centrée de 50 sondages. Le graphe s'arrête à 6 000 personnes et affiche un point sur 10.</li>
+        <li id="a-boites"><strong>Boîtes</strong> : 1<sup>er</sup> quartile, médiane et 3<sup>e</sup> quartile de la taille équivalente. Les moustaches vont jusqu'aux valeurs les plus extrêmes situées à moins de 1,5 écart interquartile de la boîte ; les points au-delà ne sont pas affichés.</li>
+        <li><strong>Tranches</strong> : 5 tranches d'effectifs comparables pour la taille réelle et l'année, 6 pour les jours avant l'élection (calculées à l'intérieur de la fenêtre choisie), une par valeur pour le nombre de partis. Les tranches en double sont fusionnées, et celles de moins de 30 sondages sont retirées.</li>
+        <li><strong>Fenêtres</strong> : sondages réalisés au plus 7, 14, 30, 90 ou 365 jours avant le scrutin.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-consensus">G. Consensus d'erreur et resserrement</h3>
-    <p>Pour une élection, notons $e_{ij} = \hat p_{ij} - p_j$ l'écart signé du sondage $i$ sur le parti $j$, $\sigma_{ij} = \sqrt{p_j (1 - p_j) / n_i}$ et $z_{ij} = e_{ij} / \sigma_{ij}$. Seuls les couples sondage × parti présents dans les données sont utilisés ; $k_j$ est le nombre de sondages qui donnent le parti $j$.</p>
-    <ul>
-      <li><strong>Consensus d'erreur</strong> du parti $j$ : $$C_j = \Big|\, \frac{1}{k_j} \sum_i \tanh\!\big(z_{ij} / 2\big) \Big|$$ La tangente hyperbolique est une sigmoïde symétrique : un écart d'un demi-écart-type compte pour environ 0,24, un écart de 2 écarts-types pour 0,76, et un très grand écart pour 1. $C_j$ vaut 0 quand les écarts se compensent, 1 quand tous les sondages sont nettement du même côté.</li>
-      <li id="a-resserrement"><strong>Resserrement</strong> du parti $j$ (au moins 3 sondages) : $$R_j = \frac{1}{k_j - 1} \sum_i \Big( \frac{e_{ij} - \bar e_j}{\sigma_{ij}} \Big)^2, \qquad \bar e_j = \frac{\sum_i e_{ij} / \sigma_{ij}^2}{\sum_i 1 / \sigma_{ij}^2}$$ Pour de vrais tirages aléatoires, $R_j$ vaut 1 en moyenne. En dessous, les sondages sont plus proches les uns des autres que leur marge ne le permet ; au-dessus, ils se dispersent davantage.</li>
-      <li><strong>Agrégation</strong> : $C$ et $R$ d'une élection sont les moyennes de $C_j$ et $R_j$ pondérées par le score $p_j$ des partis.</li>
-      <li id="a-calibration"><strong>Comparaison au hasard</strong> : pour chaque élection, on simule 2 000 élections où chaque sondage $i$ est un tirage multinomial de $n_i$ personnes selon les résultats réels (plus la catégorie « autres »), avec les mêmes partis présents. Le rang du consensus est la part des simulations dont le $C$ est au moins aussi grand ; celui du resserrement, la part dont le $R$ est au moins aussi petit. Une élection est jugée anormale quand son rang est inférieur à 5 %. Sur des élections simulées parfaitement aléatoires, environ 5 % ressortent anormales, comme attendu.</li>
-    </ul>
+    <details class="annexe" id="a-consensus">
+      <summary><h3>G. Consensus d'erreur et resserrement</h3></summary>
+      <p>Pour une élection, notons $e_{ij} = \hat p_{ij} - p_j$ l'écart signé du sondage $i$ sur le parti $j$, $\sigma_{ij} = \sqrt{p_j (1 - p_j) / n_i}$ et $z_{ij} = e_{ij} / \sigma_{ij}$. Seuls les couples sondage × parti présents dans les données sont utilisés ; $k_j$ est le nombre de sondages qui donnent le parti $j$.</p>
+      <ul>
+        <li><strong>Consensus d'erreur</strong> du parti $j$ : $$C_j = \Big|\, \frac{1}{k_j} \sum_i \tanh\!\big(z_{ij} / 2\big) \Big|$$ La tangente hyperbolique est une sigmoïde symétrique : un écart d'un demi-écart-type compte pour environ 0,24, un écart de 2 écarts-types pour 0,76, et un très grand écart pour 1. $C_j$ vaut 0 quand les écarts se compensent, 1 quand tous les sondages sont nettement du même côté.</li>
+        <li id="a-resserrement"><strong>Resserrement</strong> du parti $j$ (au moins 3 sondages) : $$R_j = \frac{1}{k_j - 1} \sum_i \Big( \frac{e_{ij} - \bar e_j}{\sigma_{ij}} \Big)^2, \qquad \bar e_j = \frac{\sum_i e_{ij} / \sigma_{ij}^2}{\sum_i 1 / \sigma_{ij}^2}$$ Pour de vrais tirages aléatoires, $R_j$ vaut 1 en moyenne. En dessous, les sondages sont plus proches les uns des autres que leur marge ne le permet ; au-dessus, ils se dispersent davantage.</li>
+        <li><strong>Agrégation</strong> : $C$ et $R$ d'une élection sont les moyennes de $C_j$ et $R_j$ pondérées par le score $p_j$ des partis.</li>
+        <li id="a-calibration"><strong>Comparaison au hasard</strong> : pour chaque élection, on simule 2 000 élections où chaque sondage $i$ est un tirage multinomial de $n_i$ personnes selon les résultats réels (plus la catégorie « autres »), avec les mêmes partis présents. Le rang du consensus est la part des simulations dont le $C$ est au moins aussi grand ; celui du resserrement, la part dont le $R$ est au moins aussi petit. Une élection est jugée anormale quand son rang est inférieur à 5 %. Sur des élections simulées parfaitement aléatoires, environ 5 % ressortent anormales, comme attendu.</li>
+      </ul>
+    </details>
 
-    <h3 id="a-france">H. Réglages du périmètre France</h3>
-    <p>Le périmètre France compte peu de sondages ; plusieurs réglages sont assouplis pour garder quelque chose à afficher :</p>
-    <div class="table-wrap">
-      <table class="data">
-        <thead><tr><th>Réglage</th><th>Tous pays</th><th>France</th></tr></thead>
-        <tbody>
-          <tr><td>Tranches de taille (erreur par tranche)</td><td>8</td><td>4</td></tr>
-          <tr><td>Tranches (taille réelle, année)</td><td>5</td><td>3</td></tr>
-          <tr><td>Tranches (jours avant l'élection)</td><td>6</td><td>3</td></tr>
-          <tr><td>Effectif minimal d'une tranche</td><td>30</td><td>10</td></tr>
-          <tr><td>Fenêtre de la médiane glissante</td><td>50 sondages</td><td>20 sondages</td></tr>
-          <tr><td>Part des points du lissage LOESS</td><td>40 %</td><td>70 %</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <details class="annexe" id="a-france">
+      <summary><h3>H. Réglages du périmètre France</h3></summary>
+      <p>Le périmètre France compte peu de sondages ; plusieurs réglages sont assouplis pour garder quelque chose à afficher :</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Réglage</th><th>Tous pays</th><th>France</th></tr></thead>
+          <tbody>
+            <tr><td>Tranches de taille (erreur par tranche)</td><td>8</td><td>4</td></tr>
+            <tr><td>Tranches (taille réelle, année)</td><td>5</td><td>3</td></tr>
+            <tr><td>Tranches (jours avant l'élection)</td><td>6</td><td>3</td></tr>
+            <tr><td>Effectif minimal d'une tranche</td><td>30</td><td>10</td></tr>
+            <tr><td>Fenêtre de la médiane glissante</td><td>50 sondages</td><td>20 sondages</td></tr>
+            <tr><td>Part des points du lissage LOESS</td><td>40 %</td><td>70 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
   </main>
 
   <footer class="footer">Données : Jennings &amp; Wlezien, <em>Election polling errors across time and space</em>, Nature Human Behaviour (2018) ; calculs dans <code>analyses/</code>.</footer>

@@ -348,8 +348,19 @@ details.table-view th, details.table-view td { text-align: right; padding: 4px 8
 details.table-view th { position: sticky; top: 0; background: var(--bg-card); color: var(--text-primary); font-weight: 500; }
 details.table-view th:first-child, details.table-view td:first-child { text-align: left; }
 
+/* Sections d'annexe repliables : titre cliquable, marqueur [+] / [−] */
+details.annexe { border-top: 1px dashed var(--line); }
+details.annexe:last-of-type { border-bottom: 1px dashed var(--line); }
+details.annexe > summary { cursor: pointer; list-style: none; padding: 4px 0; }
+details.annexe > summary::-webkit-details-marker { display: none; }
+details.annexe > summary h3 { display: inline; margin: 0; font-size: 1.2rem; }
+details.annexe > summary h3::after { content: ' [+]'; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+details.annexe[open] > summary h3::after { content: ' [−]'; }
+details.annexe > summary:hover h3::after { color: var(--accent); }
+details.annexe[open] { padding-bottom: 8px; }
+
 /* Tableau dans le texte (annexe) : même rendu que les vues tableau, sans hauteur maximale */
-main > .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
+main > .table-wrap, details.annexe .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
 table.data { border-collapse: collapse; width: 100%; font-family: var(--font-mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
 table.data th, table.data td { text-align: right; padding: 5px 10px; border-bottom: 1px dashed var(--line); color: var(--text-secondary); }
 table.data th { color: var(--text-primary); font-weight: 500; border-bottom-color: var(--line-strong); }

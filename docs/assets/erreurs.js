@@ -150,7 +150,7 @@
     // Axe vertical borné pour que les rares écarts extrêmes n'écrasent pas les surfaces.
     const Z_OBS_MAX = 8;
     const horsCadre = $("[data-out=hors-cadre]", fig);
-    let vue = "obs";
+    let vue = "comp"; // vue par défaut : erreur observée et erreur attendue
     let camera = { eye: { x: 1.5, y: -1.5, z: 0.7 }, center: { x: 0, y: 0, z: -0.12 } };
     let gd = null;
     let S;
@@ -428,6 +428,21 @@
     bind(document, D, sansVide);
     for (const f of onScope) f();
   });
+
+  // --- Annexe repliée : un renvoi (#a-…) ouvre la section qui contient sa cible ---
+  function ouvrirAnnexe(hash) {
+    const cible = hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+    const section = cible?.closest("details.annexe");
+    if (section) section.open = true;
+    return cible; // élément ou null (jamais une chaîne vide : `?.` ne s'arrêterait pas dessus)
+  }
+  // Au clic, la section s'ouvre avant que le navigateur ne défile jusqu'à la cible.
+  document.addEventListener("click", (e) => {
+    const lien = e.target.closest('a[href^="#"]');
+    if (lien) ouvrirAnnexe(lien.getAttribute("href"));
+  });
+  addEventListener("hashchange", () => ouvrirAnnexe(location.hash)?.scrollIntoView());
+  ouvrirAnnexe(location.hash)?.scrollIntoView();
 
   // --- Formules ---------------------------------------------------------
   addEventListener("load", () => {
