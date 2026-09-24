@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mesure des instituts de sondage</title>
+  <meta name="description" content="Analyses et visualisations des rapports publiés par les instituts de sondage.">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <span></span>
+    <button class="theme-toggle" type="button">Thème : auto</button>
+  </header>
+  <main>
+    <h1>Mesure des instituts de sondage</h1>
+    <p class="lede">Récupération, analyses et visualisations des rapports publiés par les instituts de sondage (IPSOS, IFOP, ELABE).</p>
+    <ul class="page-list">
+      <li>
+        <a href="explications.html">Marges d'erreur et variations</a>
+        <p>Loi normale, marges d'erreur, et pourquoi une variation n'est significative à 95 % qu'au-delà de 2,328 écarts-types.</p>
+      </li>
+    </ul>
+  </main>
+  <script src="assets/charts.js"></script>
+  <script>Charts.initThemeToggle();</script>
+</body>
+</html>

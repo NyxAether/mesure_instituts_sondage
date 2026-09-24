@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marges d'erreur et variations</title>
+  <meta name="description" content="Pourquoi une variation entre deux sondages n'est significative à 95 % qu'au-delà de 2,328 écarts-types.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="index.html">← Mesure des instituts de sondage</a>
+    <button class="theme-toggle" type="button">Thème : auto</button>
+  </header>
+
+  <main>
+    <h1>Marges d'erreur et variations</h1>
+    <p class="lede">Corrections, modifications et précisions sur l'analyse de pertinence des variations dans les rapports des instituts de sondage.</p>
+
+    <nav class="toc" aria-label="Sommaire">
+      <strong>Sommaire</strong>
+      <ol>
+        <li><a href="#loi-normale">Loi normale</a></li>
+        <li><a href="#echantillonnage">Échantillonnage</a></li>
+        <li><a href="#estimation">Estimation par un échantillon</a></li>
+        <li><a href="#variations">Le problème des études sur les variations</a></li>
+        <li><a href="#confiance-variation">Caractériser une confiance sur les variations</a></li>
+        <li><a href="#correction-taille">Correction en fonction de la taille</a></li>
+      </ol>
+    </nav>
+
+    <p>Ce thread recense les modifications effectuées à l’analyse. Soit parce que je considère qu’elles sont intéressantes à détailler soit parce que je corrige une erreur ou j’explore un point de vue différent sur les données.</p>
+    <p>Il s’agira d’informations relativement techniques par rapport aux autres threads et qui ne seront donc pas à destination de tout le monde, mais qui me permettent de faire un suivi et aussi, si certains ont envie, de venir me corriger si je fais des erreurs.</p>
+    <p>Pour initier ce thread, je voudrais donc faire une correction sur mon analyse de pertinence des variations dans les rapports des instituts de sondages. Pour commencer, il faut comprendre que les marges d’erreurs sont calculées par rapport à une loi de probabilité appelée Loi normale ou Gaussienne.</p>
+
+    <h2 id="loi-normale">Loi normale</h2>
+    <p>Il s’agit d’une loi extrêmement connue en probabilité et qui revient régulièrement en probabilité.</p>
+    <p>Elle apparaît en statistique dans le domaine de l’échantillonnage à cause du <a href="https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_central_limite">Théorème Central Limite</a> qui stipule que le tirage aléatoire successifs de variables aléatoires converge vers une loi normale. Cette propriété est intéressante puisque dans le cas d’un échantillonnage, chaque échantillon est une variable aléatoire. Ainsi, avec suffisamment d’échantillon on peut se rapprocher d’une loi normale.</p>
+    <p>Par exemple : imaginons que nous tirions à pile ou face 100 fois, pile vaut 1 et face -1. Si nous faisons la somme de cent lancés on peut obtenir un nombre entre -100 et 100. Bien sûr certaines valeurs sont plus probables que d’autres. -100 et 100 étant très peu probables car il faut lancer respectivement 100 faces ou 100 piles.</p>
+    <p>En répétant cette expérience 1000 fois on peut alors représenter graphiquement la fréquence d’apparition de chaque nombre possibles.</p>
+
+    <figure class="chart" id="fig-pile-face">
+      <p class="chart-title">Somme de 100 lancers de pièce, répétée 1 000 fois</p>
+      <p class="chart-subtitle">Chaque barre compte les répétitions ayant donné cette somme ; la courbe est la loi normale attendue.</p>
+      <ul class="legend">
+        <li><span class="key key-rect" style="--c: var(--series-1)"></span><span>Répétitions observées</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Loi normale (moyenne 0, écart-type 10)</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>On observe que certaines valeurs apparaissent plus souvent que d’autres, notamment autour de 0. Cela est normal puisque d’après le théorème central limite, cet échantillonnage est sensé tendre vers une loi normale.</p>
+    <p>Cela se voit d’ailleurs très bien dès que l’on trace une loi normale par dessus (la loi normale a été mise à l’échelle du nombre de répétitions pour être du même ordre de grandeur, mais cela ne change rien au propos).</p>
+
+    <h2 id="echantillonnage">Échantillonnage</h2>
+    <p>Dans le cas d’un sondage, le problème est équivalent bien que pris à l’envers. On suppose qu’il existe une probabilité d’appartenir à un groupe ou un autre dans une population entière. Cette probabilité est en fait la fréquence d’apparition des éléments des différents groupes dans la population entière. Par exemple, il y a 54 % de femmes et 46 % d’hommes en France. En tirant aléatoirement 1000 francais.es au hasard et comptez le nombre de femmes, ce nombre sera proche de 540 (54 % de 1000). Il peut y avoir des variations mais qui sont contraint par le théorème central limite et la loi normale.</p>
+    <p>Si je réitère cette expérience 1000 fois, cela apparaît très clairement comme pour le lancé de pièces. Le nombre de femmes estimé est compris entre <span data-bind="femmes.min"></span> et <span data-bind="femmes.max"></span> avec une moyenne autour de <span data-bind="femmes.moyenne"></span>.</p>
+
+    <figure class="chart" id="fig-femmes">
+      <p class="chart-title">Nombre de femmes dans 1 000 échantillons de 1 000 personnes</p>
+      <p class="chart-subtitle">Proportion réelle de femmes : 54 %. Les traits verticaux marquent la moyenne ± 1 écart-type.</p>
+      <ul class="legend">
+        <li><span class="key key-rect" style="--c: var(--series-1)"></span><span>À moins d’un écart-type de la moyenne (<span data-bind="femmes.part_dans_ecart_type"></span> des échantillons)</span></li>
+        <li><span class="key key-rect" style="--c: var(--mark-muted)"></span><span>Au-delà</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Cela veut donc dire que l’on peut estimer la fréquence d’appartenance à un groupe dans une population de plusieurs millions d’habitant avec un faible nombre d’individus tirés au hasard. Néanmoins, on remarque aussi que parfois le tirage aléatoire se « passe mal » avec des valeurs assez loin de la réalité : les cas aux extrêmes.</p>
+    <p>Heureusement, grâce au TCL (Théorème centrale limite) et à la loi normale on peut garantir un certain nombre de propriétés.</p>
+
+    <h3>Propriétés de la loi normale</h3>
+    <p>Une des propriétés intéressantes est le rapport entre l’écart à la moyenne (à proportion des valeurs considérées) et la proportions des résultats possibles d’une succession de tirage aléatoire. Par exemple, la moyenne des écarts à la moyenne (aka l’écart-type) englobe toujours environ les 2/3 des résultats possibles. Dans le cas d’exemple du nombre de femmes, un écart de <span data-bind="femmes.ecart_type"></span> par rapport à la moyenne représente <span data-bind="femmes.part_dans_ecart_type"></span> des échantillons.</p>
+
+    <h2 id="estimation">Estimation par un échantillon</h2>
+    <p>Par conséquence, il est possible de choisir un écart qui englobera toujours la même proportion de résultats. D’un point de vue de l’échantillonnage, cela veut dire que vous pouvez choisir un intervalle d’erreur (un écart à la moyenne) qui garantisse qu’un résultat soit dans cet intervalle avec une probabilité fixe.</p>
+    <p>Les instituts de sondages se reposent donc sur ces propriétés et théorèmes pour estimer les proportions de différents groupes dans une population. Ce faisant, il font leur échantillonnage de 1000 personnes et grâce au TCL, ils savent que leur résultat est quelque part sous la courbe de la loi normale associée : sans doute proche de la valeur réelle, mais potentiellement aussi aux extrêmes.</p>
+    <p>Hors, comme nous venons de le voir, il est possible de définir un écart à la moyenne (c’est-à-dire une marge d’erreur autour de la valeur réelle) qui garantisse que l’échantillonnage s’y trouve avec une certaine probabilité.</p>
+    <p>En général, les instituts de sondage prennent une valeur de confiance à 95 %, c’est-à-dire que les résultats obtenus ont 95 % de chance d’être dans l’intervalle associé.</p>
+
+    <figure class="chart" id="fig-confiance">
+      <p class="chart-title">Niveau de confiance et largeur de la marge d'erreur</p>
+      <p class="chart-subtitle">Loi normale centrée réduite : la zone colorée contient la part des tirages indiquée.</p>
+      <div class="controls">
+        <label>Niveau de confiance <input type="range" min="50" max="99.9" step="0.1" value="95" aria-label="Niveau de confiance en pourcentage"></label>
+        <div class="presets" role="group" aria-label="Niveaux usuels">
+          <button type="button" data-value="68.27">1 σ (68 %)</button>
+          <button type="button" data-value="95">95 %</button>
+          <button type="button" data-value="99">99 %</button>
+        </div>
+      </div>
+      <div class="readout">
+        <div><div class="stat-label">Niveau de confiance</div><div class="stat-value" data-out="conf"></div></div>
+        <div><div class="stat-label">Marge d'erreur</div><div class="stat-value" data-out="z"></div></div>
+      </div>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Si vous avez bien suivi, vous voyez que plus la valeur de confiance est élevée plus l’intervalle est grand (plus vous voulez que votre échantillon soit dans un intervalle d’erreur, plus vous devez agrandir cet intervalle).</p>
+
+    <h3>Une petite précision sur l’erreur d’un échantillon</h3>
+    <p>Notez que jusqu’à présent, j’ai défini la valeur réelle comme étant la moyenne de notre loi normale, hors, en réalité, cette valeur n’est pas connue (c’est d’ailleurs pour cela que l’on fait un sondage). On va donc placer l’intervalle d’erreur autour de la valeur expérimentale puisque la probabilité d’erreur d’échantillonnage est dépendante de la distance à la valeur réelle. Hors cette distance est la même que l’on parte de la valeur réelle ou de la valeur estimée.</p>
+    <p>Exemple ci dessous la valeur réelle est 0 et la valeur estimée est deux. Que la courbe de distribution soit centrée sur la valeur observée ou la valeur réelle, la probabilité est la même.</p>
+
+    <figure class="chart" id="fig-reelle-estimee">
+      <p class="chart-title">Valeur réelle et valeur observée</p>
+      <p class="chart-subtitle">Chaque point est à la même hauteur : la densité de l'une vue depuis l'autre est identique.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Valeur réelle + distribution</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Valeur observée + distribution</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <h3>Et une petite précision sur l’écart-type</h3>
+    <p>Pour la suite je définirai aussi les écarts en écart-type plutôt qu’en valeurs d’écart. L’écart-type étant la moyenne des écarts à la moyenne d’une distribution (en vrai c’est la racine carré de la moyenne des carrés des écarts à la moyenne).</p>
+    <p>La raison pour cela est qu’il est plus facile de l’exprimer ainsi car il est proportionné à la distribution et permet d’ignorer l’ordre des grandeurs des valeurs associées. On peut donc représenter l’écart incluant 66 % de la population avec le symbole sigma $\sigma$.</p>
+
+    <h2 id="variations">Le problème des études sur les variations</h2>
+    <p>Nous l’avons vu, il est facilement possible de définir un seuil de confiance (95%) qui sera associé à une marge d’erreur des valeurs obtenues. Seuil qui correspond aussi à 1,96 $\sigma$ (1,96 fois l’écart type).</p>
+    <p>Cela s’applique naturellement pour une seule valeur donnée, mais comment cela s’applique-t-il dans le cas d’une variation ? Supposons que nous avons deux valeurs de popularité pour E. Macron à un mois d’intervalle : 40 % pour la première et 45 % pour la seconde. Le souci ici est que chacune des valeurs possèdent une marge d’erreur.</p>
+    <p>Pour un sondage à 1000 personnes elle sera ici de l’ordre de +-3 pour UNE valeur. De fait, chacune de ces valeurs a sa propre marge d’erreur. La première a 95 % de chance d’être entre 37 % et 43 % et la seconde entre 42 % et 48 %. Comme vous pouvez le remarquez les marges d’erreurs se chevauchent. Cela veut dire que malgré un écart de 5 % entre les deux résultats, il est malgré tout possible que les valeurs réelles soient positionnées de telle façon qu’il n’y a pas d’écart voire pire une variation mais dans l’autre sens.</p>
+
+    <h2 id="confiance-variation">Caractériser une confiance sur les variations</h2>
+    <h3>Interprétation initiale</h3>
+    <p>Initialement, dans les analyses sur les instituts que j’ai effectué, je définissais donc la pertinence d’une variation seulement lorsque les marges d’erreurs ne se chevauchait pas.</p>
+
+    <figure class="chart" id="fig-deux-valeurs">
+      <p class="chart-title">Deux valeurs observées et leurs marges à 95 %</p>
+      <p class="chart-subtitle">Faites varier la distance entre les deux valeurs pour voir quand les marges se chevauchent et le risque d'inversion associé.</p>
+      <div class="controls">
+        <label>Distance <input type="range" min="0" max="6" step="0.01" value="3.92" aria-label="Distance entre les valeurs, en écarts-types"></label>
+        <div class="presets" role="group" aria-label="Distances remarquables">
+          <button type="button" data-value="2">2 σ</button>
+          <button type="button" data-value="2.328">2,328 σ</button>
+          <button type="button" data-value="3.92">3,92 σ (marges jointives)</button>
+          <button type="button" data-value="4.5">4,5 σ</button>
+        </div>
+      </div>
+      <div class="readout">
+        <div><div class="stat-label">Distance entre les valeurs</div><div class="stat-value" data-out="d"></div></div>
+        <div><div class="stat-label">Probabilité d'inversion</div><div class="stat-value" data-out="p"></div></div>
+        <div><div class="stat-label">Marges à 95 %</div><div class="stat-value" data-out="marges"></div></div>
+      </div>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Première valeur</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Seconde valeur</span></li>
+        <li><span class="key key-wash" style="--c: var(--text-secondary)"></span><span>Marge d'erreur à 95 %</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Bien qu’il ne s’agisse pas d’une analyse incorrecte, elle est probablement trop restrictive. Cela apparaît nettement lorsque l’on considère la probabilité que les valeurs réelles soient égalent ou inversées par rapport à ce qui est observé. Dans le cas où les deux marges d’erreurs seraient collées l’une à l’autre, un inversion ne peut se produire que si la valeur réelle de la première observation est du coté le plus proche de la seconde.</p>
+    <p>Dans le cas d’exemple, c’est donc considérer le cas ou la 1ere obs. est à + de 43 % et inversement pour la seconde, si la valeur réelle est à - de 42 %. Or la confiance étant à 95 %, les cas d’erreur n’arrivent que dans 5 % des cas pour les deux cotés inclus. Si l’on ne considère qu’un seul coté des marges d’erreurs, la probabilité d’être dans cette zone n’est que de 2,5 %.</p>
+
+    <figure class="chart" id="fig-queues">
+      <p class="chart-title">Les deux zones d'erreur qui se font face</p>
+      <p class="chart-subtitle">Chaque zone foncée ne représente que 2,5 % des tirages de sa distribution.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Première valeur</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Seconde valeur</span></li>
+        <li><span class="key key-rect" style="--c: var(--text-secondary)"></span><span>Queue de 2,5 % tournée vers l'autre valeur</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>De fait, cela veut dire que ce cas a une chance de se produire avec une probabilité $\frac{1}{40} \times \frac{1}{40} = \frac{1}{1600}$. La confiance pour que les deux valeurs soient dans les marges d’erreurs est ici de $1-\frac{1}{1600}$ soit 99,9375 %. On est donc extrêmement restrictif. Par ailleurs, cela caractérise très mal la confiance sur une variation, car même dans le cas de borne ou les deux marges d’erreurs se touchent mais ne se chevauchent pas, si une des valeurs est dans son intervalle d’erreur mais pas l’autre, une inversion est toujours possible.</p>
+    <p>Ex : la distrib en proba de deux valeurs observées (au milieu de chaque courbes) dont les marges d’erreurs se touchent mais ne se superpose pas. Les valeurs réelles correspondent aux points. Notez comme la première valeur (bleue) est dans son intervalle de confiance et pas la seconde (orange) mais qu’il y a néanmoins une inversion de leur ordre.</p>
+
+    <figure class="chart" id="fig-contact">
+      <p class="chart-title">Marges jointives, et pourtant inversion</p>
+      <p class="chart-subtitle">Valeurs observées à 0 et 3,92 σ ; les points sont les valeurs réelles, à 1,75 σ et 1,5 σ.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Première valeur</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Seconde valeur</span></li>
+        <li><span class="key key-dot" style="--c: var(--text-secondary)"></span><span>Valeur réelle</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <h3>Confiance de variation à 95 %</h3>
+    <p>Mon objectif est donc de corriger mon analyse pour que la confiance sur une variation soit la même que la confiance sur les données de l’étude aka. 95 %.</p>
+    <p>L’objectif étant de définir une confiance à 95 %, c’est à dire, à partir de quelle distance entre mes deux valeurs observées je peux m’assurer qu’une inversion ou égalité des valeurs n’arrive que dans 5 % des cas par rapport à la variation observée. Notez néanmoins qu’elle ne caractérise pas l’importance de la variation mais seulement si elle existe.</p>
+    <p>J’avoue que mes compétences en maths sont clairement insuffisantes pour trouver cette valeur théoriquement donc je l’ai cherché expérimentalement. J’ai donc cherché cette valeur en considérant une distribution de probabilité entre les deux valeurs.</p>
+    <p>Si l’écart-type est le même entre les deux distributions, on peut estimer la probabilité d’inversion par échantillonnage. On va donc refaire nos échantillonnages en définissant deux lois normales espacées d’une distance relative à leur écart-type. Par exemple en tirant 1000 résultats en suivant la première loi et 1000 en suivant la seconde. On compare ensuite les valeurs des deux une à une en comptant le nombre de fois ou le résultats de la seconde est plus petite que la première. Il s’agit ainsi d’obtenir la fréquence d’inversion sur ces deux lois normales.</p>
+    <p>Le graphe ci dessous représente la probabilité d’inversion (ordonnée) en fonction de la distance exprimée en nb d’écart-type (abscisse). La probabilité à 0,05 correspond à une distance de $2\times 1.164\sigma$.</p>
+
+    <figure class="chart" id="fig-inversion">
+      <p class="chart-title">Probabilité d'inversion selon la distance entre deux valeurs</p>
+      <p class="chart-subtitle">Deux lois normales de même écart-type ; le risque passe sous 5 % à partir de 2,328 σ.</p>
+      <ul class="legend">
+        <li><span class="key key-dot" style="--c: var(--series-2)"></span><span>Simulation Monte-Carlo (200 000 tirages par point)</span></li>
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Calcul exact</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p class="note">Ajout : la valeur se retrouve aussi par le calcul. La différence de deux lois normales indépendantes de même écart-type $\sigma$ suit une loi normale d'écart-type $\sigma\sqrt{2}$ ; la probabilité d'inversion vaut 5 % pour une distance de $\sqrt{2}\times 1{,}645\,\sigma$, soit environ <span data-bind="inversion.seuil_analytique"></span> σ. La simulation donne <span data-bind="inversion.p_seuil_mc"></span> à 2,328 σ, ce qui est cohérent.</p>
+
+    <p>Cela veut dire que l’espace entre les deux moyennes des courbes, aka les valeurs observées, doivent être à plus de $2\times 1.164\sigma$ l’une de l’autre. En terme de distribution de proba, cela va ressembler à qqch comme la figure ci dessous.</p>
+
+    <figure class="chart" id="fig-distance-ideale">
+      <p class="chart-title">Distance minimale pour une variation significative à 95 %</p>
+      <p class="chart-subtitle">Valeurs observées séparées de 2,328 σ : les marges à 95 % se chevauchent largement.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Première valeur</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Seconde valeur</span></li>
+        <li><span class="key key-wash" style="--c: var(--text-secondary)"></span><span>Marge d'erreur à 95 %</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <h2 id="correction-taille">Correction en fonction de la taille</h2>
+    <p>Nous avons supposé un écart type constant or il est en réalité dépendant de la probabilité observée $p$ et de la taille de l’échantillonnage utilisé par le sondage ($\sigma=\sqrt{\frac{p\times(1-p)}{n}}$). L’impact de la probabilité $p$ est peu significatif sur la probabilité au regard de $n$.</p>
+    <p>La première figure représente la probabilité d’inversion (ordonnée) en fonction de la distance exprimée en nb d’écart-type lorsque $n_2 = k\times n_1$ et la seconde figure en fonction de différentes valeurs de $p$ et du rapport entre la taille d’échantillonnage $n_1$ et $n_2$ des deux valeurs observées.</p>
+
+    <figure class="chart" id="fig-selon-n">
+      <p class="chart-title">Selon le rapport des tailles d'échantillon</p>
+      <p class="chart-subtitle">p = 0,5 et n<sub>1</sub> = 1 000 ; chaque valeur est placée à « coefficient × σ » de la frontière.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>n<sub>2</sub> = n<sub>1</sub></span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>n<sub>2</sub> = 2 × n<sub>1</sub></span></li>
+        <li><span class="key key-line" style="--c: var(--series-3)"></span><span>n<sub>2</sub> = 3 × n<sub>1</sub></span></li>
+        <li><span class="key key-line" style="--c: var(--series-4)"></span><span>n<sub>2</sub> = 4 × n<sub>1</sub></span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <figure class="chart" id="fig-selon-p">
+      <p class="chart-title">Selon la proportion observée p</p>
+      <p class="chart-subtitle">n<sub>1</sub> = n<sub>2</sub> = 1 000 ; les cinq courbes sont presque confondues.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>p = 0,1</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>p = 0,2</span></li>
+        <li><span class="key key-line" style="--c: var(--series-3)"></span><span>p = 0,3</span></li>
+        <li><span class="key key-line" style="--c: var(--series-4)"></span><span>p = 0,4</span></li>
+        <li><span class="key key-line" style="--c: var(--series-5)"></span><span>p = 0,5</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>On voit que les variations de $p$ ont peu d'influence.</p>
+  </main>
+
+  <script src="data/explications.js"></script>
+  <script src="assets/charts.js"></script>
+  <script src="assets/explications.js"></script>
+</body>
+</html>

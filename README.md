@@ -14,4 +14,21 @@ Chacun des instituts de sondages possèdent sont propre dossier contenant :
 
 Certains instituts peuvent contenir plusieurs dossiers de données en fonctions des études récupérées.
 
+## Visualisations HTML
+
+Les analyses sont progressivement migrées des notebooks vers des pages HTML statiques :
+
+* `analyses/` : modules Python qui calculent les données de chaque page et les exportent dans `docs/data/<page>.js` ;
+* `docs/` : pages HTML (Observable Plot, thème clair/sombre, vue tableau pour chaque graphique), ouvrables directement dans un navigateur ou publiables via GitHub Pages.
+
+Pages disponibles :
+
+* `docs/explications.html` : marges d'erreur, loi normale et seuil de significativité des variations.
+
+Régénérer les données d'une page :
+
+```sh
+.venv/Scripts/python.exe -m analyses.explications
+```
+
 Les PDFs étant la propriété intellectuelle des instituts, ceux-ci ne sont pas disponible sur ce dépot.
