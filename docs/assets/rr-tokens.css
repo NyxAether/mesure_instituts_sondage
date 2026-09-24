@@ -1,0 +1,138 @@
+/* Généré par rr-style/build.py depuis tokens.json — ne pas éditer.
+   Thème rr/ : clair par défaut, sombre sur préférence système ou [data-theme="dark"].
+   Polices : charger https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap
+   ou dist/rr-fonts.css (fichiers locaux, hors ligne). */
+
+:root {
+  color-scheme: light;
+  --bg-primary: #E4E7DD;
+  --bg-secondary: #D7DCCD;
+  --bg-card: #EEF0E8;
+  --paper: #FFFFFF;
+  --text-primary: #1A1F19;
+  --text-secondary: #444C42;
+  --text-muted: #596256;
+  --line: rgba(26, 31, 25, 0.18);
+  --line-strong: rgba(26, 31, 25, 0.42);
+  --rule: #BBBEB6;
+  --accent: #7A2E4F;
+  --sage: #3A6849;
+  --dusk: #3F6283;
+  --ochre: #835527;
+  --warning: #805400;
+  --ascii-ink: rgba(26, 31, 25, 0.22);
+  --overlay: rgba(26, 31, 25, 0.45);
+  --surface-1: #EEF0E8;
+  --grid: #D9DED1;
+  --axis: #A9B0A1;
+  --mark-muted: #BFC6B6;
+  --series-1: #9E5468;
+  --series-2: #4670A8;
+  --series-3: #854F14;
+  --series-4: #8368A8;
+  --series-5: #1A653A;
+  --cat-ia-generative: var(--ochre);
+  --cat-ml: var(--dusk);
+  --cat-deep-learning: var(--sage);
+  --cat-python: var(--accent);
+  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --text-xs: 0.72rem;
+  --text-sm: 0.83rem;
+  --text-base: 1rem;
+  --text-md: 1.2rem;
+  --text-lg: 1.44rem;
+  --text-xl: 1.73rem;
+  --text-2xl: 2.07rem;
+  --text-3xl: 2.49rem;
+  --text-display: clamp(2.2rem, 5vw, 3.4rem);
+  --text-hero: clamp(3.5rem, 9vw, 7.5rem);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-30: 120px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-reveal: 0.6s;
+  --duration-modal: 0.25s;
+  --container: 1200px;
+  --prose: 800px;
+  --nav-height: 64px;
+  --gutter: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg-primary: #161A16;
+    --bg-secondary: #1C211C;
+    --bg-card: #242A24;
+    --paper: #161A16;
+    --text-primary: #E4EADF;
+    --text-secondary: #BAC4B5;
+    --text-muted: #8C9788;
+    --line: rgba(228, 234, 223, 0.14);
+    --line-strong: rgba(228, 234, 223, 0.38);
+    --rule: #3C443C;
+    --accent: #E39CBB;
+    --sage: #A6CDB0;
+    --dusk: #9FBEDA;
+    --ochre: #D9B488;
+    --warning: #E0B050;
+    --ascii-ink: rgba(228, 234, 223, 0.16);
+    --overlay: rgba(7, 9, 7, 0.65);
+    --surface-1: #242A24;
+    --grid: #313831;
+    --axis: #4A534A;
+    --mark-muted: #4F584F;
+    --series-1: #BA5F78;
+    --series-2: #5E97CD;
+    --series-3: #B98749;
+    --series-4: #9E83C5;
+    --series-5: #3F936E;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-primary: #161A16;
+  --bg-secondary: #1C211C;
+  --bg-card: #242A24;
+  --paper: #161A16;
+  --text-primary: #E4EADF;
+  --text-secondary: #BAC4B5;
+  --text-muted: #8C9788;
+  --line: rgba(228, 234, 223, 0.14);
+  --line-strong: rgba(228, 234, 223, 0.38);
+  --rule: #3C443C;
+  --accent: #E39CBB;
+  --sage: #A6CDB0;
+  --dusk: #9FBEDA;
+  --ochre: #D9B488;
+  --warning: #E0B050;
+  --ascii-ink: rgba(228, 234, 223, 0.16);
+  --overlay: rgba(7, 9, 7, 0.65);
+  --surface-1: #242A24;
+  --grid: #313831;
+  --axis: #4A534A;
+  --mark-muted: #4F584F;
+  --series-1: #BA5F78;
+  --series-2: #5E97CD;
+  --series-3: #B98749;
+  --series-4: #9E83C5;
+  --series-5: #3F936E;
+}

@@ -1,73 +1,11 @@
 /* ═══════════════════════════════════════════
    Mesure des instituts de sondage
-   Thème repris de nyxaether.github.io : sauge & prune, touches ASCII discrètes
+   Charte rr/ (rr-style) : sauge & prune, touches ASCII discrètes
    ═══════════════════════════════════════════ */
 
-/* Palette des séries : teintes du site (prune, crépuscule, ocre, ardoise, sauge)
-   recalées en luminosité/chroma et validées (dataviz validate_palette.js) :
-   séparation daltonisme ≥ 10 ΔE entre voisines, contraste ≥ 3:1 sur tous les fonds.
-   Au-delà des courbes (nuages de points, petits multiples) : 2 séries au plus,
-   prune et ocre étant trop proches quand toutes les paires se côtoient. */
-:root {
-  color-scheme: light;
-
-  --bg-primary:   #E4E7DD;
-  --bg-secondary: #D7DCCD;
-  --bg-card:      #EEF0E8;
-
-  --text-primary:   #1A1F19;
-  --text-secondary: #444C42;
-  --text-muted:     #6A7367;
-
-  --line:        rgba(26, 31, 25, 0.18);
-  --line-strong: rgba(26, 31, 25, 0.42);
-
-  --accent: #7A2E4F;
-  --warning: #8A5A00;
-
-  /* Jetons des graphiques */
-  --surface-1:  var(--bg-card);
-  --grid:       #D9DED1;
-  --axis:       #A9B0A1;
-  --mark-muted: #BFC6B6;
-  --series-1: #9e5468;
-  --series-2: #4670a8;
-  --series-3: #854f14;
-  --series-4: #8368a8;
-  --series-5: #1a653a;
-
-  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
-  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono:  'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
-
-  --radius-sm: 2px;
-  --radius-md: 4px;
-
-  --transition-fast:   0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Thème sombre : choix explicite, ou préférence système sans JS */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg-primary: #161A16; --bg-secondary: #1C211C; --bg-card: #242A24;
-    --text-primary: #E4EADF; --text-secondary: #BAC4B5; --text-muted: #8C9788;
-    --line: rgba(228, 234, 223, 0.14); --line-strong: rgba(228, 234, 223, 0.38);
-    --accent: #E39CBB; --warning: #E0B050;
-    --grid: #313831; --axis: #4A534A; --mark-muted: #4F584F;
-    --series-1: #ba5f78; --series-2: #5e97cd; --series-3: #b98749; --series-4: #9e83c5; --series-5: #3f936e;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg-primary: #161A16; --bg-secondary: #1C211C; --bg-card: #242A24;
-  --text-primary: #E4EADF; --text-secondary: #BAC4B5; --text-muted: #8C9788;
-  --line: rgba(228, 234, 223, 0.14); --line-strong: rgba(228, 234, 223, 0.38);
-  --accent: #E39CBB; --warning: #E0B050;
-  --grid: #313831; --axis: #4A534A; --mark-muted: #4F584F;
-  --series-1: #ba5f78; --series-2: #5e97cd; --series-3: #b98749; --series-4: #9e83c5; --series-5: #3f936e;
-}
+/* Jetons (couleurs clair/sombre, séries des graphiques, polices, rayons) : rr-tokens.css,
+   généré par rr-style (C:/Users/Romain/Prog/rr-style) et chargé avant cette feuille.
+   Séries validées (dataviz validate_palette.js) ; au-delà des courbes, 2 séries au plus. */
 
 /* ── Base ── */
 *, *::before, *::after { box-sizing: border-box; }

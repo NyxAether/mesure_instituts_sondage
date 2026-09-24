@@ -1,0 +1,37 @@
+# Généré par rr-style/build.py depuis tokens.json — ne pas éditer.
+# Thème clair rr/ pour matplotlib. Préférer rr_mpl.use() qui charge aussi les polices.
+figure.facecolor: EEF0E8
+axes.facecolor: EEF0E8
+savefig.facecolor: EEF0E8
+axes.edgecolor: A9B0A1
+axes.labelcolor: 444C42
+axes.titlecolor: 1A1F19
+axes.titlesize: 13
+axes.titleweight: normal
+axes.titlelocation: left
+axes.labelsize: 10
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: True
+axes.grid.axis: y
+axes.axisbelow: True
+axes.prop_cycle: cycler('color', ['9E5468', '4670A8', '854F14', '8368A8', '1A653A'])
+grid.color: D9DED1
+grid.linewidth: 0.8
+xtick.color: 596256
+ytick.color: 596256
+xtick.labelsize: 9
+ytick.labelsize: 9
+lines.linewidth: 2
+lines.markersize: 7
+patch.edgecolor: EEF0E8
+legend.frameon: False
+legend.fontsize: 9
+text.color: 1A1F19
+font.family: sans-serif
+font.sans-serif: Inter, DejaVu Sans
+font.monospace: JetBrains Mono, DejaVu Sans Mono
+font.serif: Newsreader, DejaVu Serif
+axes.formatter.use_locale: False
+savefig.dpi: 200
+savefig.bbox: tight

@@ -19,20 +19,8 @@
   };
 
   // --- Thème -------------------------------------------------------------
-  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-
-  function theme() {
-    return {
-      series: [1, 2, 3, 4, 5].map((i) => css(`--series-${i}`)),
-      surface: css("--surface-1"),
-      ink: css("--text-primary"),
-      ink2: css("--text-secondary"),
-      muted: css("--text-muted"),
-      grid: css("--grid"),
-      axis: css("--axis"),
-      deemph: css("--mark-muted"),
-    };
-  }
+  // Couleurs des graphiques : rr-plot.js (charte rr-style), relues sur les variables CSS du thème courant.
+  const theme = () => rrPlot.theme();
 
   // Thème clair/sombre : choix mémorisé, sinon préférence système (appliqué avant rendu
   // par le script en tête de page, pour éviter un flash).
@@ -109,21 +97,8 @@
     return { redraw: () => draw(entry) };
   }
 
-  /** Options communes : fond transparent, encre secondaire, grille en filet discret. */
-  function frame(t, width, options = {}) {
-    const { marks = [], ...rest } = options;
-    return {
-      width,
-      height: width < 520 ? 260 : 320,
-      marginLeft: 52,
-      marginRight: 20,
-      marginTop: 32,
-      marginBottom: 44,
-      style: { background: "transparent", color: t.ink2, fontFamily: "var(--font-mono)", fontSize: "11px", overflow: "visible" },
-      ...rest,
-      marks: [Plot.gridY({ stroke: t.grid, strokeOpacity: 1 }), ...marks],
-    };
-  }
+  /** Options communes (fond transparent, texte mono secondaire, grille discrète) : rr-plot.js. */
+  const frame = (t, width, options) => rrPlot.frame(t, width, options);
 
   /** Remplit un <details class="table-view"> avec un tableau (contenu inséré en textContent). */
   function table(details, columns, rows) {

@@ -1,0 +1,14 @@
+# Charte rr/ utilisée par ce projet : https://gitlab.com/NyxHemera/rr-design (dépôt privé)
+# Mettre à jour : changer `version` puis lancer, depuis ce dossier :
+#   uvx --from git+https://gitlab.com/NyxHemera/rr-design.git rr-design pull
+# Les fichiers listés ci-dessous sont tirés de la charte : ne pas les modifier ici.
+source = "https://gitlab.com/NyxHemera/rr-design.git"
+version = "v1.0.0"
+
+[files]
+# "chemin/dans/ce/projet" = "chemin/dans/la/charte"   (dossier/* = tout le dossier)
+"docs/assets/rr-tokens.css" = "dist/rr-tokens.css"
+"docs/assets/rr-plot.js" = "dist/rr-plot.js"
+"rr_mpl.py" = "dist/rr_mpl.py"
+"rr.mplstyle" = "dist/rr.mplstyle"
+"rr-fonts/*" = "fonts/*"
