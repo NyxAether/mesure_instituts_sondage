@@ -34,31 +34,30 @@
     };
   }
 
-  const THEMES = ["auto", "light", "dark"];
-  const THEME_LABELS = { auto: "Thème : auto", light: "Thème : clair", dark: "Thème : sombre" };
+  // Thème clair/sombre : choix mémorisé, sinon préférence système (appliqué avant rendu
+  // par le script en tête de page, pour éviter un flash).
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
 
   function readStoredTheme() {
-    try { return localStorage.getItem("theme") || "auto"; } catch { return "auto"; }
+    try { return localStorage.getItem("theme"); } catch { return null; }
   }
 
-  function applyTheme(value) {
-    if (value === "auto") delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = value;
-    try { localStorage.setItem("theme", value); } catch { /* stockage indisponible */ }
-    const btn = document.querySelector(".theme-toggle");
-    if (btn) btn.textContent = THEME_LABELS[value];
+  function applyTheme(value, persist) {
+    document.documentElement.dataset.theme = value;
+    if (persist) {
+      try { localStorage.setItem("theme", value); } catch { /* stockage indisponible */ }
+    }
     redrawAll();
   }
 
   function initThemeToggle() {
-    const btn = document.querySelector(".theme-toggle");
-    let current = readStoredTheme();
-    applyTheme(current);
-    btn?.addEventListener("click", () => {
-      current = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-      applyTheme(current);
+    applyTheme(readStoredTheme() || (systemDark.matches ? "dark" : "light"), false);
+    document.querySelector(".theme-btn")?.addEventListener("click", () => {
+      applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
     });
-    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+    systemDark.addEventListener("change", (e) => {
+      if (!readStoredTheme()) applyTheme(e.matches ? "dark" : "light", false);
+    });
   }
 
   // --- Loi normale -------------------------------------------------------
@@ -120,7 +119,7 @@
       marginRight: 20,
       marginTop: 32,
       marginBottom: 44,
-      style: { background: "transparent", color: t.ink2, fontFamily: "inherit", fontSize: "12px", overflow: "visible" },
+      style: { background: "transparent", color: t.ink2, fontFamily: "var(--font-mono)", fontSize: "11px", overflow: "visible" },
       ...rest,
       marks: [Plot.gridY({ stroke: t.grid, strokeOpacity: 1 }), ...marks],
     };
