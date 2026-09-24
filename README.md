@@ -24,11 +24,13 @@ Les analyses sont progressivement migrées des notebooks vers des pages HTML sta
 Pages disponibles :
 
 * `docs/explications.html` : marges d'erreur, loi normale et seuil de significativité des variations.
+* `docs/erreurs.html` : erreur empirique des sondages face aux résultats d'élections (ex-notebooks de `mesure_erreurs/`, dont les fichiers `polls.p` et `bss.p`, non versionnés, sont nécessaires pour régénérer les données).
 
 Régénérer les données d'une page :
 
 ```sh
 .venv/Scripts/python.exe -m analyses.explications
+.venv/Scripts/python.exe -m analyses.erreurs
 ```
 
 Les PDFs étant la propriété intellectuelle des instituts, ceux-ci ne sont pas disponible sur ce dépot.

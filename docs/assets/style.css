@@ -23,6 +23,7 @@
   --line-strong: rgba(26, 31, 25, 0.42);
 
   --accent: #7A2E4F;
+  --warning: #8A5A00;
 
   /* Jetons des graphiques */
   --surface-1:  var(--bg-card);
@@ -53,7 +54,7 @@
     --bg-primary: #161A16; --bg-secondary: #1C211C; --bg-card: #242A24;
     --text-primary: #E4EADF; --text-secondary: #BAC4B5; --text-muted: #8C9788;
     --line: rgba(228, 234, 223, 0.14); --line-strong: rgba(228, 234, 223, 0.38);
-    --accent: #E39CBB;
+    --accent: #E39CBB; --warning: #E0B050;
     --grid: #313831; --axis: #4A534A; --mark-muted: #4F584F;
     --series-1: #ba5f78; --series-2: #5e97cd; --series-3: #b98749; --series-4: #9e83c5; --series-5: #3f936e;
   }
@@ -63,7 +64,7 @@
   --bg-primary: #161A16; --bg-secondary: #1C211C; --bg-card: #242A24;
   --text-primary: #E4EADF; --text-secondary: #BAC4B5; --text-muted: #8C9788;
   --line: rgba(228, 234, 223, 0.14); --line-strong: rgba(228, 234, 223, 0.38);
-  --accent: #E39CBB;
+  --accent: #E39CBB; --warning: #E0B050;
   --grid: #313831; --axis: #4A534A; --mark-muted: #4F584F;
   --series-1: #ba5f78; --series-2: #5e97cd; --series-3: #b98749; --series-4: #9e83c5; --series-5: #3f936e;
 }
@@ -214,6 +215,29 @@ strong { color: var(--text-primary); font-weight: 600; }
   color: var(--accent);
 }
 
+/* Avertissement : même forme que la note, teinte d'alerte */
+.note.warning { border-left: 2px solid var(--warning); }
+.note.warning::before { content: 'attention'; color: var(--warning); }
+.note[hidden] { display: none; }
+
+/* Filtre de périmètre dans la barre de navigation */
+.nav .scope { margin-left: auto; font-family: var(--font-mono); font-size: 0.78rem; gap: 4px 12px; }
+@media (max-width: 520px) {
+  /* Pas la place sur une ligne : le filtre passe sous la marque et le bouton de thème. */
+  .nav-inner:has(.scope) { flex-wrap: wrap; height: auto; padding-top: 8px; padding-bottom: 8px; row-gap: 2px; }
+  .nav .scope { order: 3; width: 100%; margin-left: 0; }
+}
+
+/* Rappel sur chaque graphique quand le périmètre « France » est actif */
+:root[data-scope="france"] figure.chart > .chart-title::after {
+  content: ' · France, peu de données';
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--warning);
+  white-space: nowrap;
+}
+.chart-empty { margin: 24px 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+
 /* ── Carte de graphique : fenêtre de terminal, coins ASCII au survol ── */
 figure.chart {
   position: relative;
@@ -305,6 +329,7 @@ figure.chart > .chart-subtitle { font-size: 0.88rem; color: var(--text-muted); m
   color: var(--text-secondary);
 }
 .legend li { display: flex; align-items: center; gap: 7px; }
+.legend li[hidden] { display: none; }
 .key { display: inline-block; flex: none; background: var(--c); }
 .key-line { width: 16px; height: 2px; }
 .key-rect { width: 10px; height: 10px; border-radius: var(--radius-sm); }

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Erreur empirique des sondages</title>
+  <meta name="description" content="Écart entre sondages et résultats d'élections dans 45 pays : l'erreur empirique comparée à la marge d'erreur théorique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">sondages<span>/</span><span class="crumb">erreurs</span></a>
+      <div class="presets scope" role="group" aria-label="Périmètre des données">
+        <button type="button" data-value="tous" aria-pressed="true">tous pays</button>
+        <button type="button" data-value="france">France</button>
+      </div>
+      <button class="theme-btn" type="button" aria-label="Basculer le thème">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <span class="page-tag">// erreur des sondages</span>
+    <h1>Erreur empirique des <em>sondages</em></h1>
+    <p class="lede">Les sondages publiés juste avant une élection sont-ils aussi précis que leur marge d'erreur le laisse croire ? Comparaison avec les résultats des scrutins dans 45 pays.</p>
+
+    <p class="note warning" id="avertissement-france" hidden><strong>Peu de données pour la France.</strong> Seuls <span data-bind="nuage.nb_sondages"></span> sondages français (<span data-bind="nuage.nb_lignes"></span> lignes) entrent dans les trois premiers graphiques, et <span data-bind="equivalents.nb_proches"></span> dans la fenêtre de 2 semaines de la taille équivalente. Les graphiques ont moins de tranches, le seuil passe à <span data-bind="equivalents.effectif_min"></span> sondages par tranche, et la surface 3D est très extrapolée (ses valeurs négatives sont ramenées à zéro). Les tendances sont donc indicatives. Les commentaires du texte décrivent l'ensemble des pays.</p>
+
+    <nav class="toc" aria-label="Sommaire">
+      <strong>Sommaire</strong>
+      <ol>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#definitions">Définitions</a></li>
+        <li><a href="#ecarts">Écarts entre sondages et résultats</a></li>
+        <li><a href="#taille-proportion">Erreur selon la taille et la proportion</a></li>
+        <li><a href="#taille-equivalente">Taille d'échantillon équivalente</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="donnees">Données</h2>
+    <p>La base rassemble des intentions de vote et les résultats des élections correspondantes : <span data-bind="source.lignes"></span> lignes (un parti ou un candidat dans un sondage), <span data-bind="source.sondages"></span> sondages, <span data-bind="source.pays"></span> pays, de <span data-bind="source.debut"></span> à <span data-bind="source.fin"></span>. Le fichier d'origine est téléchargeable sur <a href="https://dataverse.harvard.edu/api/access/datafile/3107210">Harvard Dataverse</a>.</p>
+    <p>Seuls les sondages dont la taille d'échantillon est connue sont conservés. Pour les deux premières parties, on se limite aux élections depuis 2005 et aux sondages publiés moins de 8 jours avant le scrutin, pour que l'écart mesuré tienne le moins possible à une évolution de l'opinion pendant la campagne. Il reste <span data-bind="nuage.nb_lignes"></span> lignes, <span data-bind="nuage.nb_sondages"></span> sondages et <span data-bind="nuage.nb_pays"></span> pays.</p>
+
+    <h2 id="definitions">Définitions</h2>
+    <ul>
+      <li>Proportion de votes obtenue par un parti : $p$ ; taille d'échantillon du sondage : $n$.</li>
+      <li>Écart-type théorique d'une proportion estimée sur un échantillon aléatoire : $$\sigma = \sqrt{\frac{p(1-p)}{n}}$$</li>
+      <li>Marge d'erreur à 95 % : $L_{95} = 1{,}96\,\sigma$.</li>
+      <li>Erreur d'un sondage sur un parti : l'écart absolu $|\hat p - p|$ entre l'intention de vote $\hat p$ et le résultat $p$.</li>
+      <li>Erreur moyenne attendue pour un échantillon aléatoire : $$\mathbb{E}\,|\hat p - p| = \sqrt{\tfrac{2}{\pi}}\,\sigma \approx 0{,}80\,\sigma$$</li>
+      <li>Taille équivalente : la taille $n_{eq}$ d'un échantillon aléatoire qui aurait en moyenne l'erreur $\bar e$ observée, $$n_{eq} = \frac{2}{\pi}\,\frac{p(1-p)}{\bar e^{\,2}}$$</li>
+    </ul>
+    <p class="note">Ajout : le notebook d'origine comparait l'erreur lissée à $0{,}67\,\sigma$, qui est l'erreur <em>médiane</em> d'une loi normale. Un lissage LOESS estime une moyenne locale ; la référence cohérente est donc l'erreur moyenne, $0{,}80\,\sigma$. Le lissage se fait aussi sur $\log n$ plutôt que sur $n$, avec des axes normalisés, pour que le voisinage d'un point ne dépende pas seulement de la taille d'échantillon.</p>
+
+    <h2 id="ecarts">Écarts entre sondages et résultats</h2>
+    <p>Chaque point est l'écart entre l'intention de vote d'un parti et son score réel. Si les sondages se comportaient comme des tirages aléatoires, 95 % des points devraient tenir dans leur marge d'erreur, et l'entonnoir devrait se resserrer quand l'échantillon grandit.</p>
+
+    <figure class="chart" id="fig-nuage">
+      <p class="chart-title">Écart entre intention de vote et résultat</p>
+      <p class="chart-subtitle">Un point par parti et par sondage ; axe horizontal en échelle logarithmique.</p>
+      <ul class="legend">
+        <li><span class="key key-dot" style="--c: var(--series-2)"></span><span>Écart sondage − résultat</span></li>
+        <li><span class="key key-wash" style="--c: var(--series-1)"></span><span>Marge à 95 % pour p = 50 % (la plus large)</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>En réalité, <strong><span data-bind="nuage.part_hors_marge"></span></strong> des écarts dépassent la marge d'erreur à 95 % de leur propre proportion, contre 5 % attendus. Et l'entonnoir ne se resserre presque pas : au-delà de quelques milliers de sondés, l'erreur stagne.</p>
+
+    <figure class="chart" id="fig-taille">
+      <p class="chart-title">Erreur moyenne selon la taille d'échantillon</p>
+      <p class="chart-subtitle">Lignes regroupées en tranches d'effectifs comparables ; chaque point est placé à la taille médiane de sa tranche.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Erreur observée</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Erreur attendue d'un tirage aléatoire</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>L'erreur attendue diminue en $1/\sqrt n$ ; l'erreur observée, elle, reste autour de 1,5 à 2 points quelle que soit la taille. Elle est déjà deux fois trop grande pour les petits échantillons, et quatre à cinq fois trop grande pour les plus gros. Traduit en taille équivalente, un sondage se comporte comme un tirage aléatoire de quelques centaines de personnes (voir la colonne « taille équivalente » du tableau).</p>
+
+    <h2 id="taille-proportion">Erreur selon la taille et la proportion</h2>
+    <p>L'erreur théorique dépend aussi de $p$ : elle est maximale à 50 % et plus faible pour les petits partis. Le lissage LOESS en deux dimensions estime l'erreur moyenne observée pour chaque couple (proportion, taille), qu'on peut comparer à l'erreur attendue.</p>
+
+    <figure class="chart" id="fig-carte">
+      <p class="chart-title">Erreur moyenne selon la proportion et la taille d'échantillon</p>
+      <p class="chart-subtitle">Lissage LOESS des écarts absolus ; les zones sans observations sont extrapolées ; <span data-out="hors-cadre"></span>. Faites glisser pour pivoter, survolez pour lire les valeurs.</p>
+      <div class="controls">
+        <div class="presets" role="group" aria-label="Grandeur affichée">
+          <button type="button" data-value="obs">erreur observée</button>
+          <button type="button" data-value="comp">observée et attendue</button>
+          <button type="button" data-value="ratio">rapport observée / attendue</button>
+        </div>
+      </div>
+      <ul class="legend">
+        <li data-vues="obs comp"><span class="key key-rect" style="--c: var(--series-2)"></span><span>Erreur observée (lissée)</span></li>
+        <li data-vues="comp"><span class="key key-wash" style="--c: var(--series-1)"></span><span>Erreur attendue d'un tirage aléatoire</span></li>
+        <li data-vues="obs"><span class="key key-dot" style="--c: var(--text-primary)"></span><span>Observations</span></li>
+        <li data-vues="ratio"><span class="key key-rect" style="--c: var(--series-2)"></span><span>Erreur observée ÷ erreur attendue</span></li>
+      </ul>
+      <div class="plot plot-3d"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Le rapport entre erreur observée et erreur attendue va de <span data-bind="surfaces.ratio_min"></span> à <span data-bind="surfaces.ratio_max"></span>. Il croît avec la taille d'échantillon, et plus encore pour les grands partis : c'est là que la marge d'erreur annoncée est la plus trompeuse.</p>
+
+    <h2 id="taille-equivalente">Taille d'échantillon équivalente</h2>
+    <p>Une autre approche consiste à simuler, pour chaque sondage, des échantillons purement aléatoires tirés à partir du résultat réel de l'élection. On cherche la plus petite taille pour laquelle ces tirages simulés sont, en médiane sur 1 000 tirages, aussi proches du résultat que le sondage réel. Cette taille équivalente mesure la précision effective du sondage.</p>
+    <p>La proximité entre une distribution de votes et son estimation se mesure de plusieurs façons : divergence de Kullback-Leibler, entropie croisée, erreur quadratique, erreur absolue. Le calcul porte sur <span data-bind="equivalents.nb_sondages"></span> sondages, toutes dates confondues.</p>
+    <p>La série « tirage aléatoire unique » sert de témoin : on remplace le sondage réel par <em>un</em> tirage aléatoire de même taille et on lui applique la même recherche. Si la méthode est juste, sa taille équivalente doit être proche de la taille réelle.</p>
+
+    <figure class="chart" id="fig-glissante">
+      <p class="chart-title">Taille équivalente selon la taille réelle</p>
+      <p class="chart-subtitle">Médiane glissante sur <span data-bind="equivalents.glissement"></span> sondages, publiés au plus 14 jours avant le scrutin ; axe vertical en échelle logarithmique.</p>
+      <ul class="legend">
+        <li><span class="key key-line" style="--c: var(--series-1)"></span><span>Divergence KL</span></li>
+        <li><span class="key key-line" style="--c: var(--series-2)"></span><span>Entropie croisée</span></li>
+        <li><span class="key key-line" style="--c: var(--series-3)"></span><span>Erreur quadratique</span></li>
+        <li><span class="key key-line" style="--c: var(--series-4)"></span><span>Erreur absolue</span></li>
+        <li><span class="key key-line" style="--c: var(--series-5)"></span><span>Tirage aléatoire unique (témoin)</span></li>
+      </ul>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Le témoin suit à peu près la taille réelle, ce qui valide la méthode. Les sondages réels, eux, se comportent en médiane comme un tirage aléatoire de <strong><span data-bind="equivalents.medianes.optimal_kl"></span></strong> personnes (divergence KL), alors que leur taille médiane est de <span data-bind="equivalents.median_reel"></span>. Les quatre mesures donnent le même ordre de grandeur, et ce niveau ne dépend presque pas de la taille réelle.</p>
+
+    <figure class="chart" id="fig-boites">
+      <p class="chart-title">Distribution de la taille équivalente</p>
+      <p class="chart-subtitle">Boîte : 1<sup>er</sup> et 3<sup>e</sup> quartiles ; trait : médiane ; moustaches : 1,5 écart interquartile. Tranches de moins de <span data-bind="equivalents.effectif_min"></span> sondages exclues. Choisissez la fenêtre de publication avant le scrutin, le facteur et la mesure ; le témoin est la taille équivalente d'un vrai tirage aléatoire de même taille.</p>
+      <div class="controls">
+        <div class="presets" role="group" aria-label="Publication avant le scrutin" data-group="fenetre">
+          <button type="button" data-value="7">≤ 1 semaine</button>
+          <button type="button" data-value="14" aria-pressed="true">≤ 2 semaines</button>
+          <button type="button" data-value="30">≤ 1 mois</button>
+          <button type="button" data-value="90">≤ 3 mois</button>
+          <button type="button" data-value="365">≤ 1 an</button>
+        </div>
+        <div class="presets" role="group" aria-label="Facteur" data-group="facteur">
+          <button type="button" data-value="poll_sample">taille réelle</button>
+          <button type="button" data-value="year">année</button>
+          <button type="button" data-value="daysbeforeED">jours avant l'élection</button>
+          <button type="button" data-value="nb_candidates">nombre de partis</button>
+        </div>
+        <div class="presets" role="group" aria-label="Mesure" data-group="mesure">
+          <button type="button" data-value="optimal_kl">KL</button>
+          <button type="button" data-value="optimal_entropy">entropie</button>
+          <button type="button" data-value="optimal_mse">quadratique</button>
+          <button type="button" data-value="optimal_mae">absolue</button>
+          <button type="button" data-value="oneshot">témoin (tirage aléatoire)</button>
+        </div>
+      </div>
+      <p class="chart-subtitle" data-out="contexte"></p>
+      <div class="plot"></div>
+      <details class="table-view"><summary>Voir les données</summary></details>
+    </figure>
+
+    <p>Quelques tendances ressortent :</p>
+    <ul>
+      <li><strong>Taille réelle</strong> : la taille équivalente médiane bouge peu d'une tranche à l'autre. Multiplier les sondés n'améliore guère la précision effective.</li>
+      <li><strong>Année</strong> : pas d'amélioration nette au fil du temps. Les tranches récentes ont des médianes plus élevées, mais sans tendance régulière.</li>
+      <li><strong>Jours avant l'élection</strong> : c'est le facteur le plus marqué. Plus le sondage est éloigné du scrutin, plus sa taille équivalente baisse, ce qui est attendu puisque l'opinion a le temps d'évoluer. La chute est la plus rapide pendant le dernier mois : sur la fenêtre « ≤ 1 mois », la médiane KL passe d'environ 265 (0 à 5 jours avant le scrutin) à 93 (26 à 30 jours). Au-delà, elle ne baisse presque plus (autour de 80 sur la fenêtre de 3 mois).</li>
+      <li><strong>Nombre de partis</strong> : à partir de trois partis, la taille équivalente augmente avec le nombre de partis. Les duels ont une médiane élevée mais une dispersion très forte.</li>
+    </ul>
+  </main>
+
+  <footer class="footer">Données : base internationale de sondages et de résultats d'élections ; calculs dans <code>analyses/erreurs.py</code>.</footer>
+
+  <script src="data/erreurs.js"></script>
+  <script src="assets/charts.js"></script>
+  <script src="assets/erreurs.js"></script>
+</body>
+</html>
