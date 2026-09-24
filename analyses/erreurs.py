@@ -31,6 +31,10 @@ MESURES = {
 }
 
 
+# Élections retenues dans toutes les analyses : depuis 2000, avec la généralisation des sondages
+# par internet (les chiffres de présentation de la base portent, eux, sur toutes les années).
+ANNEE_MIN = 2000
+
 # Fenêtres proposées pour le graphe à boîtes : sondages réalisés au plus N jours avant le
 # scrutin (1 semaine, 2 semaines, 1 mois, 3 mois, 1 an). Au-delà, les sondages sont rares.
 FENETRES = (7, 14, 30, 90, 365)
@@ -59,8 +63,8 @@ def get_polls() -> pd.DataFrame:
 
 
 def base(df):
-    """Élections depuis 2005, sondages réalisés moins de 8 jours avant le scrutin (milieu du terrain)."""
-    sub = df.query("yr >= 2005 and daysbeforeED < 8").copy()
+    """Sondages réalisés moins de 8 jours avant le scrutin (milieu du terrain)."""
+    sub = df.query("daysbeforeED < 8").copy()
     sub["hors_marge"] = sub.erreur > Z95 * sigma(sub.vote, sub.n)
     return sub
 
@@ -185,12 +189,17 @@ def perimetre(df, bss, cfg):
     if cfg["pays"]:
         df = df[df.country == cfg["pays"]]
         bss = bss[bss.country == cfg["pays"]]
+    source = {
+        "lignes": len(df), "sondages": df.idpoll.nunique(), "pays": df.country.nunique(),
+        "debut": df.yr.min(), "fin": df.yr.max(),
+    }
+    df = df[df.yr >= ANNEE_MIN]
+    bss = bss[bss.year >= ANNEE_MIN]
     sub = base(df)
     return {
-        "source": {
-            "lignes": len(df), "sondages": df.idpoll.nunique(), "pays": df.country.nunique(),
-            "debut": df.yr.min(), "fin": df.yr.max(),
-        },
+        "source": source,
+        "annee_min": ANNEE_MIN,
+        "selection": {"sondages": df.idpoll.nunique(), "pays": df.country.nunique()},
         "nuage": nuage(sub),
         "surfaces": surfaces(sub, cfg["frac"]),
         "par_taille": par_taille(sub, cfg["tranches_taille"]),

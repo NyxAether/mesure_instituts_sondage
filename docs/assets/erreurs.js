@@ -16,6 +16,8 @@
   const formats = {
     "source.lignes": fmt.int,
     "source.sondages": fmt.int,
+    "selection.sondages": fmt.int,
+    "annee_min": String,
     "nuage.nb_lignes": fmt.int,
     "nuage.nb_sondages": fmt.int,
     "nuage.part_hors_marge": (v) => fmt.pct(v, 0),
