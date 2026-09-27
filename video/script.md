@@ -74,19 +74,21 @@ Chiffres : `par_taille[].obs` (2,3 → 1,75 pts), `par_taille[].th` (1,0 → 0,3
 
 ## 4. Combien vaut vraiment un sondage ? (2:00)
 
-> Posons la question autrement. Un sondage réel, de mille ou deux mille personnes, se trompe d'une certaine quantité. Quelle taille faudrait-il à une urne parfaitement aléatoire pour se tromper autant ?
+> Posons la question autrement. Reprenons notre entonnoir : seuls 55 % des écarts y tiennent, là où la théorie en attend 95. Élargissons-le jusqu'à ce qu'il contienne 95 % des sondages.
 >
-> Pour chaque sondage, on simule des tirages au hasard à partir du vrai résultat de l'élection. On fait varier la taille de l'urne, jusqu'à trouver celle dont les tirages sont, en médiane, aussi loin de la vérité que le sondage. C'est sa taille équivalente.
+> Or un entonnoir plus large, c'est exactement celui d'un sondage plus petit. Deux fois plus petit : 70 %. Quatre fois : pas encore. Il faut diviser la taille des sondages par onze. Un sondage de deux mille personnes a l'entonnoir d'un tirage au hasard de moins de deux cents. C'est sa taille équivalente.
 >
-> D'abord, un contrôle. On remplace les sondages par de vrais tirages aléatoires, et on applique la même méthode. Elle retrouve bien leur taille : autour de deux mille. La méthode fonctionne.
+> L'étude fait ce calcul sondage par sondage, avec des tirages simulés. D'abord un contrôle : sur de vrais tirages aléatoires, la méthode retrouve bien leur taille, 1 973 pour 2 000. Sur les vrais sondages, la taille équivalente médiane est de deux cent vingt. Neuf fois moins que ce qu'ils annoncent.
 >
-> Maintenant, les vrais sondages. Leur taille médiane est de deux mille personnes. Leur taille équivalente : environ deux cent vingt. Un sondage se comporte comme un tirage au sort de quelques centaines de personnes. Dix fois moins que ce qu'il annonce.
+> La taille du sondage n'y change presque rien. Dans la dernière semaine, qu'on interroge huit cents ou huit mille personnes, la taille équivalente médiane reste entre deux et trois cents. Pour de vrais tirages aléatoires, elle suit la taille : de 900 à près de 9 000.
 >
-> Et plus on s'éloigne de l'élection, plus ça baisse. Normal : l'opinion a le temps de bouger. Dans les cinq derniers jours, la taille équivalente médiane est de l'ordre de trois cents. Un mois avant, moins de cent.
+> Le temps, lui, compte : plus on s'éloigne de l'élection, plus ça baisse. Normal : l'opinion a le temps de bouger. Dans les cinq derniers jours, la taille équivalente médiane est de l'ordre de trois cents. Un mois avant, moins de cent.
 
-[Urne dont on réduit la taille (2 000 → 1 000 → 500 → 220), à côté la distribution des tirages qui s'élargit jusqu'à atteindre l'écart du sondage réel. Puis deux barres : témoin ≈ 1 973, sondages réels ≈ 222. Puis boîtes par jours avant l'élection.]
+[L'entonnoir de la séquence 2 et ses 1 553 écarts ; compteur « écarts dans leur marge » à 55,4 %, « visé : 95 % ». L'entonnoir s'élargit : « entonnoir d'un sondage 2 fois plus petit » (69,9 %), 4 fois, puis 11 fois (95,0 %) ; les points rentrent dans l'entonnoir. Verdict : « un sondage de 2 000 personnes a l'entonnoir d'un tirage de 184 personnes ». Puis la mesure de l'étude : taille annoncée 2 000, taille équivalente 222 (÷ 9), témoin 1 973. Puis graphe continu, dernière semaine, échelles log : taille équivalente selon la taille réelle, médiane et quartiles des sondages de taille voisine ; sondages réels à plat (240 → 231, entre 213 et 338), témoin le long de la diagonale (907 → 8 708). Puis boîtes par jours avant l'élection (fenêtre d'un mois, médianes 300 → 87). Écran final : « 2 000 sondés, la précision de 222 ».]
 
-Chiffres : `equivalents.nb_sondages` = 15 252 (fenêtre 14 jours pour la médiane), `equivalents.median_reel` = 2 000, `equivalents.medianes.optimal_kl` = 222, `equivalents.medianes.oneshot` = 1 973 ; boîtes `equivalents.boites` facteur jours, fenêtre ≤ 1 mois (≈ 300 à 0–5 jours, 87 à 26–30 jours, d'après le texte de la page — à relire dans les données).
+Chiffres : `nuage` (1 553 lignes, marge propre de chaque ligne) : 55,4 % dans la marge, facteur 10,9 pour en contenir 95 % (quantile 95 % de (écart / marge)²), soit 2 000 / 10,9 = 184 ; `equivalents.nb_proches` = 859 (fenêtre 14 jours), `equivalents.median_reel` = 2 000, `equivalents.medianes.optimal_kl` = 222, `equivalents.medianes.oneshot` = 1 973 ; boîtes `equivalents.boites` facteur jours, fenêtre ≤ 1 mois (300 à 0–5 jours, 222, 159, 116, 94, puis 87 à 26–30 jours)  ; courbes selon la taille réelle : `donnees.glissante_equivalents(7)`, sur `mesure_erreurs/bss.p` (424 sondages de la dernière semaine), médiane et quartiles des sondages à moins de 0,15 décade de chaque taille, au moins 30 sondages par point (tailles 773 à 8 220). Ce lissage remplace la médiane glissante de la page, qui dépend de l'ordre des sondages de même taille, donc des versions de pandas et numpy.
+
+> L'entonnoir élargi (184) et la mesure de l'étude (222) ne calculent pas la même chose : le premier cherche un facteur commun qui fait entrer 95 % des écarts, la seconde une taille par sondage (médiane des tirages, divergence KL), résumée par sa médiane. Ils donnent le même ordre de grandeur ; à l'oral, dire « moins de deux cents » pour l'un et « deux cent vingt » pour l'autre, sans les présenter comme un même chiffre.
 
 ## 5. Pourquoi : l'erreur partagée (1:30)
 

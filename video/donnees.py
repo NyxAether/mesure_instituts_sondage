@@ -16,3 +16,31 @@ def charger(page="erreurs"):
 ERREURS = charger("erreurs")
 TOUS = ERREURS["tous"]
 FRANCE = ERREURS["france"]
+
+
+def glissante_equivalents(jours, demi_largeur=0.15, effectif_min=30, bornes=(300, 12_000), points=40):
+    """Médiane et quartiles de la taille équivalente (sondages réels et témoin) selon la taille réelle.
+
+    Source : mesure_erreurs/bss.p, filtré comme sur la page (élections depuis annee_min, sondages réalisés au plus
+    `jours` jours avant le scrutin). Pour chaque taille x d'une grille logarithmique, on prend les sondages dont la
+    taille est à moins de `demi_largeur` décade de x. Contrairement à la médiane glissante de la page (fenêtre de
+    rangs après tri), ce lissage ne dépend pas de l'ordre des sondages de même taille.
+    """
+    import numpy as np
+    import pandas as pd
+
+    bss = pd.read_pickle(RACINE / "mesure_erreurs" / "bss.p")
+    bss = bss[(bss.year >= TOUS["annee_min"]) & (bss.daysbeforeED <= jours)]
+    log_n = np.log10(bss.poll_sample.to_numpy())
+    grille = np.geomspace(*bornes, points)
+    lignes = []
+    for x in grille:
+        dans = np.abs(log_n - np.log10(x)) <= demi_largeur
+        if dans.sum() < effectif_min:
+            continue
+        ligne = {"n": x, "effectif": int(dans.sum())}
+        for mesure in ("optimal_kl", "oneshot"):
+            q1, med, q3 = np.quantile(bss[mesure].to_numpy()[dans], [0.25, 0.5, 0.75])
+            ligne |= {f"{mesure}_q1": q1, f"{mesure}_med": med, f"{mesure}_q3": q3}
+        lignes.append(ligne)
+    return {"effectif": len(bss), "lignes": pd.DataFrame(lignes)}
