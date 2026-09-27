@@ -20,13 +20,13 @@ Les chiffres sont arrondis pour l'oral ; les scènes les liront dans les donnée
 
 > Novembre 2016, primaire de la droite. Début novembre, les sondages placent François Fillon troisième, autour de 20 %, loin derrière Alain Juppé. Le soir du premier tour, il obtient 44 %. Juppé, 29.
 >
-> Accident isolé ? Six mois plus tard, au second tour de la présidentielle, les douze derniers sondages se trompent tous du même côté du résultat. Pas un seul de l'autre côté.
+> Accident isolé ? Six mois plus tard, au second tour de la présidentielle, pendant les deux dernières semaines, les sondages se trompent tous du même côté du résultat : Macron sous-estimé, Le Pen surestimée. Pas un seul de l'autre côté.
 >
 > Alors, que valent vraiment les sondages ? Pour le savoir, on les a confrontés aux résultats de plus de cent élections, dans 45 pays.
 
-[Barres Fillon / Juppé / Sarkozy sondage par sondage (Harris 7–9 nov. → Ipsos 18 nov.), puis bascule vers le résultat 44,1 / 28,6 / 20,7. Puis présidentielle 2017, 2d tour : ligne du résultat, 12 points tous du même côté. Titre.]
+[Courbes Fillon / Juppé / Sarkozy sondage par sondage (Harris 7–9 nov. → Ipsos 18 nov., dix sondages), « Fillon troisième, 17 % », puis sauts en pointillé vers le résultat 44,1 / 28,6 / 20,7. « Accident isolé ? » Puis présidentielle 2017, 2d tour : une bande par candidat autour de sa ligne de résultat (± 6 points), 12 moyennes quotidiennes, toutes du même côté. Titre « Que valent vraiment les sondages ? » avec 102 élections, 45 pays, 15 252 sondages.]
 
-Chiffres : `externe.primaire` (Fillon 17–22 % jusqu'au 15 nov., résultat 44,1 / 28,6 / 20,7) ; `erreurs.tous.mimetisme.elections` France 2017 tour 2 (12 sondages, consensus 0,996) ; `mimetisme.nb_elections` = 102, `source.pays` = 45.
+Chiffres : `externe.primaire` = [externe/primaire_2016.json](externe/primaire_2016.json), relevé dans le wikitexte de la révision 233412902 (18 février 2026) de la page citée (Fillon de 17 à 22 % jusqu'au 14 nov., 25 % chez OpinionWay le 15, 27 puis 30 % dans les deux derniers ; résultat 44,1 / 28,6 / 20,7) ; `erreurs.tous.mimetisme.elections` France 2017 tour 2 (12 moyennes quotidiennes sur 14 jours, lues dans `mesure_erreurs/polls.p`, consensus 0,996) ; `mimetisme.nb_elections` = 102, `source.pays` = 45.
 
 > Nuance à garder à l'oral : la primaire est un cas particulier (électorat difficile à cerner, remontée de Fillon dans les derniers jours, visible dans les ultimes sondages). Elle sert d'amorce, pas de preuve.
 

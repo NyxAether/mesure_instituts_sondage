@@ -59,3 +59,11 @@ def sondages_election(pays, annee, tour, jours):
     s = df[(df.country == pays) & (df.yr == annee) & (df["round"] == tour) & (df.daysbeforeED <= jours) & (df["sample"] > 0)]
     sondages = s.pivot_table(index=["idpoll", "daysbeforeED", "sample"], columns="partyid", values="poll_").reset_index()
     return {"sondages": sondages, "resultat": s.groupby("partyid").vote_.first()}
+
+
+def primaire_2016():
+    """Sondages et résultat du premier tour de la primaire de la droite 2016 (hors base).
+
+    Source : externe/primaire_2016.json, relevé sur Wikipédia (révision et URL dans le fichier).
+    """
+    return json.loads((Path(__file__).resolve().parent / "externe" / "primaire_2016.json").read_text(encoding="utf-8"))

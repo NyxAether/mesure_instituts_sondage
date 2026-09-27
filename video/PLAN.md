@@ -15,6 +15,7 @@ Vidéo explicative de 9 à 10 minutes tirée de [docs/erreurs.html](../docs/erre
 | [pyproject.toml](pyproject.toml) | projet uv isolé du projet Poetry, avec Manim 0.21 |
 | [rr-tokens.json](rr-tokens.json) | tokens de la charte rr/, tirés par `rr-design pull` (déclarés dans `rr-design.toml`) : ne pas modifier |
 | [theme.py](theme.py) | couleurs lues dans les tokens, polices de `rr-fonts/`, helpers `titre`, `sous_titre`, `libelle`, `entete`, `fr` |
+| [externe/](externe/) | données hors base, avec leur source : `primaire_2016.json` (Wikipédia, révision notée) |
 | [donnees.py](donnees.py) | chargement de `docs/data/erreurs.js` (`TOUS`, `FRANCE`) ; `glissante_equivalents()` lit `mesure_erreurs/bss.p` (pandas) pour les courbes de taille équivalente selon la taille réelle |
 | `scenes/sN_*.py` | une scène Manim par séquence |
 
@@ -42,7 +43,7 @@ Les vidéos sortent dans `media/` (ignoré par git).
 
 | # | Séquence | État |
 |---|---|---|
-| 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | à faire |
+| 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | **en relecture** ([scenes/s0_accroche.py](scenes/s0_accroche.py)) : courbes des dix sondages de la primaire puis saut vers le résultat, 2017 en deux bandes autour du résultat, titre |
 | 1 | La théorie : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_theorie.py](scenes/s1_theorie.py)) ; titre et fin reformulés (« prévoit », « vérifions ») |
 | 2 | L'entonnoir : 45 % hors marge | **faite**, validée en 480p ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
 | 3 | L'excédent ne diminue pas avec la taille | **faite**, validée en 480p ([scenes/s3_taille.py](scenes/s3_taille.py)) ; zoom animé de l'axe vertical (bornes en `ValueTracker`) |
@@ -56,7 +57,7 @@ Séquence 1, déroulé : population de points, 3 tirages lents (résultat affich
 
 0. Page : la médiane glissante de la taille équivalente (`analyses/erreurs.py`) dépend de l'ordre des sondages de même taille après tri, donc des versions de pandas et numpy (écarts jusqu'à ± 130 sur la médiane). À rendre déterministe (tri par taille puis identifiant) ou à remplacer par un lissage en taille.
 
-1. Séquences 0, 5 et 6, une par une.
+1. Séquences 0 et 6 (6 à reprendre), une par une.
 2. Formules : essayer XeLaTeX + `fontspec` avec Newsreader (et une police mathématique proche, par exemple Libertinus Math) pour harmoniser les formules avec les titres.
 3. Voix : enregistrement, puis calage des `self.wait()` sur les durées réelles (ou `manim-voiceover`).
 4. Montage : concaténation ffmpeg des séquences, piste voix, sous-titres `.srt` issus du script, export 1080p.
