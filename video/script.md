@@ -28,7 +28,7 @@ Chiffres : `externe.primaire` (Fillon 17–22 % jusqu'au 15 nov., résultat 44,1
 
 > Nuance à garder à l'oral : la primaire est un cas particulier (électorat difficile à cerner, remontée de Fillon dans les derniers jours, visible dans les ultimes sondages). Elle sert d'amorce, pas de preuve.
 
-## 1. La promesse (1:30)
+## 1. La théorie (1:30)
 
 > Un sondage, c'est une urne. On y tire au hasard mille personnes parmi des millions, et on compte. Si on recommençait le tirage, on n'obtiendrait pas exactement le même chiffre : c'est le hasard de l'échantillon.
 >
@@ -36,7 +36,7 @@ Chiffres : `externe.primaire` (Fillon 17–22 % jusqu'au 15 nov., résultat 44,1
 >
 > Et elle rétrécit quand l'échantillon grandit : avec quatre fois plus de monde, elle est divisée par deux.
 >
-> Voilà la promesse. Un sondage de mille personnes, c'est plus ou moins trois points, et dans un cas sur vingt seulement, l'écart est plus grand. Vérifions-la.
+> Voilà ce que prévoit la théorie. Un sondage de mille personnes, c'est plus ou moins trois points, et dans un cas sur vingt seulement, l'écart est plus grand. Vérifions.
 
 [Urne de billes de deux couleurs ; tirages successifs, histogramme qui se construit ; bande à 95 % ±3,1 pts. Formule σ = √(p(1−p)/n) en MathTex, puis marge pour n = 4 000 : ±1,5 pt.]
 
@@ -48,9 +48,9 @@ Chiffres : simulation locale ; 1,96·√(0,25/1000) = 3,1 pts ; 1,96·√(0,25/4
 >
 > Chaque point, c'est un parti dans un sondage. En hauteur, l'écart entre ce que le sondage annonçait et ce que le parti a vraiment obtenu. En largeur, la taille de l'échantillon.
 >
-> Si la promesse était tenue, 95 % des points resteraient dans cet entonnoir, et il se refermerait vers la droite.
+> Si seul le hasard du tirage jouait, 95 % des points resteraient dans cet entonnoir, qui se referme vers la droite.
 >
-> Ce n'est pas le cas. 45 % des écarts sortent de leur marge d'erreur. Pas 5 %. 45. Presque un sur deux.
+> Ce n'est pas le cas. 45 % des écarts sortent de leur marge d'erreur. Pas les 5 % attendus en théorie : 45. Presque un sur deux.
 
 [Axes, puis points qui apparaissent par vagues ; entonnoir théorique ±L95 pour p = 50 % ; les points hors marge s'allument en couleur d'accent ; compteur qui monte jusqu'à 45 % à côté de « attendu : 5 % ».]
 

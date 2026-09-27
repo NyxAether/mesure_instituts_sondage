@@ -1,6 +1,6 @@
 """Thème rr/ pour Manim : couleurs lues dans rr-tokens.json (tiré de la charte), polices de rr-fonts/.
 
-Le thème se choisit avec la variable d'environnement RR_THEME (« dark » par défaut, ou « light »).
+Le thème se choisit avec la variable d'environnement RR_THEME (« light » par défaut, ou « dark »).
 """
 import json
 import os
@@ -22,7 +22,7 @@ from manim.mobject.text.text_mobject import START_X, START_Y, TEXT2SVG_ADJUSTMEN
 
 ICI = Path(__file__).resolve().parent
 TOKENS = json.loads((ICI / "rr-tokens.json").read_text(encoding="utf-8"))
-THEME = os.environ.get("RR_THEME", "dark")
+THEME = os.environ.get("RR_THEME", "light")
 
 for police in sorted((ICI.parent / "rr-fonts").glob("*.ttf")):
     manimpango.register_font(str(police))

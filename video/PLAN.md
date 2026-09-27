@@ -22,8 +22,8 @@ Rendu (depuis `video/`) :
 
 ```sh
 uv sync
-.venv/Scripts/python.exe -m manim -ql scenes/s1_promesse.py Promesse            # thème sombre
-RR_THEME=light .venv/Scripts/python.exe -m manim -ql -o Promesse_clair scenes/s1_promesse.py Promesse
+.venv/Scripts/python.exe -m manim -ql scenes/s1_theorie.py Theorie            # thème clair
+RR_THEME=dark .venv/Scripts/python.exe -m manim -ql -o Theorie_sombre scenes/s1_theorie.py Theorie
 ```
 
 Les vidéos sortent dans `media/` (ignoré par git).
@@ -34,27 +34,28 @@ Les vidéos sortent dans `media/` (ignoré par git).
 - **Rendu du texte :** tout texte passe par `ecrire` / `TexteNet`. Il est rendu 10 fois plus grand puis réduit, sinon Pango arrondit la position des lettres et la chasse devient irrégulière. Le canevas est très large pour qu'il n'y ait pas de retour à la ligne automatique.
 - **Couleurs :** vote a en prune (série 1), vote b en bleu (série 2). Les éléments qui représentent un tirage prennent la couleur du vote majoritaire de l'échantillon. La marge à 95 % est une zone accent à 15 % d'opacité.
 - **Formules :** `MathTex` (LaTeX, Computer Modern).
-- **Thème :** sombre par défaut. Le clair a été rendu pour comparaison ; le choix reste ouvert.
+- **Thème :** clair, retenu et mis par défaut. Le sombre reste disponible avec `RR_THEME=dark`.
+- **Simplifier :** la vidéo vise la compréhension, les subtilités sont laissées à `docs/erreurs.html`. Les chiffres affichés sont toujours les vrais ; seule la visualisation simplifie. Séquence 2 : points colorés selon l'entonnoir à p = 50 %, alors que le pourcentage affiché (45 %) et la marge de l'exemple (± 2,3) sont les vrais, calculés avec la marge propre à chaque parti.
+- **Ton :** les écarts sont rapportés à la théorie (« attendu en théorie »), jamais à une « promesse » des instituts.
 
 ## Avancement par séquence
 
 | # | Séquence | État |
 |---|---|---|
 | 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | à faire |
-| 1 | La promesse : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_promesse.py](scenes/s1_promesse.py)) |
-| 2 | L'entonnoir : 45 % hors marge | brouillon écrit avant le feu vert, **non relu** ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) : à reprendre ou à jeter quand on l'ouvrira |
+| 1 | La théorie : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_theorie.py](scenes/s1_theorie.py)) ; titre et fin reformulés (« prévoit », « vérifions ») |
+| 2 | L'entonnoir : 45 % hors marge | **en relecture** : brouillon repris (mise en page, écran final, formulation « attendu en théorie ») ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
 | 3 | L'erreur ne baisse pas avec la taille | à faire |
 | 4 | Taille équivalente | à faire |
 | 5 | Erreur partagée, mimétisme | à faire |
 | 6 | Une prédiction plus qu'une photographie, un présage plus qu'une prédiction | à faire ; paragraphe sur les panels à compléter avec les travaux de Romain |
 
-Séquence 1, déroulé : population de points, 3 tirages lents (résultat affiché, les personnes tirées rejoignent l'axe), tirages 4 à 40 de plus en plus rapides, fusion des traits en barres, histogramme jusqu'à 600 tirages, bande à 95 % (± 3,1 points), formule, passage à n = 4 000 (± 1,5 point), puis l'écran « ± 3 points, 19 fois sur 20 » suivi de « 1 fois sur 20 : plus de 3 points d'écart » et `> vérifions-la`.
+Séquence 1, déroulé : population de points, 3 tirages lents (résultat affiché, les personnes tirées rejoignent l'axe), tirages 4 à 40 de plus en plus rapides, fusion des traits en barres, histogramme jusqu'à 600 tirages, bande à 95 % (± 3,1 points), formule, passage à n = 4 000 (± 1,5 point), puis l'écran « ± 3 points, 19 fois sur 20 » suivi de « 1 fois sur 20 : plus de 3 points d'écart » et `> vérifions`.
 
 ## Reste à faire
 
 1. Séquences 0 et 2 à 6, une par une.
-2. Choix définitif entre thème sombre et thème clair.
-3. Formules : essayer XeLaTeX + `fontspec` avec Newsreader (et une police mathématique proche, par exemple Libertinus Math) pour harmoniser les formules avec les titres.
-4. Voix : enregistrement, puis calage des `self.wait()` sur les durées réelles (ou `manim-voiceover`).
-5. Montage : concaténation ffmpeg des séquences, piste voix, sous-titres `.srt` issus du script, export 1080p.
-6. Vérification des chiffres affichés contre la page `docs/erreurs.html`, et recontrôle ligne à ligne des chiffres de la primaire 2016 sur la page Wikipédia citée dans le script.
+2. Formules : essayer XeLaTeX + `fontspec` avec Newsreader (et une police mathématique proche, par exemple Libertinus Math) pour harmoniser les formules avec les titres.
+3. Voix : enregistrement, puis calage des `self.wait()` sur les durées réelles (ou `manim-voiceover`).
+4. Montage : concaténation ffmpeg des séquences, piste voix, sous-titres `.srt` issus du script, export 1080p.
+5. Vérification des chiffres affichés contre la page `docs/erreurs.html`, et recontrôle ligne à ligne des chiffres de la primaire 2016 sur la page Wikipédia citée dans le script.

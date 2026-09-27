@@ -1,6 +1,6 @@
-"""Séquence 1 — La promesse : ce que veut dire « ± 3 points ».
+"""Séquence 1 — La théorie : ce que veut dire « ± 3 points ».
 
-Rendu : .venv/Scripts/manim -ql scenes/s1_promesse.py Promesse
+Rendu : .venv/Scripts/manim -ql scenes/s1_theorie.py Theorie
 """
 import sys
 from pathlib import Path
@@ -69,14 +69,14 @@ def puce(couleur, contenu):
     return VGroup(Dot(radius=0.06, color=couleur), libelle(contenu, taille=16)).arrange(RIGHT, buff=0.12)
 
 
-class Promesse(SceneRR):
+class Theorie(SceneRR):
     def construct(self):
         rng = np.random.default_rng(GRAINE)
         t1000 = 100 * rng.binomial(1000, 0.5, NB_TIRAGES) / 1000
         t4000 = 100 * rng.binomial(4000, 0.5, NB_TIRAGES) / 4000
 
         # --- En-tête -------------------------------------------------------
-        tete = entete(1, "la promesse", "Ce que promet la ", "marge", f"{NBSP}d’erreur")
+        tete = entete(1, "la théorie", "Ce que prévoit la ", "marge", f"{NBSP}d’erreur")
         tete.to_corner(UL, buff=0.55)
         self.play(FadeIn(tete, shift=0.15 * DOWN), run_time=1)
 
@@ -288,20 +288,20 @@ class Promesse(SceneRR):
         self.play(FadeIn(regle, shift=0.1 * UP), run_time=0.8)
         self.wait(2)
 
-        # --- La promesse, en une phrase -------------------------------------
+        # --- La théorie, en une phrase -------------------------------------
         tout = VGroup(axe, graduations, titre_axe, verite, histo, marge_1000, part, bloc, calcul_4000, regle)
         self.play(FadeOut(tout), run_time=0.8)
-        promesse = titre(f"±{NBSP}3 points, ", "19 fois", " sur 20", taille=72)
+        prevision = titre(f"±{NBSP}3 points, ", "19 fois", " sur 20", taille=72)
         precision = sous_titre(f"pour 1 000 personnes interrogées et un candidat à 50{NBSP}%", taille=34, couleur=P.texte_2)
         exception = sous_titre(f"1 fois sur 20{NBSP}: plus de 3 points d’écart", taille=34, couleur=P.texte_2)
-        VGroup(promesse, precision, exception).arrange(DOWN, buff=0.35).move_to([0, 0.2, 0])
-        self.play(FadeIn(promesse, shift=0.15 * UP), run_time=1)
+        VGroup(prevision, precision, exception).arrange(DOWN, buff=0.35).move_to([0, 0.2, 0])
+        self.play(FadeIn(prevision, shift=0.15 * UP), run_time=1)
         self.play(FadeIn(precision), run_time=0.6)
         self.play(FadeIn(exception), run_time=0.6)
         self.wait(1.2)
 
         invite = ecrire(
-            f"<span foreground='{P.accent.to_hex()}'>&gt; </span>vérifions-la<span foreground='{P.accent.to_hex()}'> █</span>",
+            f"<span foreground='{P.accent.to_hex()}'>&gt; </span>vérifions<span foreground='{P.accent.to_hex()}'> █</span>",
             MONO,
             30,
             markup=True,
