@@ -44,8 +44,8 @@ Les vidéos sortent dans `media/` (ignoré par git).
 |---|---|---|
 | 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | à faire |
 | 1 | La théorie : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_theorie.py](scenes/s1_theorie.py)) ; titre et fin reformulés (« prévoit », « vérifions ») |
-| 2 | L'entonnoir : 45 % hors marge | **en relecture** : brouillon repris (mise en page, écran final, formulation « attendu en théorie ») ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
-| 3 | L'erreur ne baisse pas avec la taille | à faire |
+| 2 | L'entonnoir : 45 % hors marge | **faite**, validée en 480p ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
+| 3 | L'excédent ne diminue pas avec la taille | **faite**, validée en 480p ([scenes/s3_taille.py](scenes/s3_taille.py)) ; zoom animé de l'axe vertical (bornes en `ValueTracker`) |
 | 4 | Taille équivalente | à faire |
 | 5 | Erreur partagée, mimétisme | à faire |
 | 6 | Une prédiction plus qu'une photographie, un présage plus qu'une prédiction | à faire ; paragraphe sur les panels à compléter avec les travaux de Romain |
@@ -54,7 +54,7 @@ Séquence 1, déroulé : population de points, 3 tirages lents (résultat affich
 
 ## Reste à faire
 
-1. Séquences 0 et 2 à 6, une par une.
+1. Séquences 0 et 4 à 6, une par une.
 2. Formules : essayer XeLaTeX + `fontspec` avec Newsreader (et une police mathématique proche, par exemple Libertinus Math) pour harmoniser les formules avec les titres.
 3. Voix : enregistrement, puis calage des `self.wait()` sur les durées réelles (ou `manim-voiceover`).
 4. Montage : concaténation ffmpeg des séquences, piste voix, sous-titres `.srt` issus du script, export 1080p.

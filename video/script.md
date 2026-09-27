@@ -56,19 +56,21 @@ Chiffres : simulation locale ; 1,96·√(0,25/1000) = 3,1 pts ; 1,96·√(0,25/4
 
 Chiffres : `nuage.nb_lignes` = 1 553, `nuage.nb_sondages` = 424, `nuage.nb_pays` = 32, `nuage.part_hors_marge` = 0,446.
 
-## 3. L'erreur ne baisse pas (1:00)
+## 3. L'excédent ne diminue pas (1:00)
 
-> Regroupons ces points par taille d'échantillon, et calculons l'erreur moyenne de chaque groupe.
+> Oublions le sens de l'écart, ne gardons que sa taille. Puis regroupons ces points par taille d'échantillon, et calculons l'erreur moyenne de chaque groupe.
 >
 > En théorie, elle devrait fondre : un peu plus d'un point pour mille personnes, moins d'un demi-point au-delà de cinq mille.
 >
-> En réalité, elle reste bloquée autour de deux points, quelle que soit la taille. Pour les petits sondages, l'erreur est deux fois trop grande. Pour les plus gros, quatre à cinq fois.
+> En réalité, elle reste autour de deux points. Pour les petits sondages, l'erreur est deux fois trop grande. Pour les plus gros, quatre à cinq fois.
 >
-> Interroger plus de monde ne sert presque à rien. Ce n'est donc pas le hasard qui fait l'essentiel de l'erreur.
+> Elle baisse bien un peu, d'un peu plus d'un demi-point : exactement ce que prévoit le hasard. Mais ce qui dépasse la théorie, un point et quelque, reste le même à toutes les tailles. Interroger plus de monde ne réduit que la part due au hasard. Ce n'est donc pas le hasard qui fait l'essentiel de l'erreur.
 
-[Deux courbes : attendue (qui descend), observée (plate) ; l'écart entre les deux se remplit ; étiquettes « ×2 » à gauche, « ×5 » à droite.]
+[Le nuage de la séquence 2 ; les écarts négatifs se replient vers le haut ; 7 tranches de taille, chacune se réduit à son erreur moyenne ; zoom. Deux courbes : attendue (qui descend, 1,0 → 0,4), observée (plate, 2,3 → 1,8) ; l'écart entre les deux se remplit ; étiquettes « × 2,3 » à gauche, « × 4,8 » à droite. Puis les 7 écarts verticaux entre les courbes s'allument : 1,1 à 1,4 point au-dessus de la théorie, à toutes les tailles. Écran final : « L'excédent d'erreur ne diminue pas », 1,1 à 1,4 point au-dessus de la théorie à toutes les tailles ; seule la baisse prévue par le hasard a lieu (−0,6 point contre −0,6).]
 
-Chiffres : `par_taille[].obs` (2,3 → 1,75 pts), `par_taille[].th` (1,0 → 0,36 pt) ; rapports obs/th ≈ 2,3 et 4,8.
+Chiffres : `par_taille[].obs` (2,3 → 1,75 pts), `par_taille[].th` (1,0 → 0,36 pt) ; rapports obs/th ≈ 2,3 et 4,8 ; baisses 0,59 et 0,65 pt ; excédent obs − th de 1,06 à 1,39 pt, sans tendance.
+
+> Nuance : l'excédent est une simple différence (observé − théorique), sans hypothèse sur la façon dont les erreurs se combinent. Si on les suppose indépendantes (combinaison en quadrature), la part non aléatoire baisse un peu (2,1 → 1,7 pt). Ne pas dire à l'oral qu'une « erreur non aléatoire » vaut exactement 1,1 à 1,4 point.
 
 ## 4. Combien vaut vraiment un sondage ? (2:00)
 
