@@ -36,7 +36,7 @@ Chiffres : `externe.primaire` (Fillon 17–22 % jusqu'au 15 nov., résultat 44,1
 >
 > Et elle rétrécit quand l'échantillon grandit : avec quatre fois plus de monde, elle est divisée par deux.
 >
-> Voilà la promesse. Un sondage de mille personnes, c'est plus ou moins trois points, et dans un cas sur vingt seulement, un peu plus. Vérifions-la.
+> Voilà la promesse. Un sondage de mille personnes, c'est plus ou moins trois points, et dans un cas sur vingt seulement, l'écart est plus grand. Vérifions-la.
 
 [Urne de billes de deux couleurs ; tirages successifs, histogramme qui se construit ; bande à 95 % ±3,1 pts. Formule σ = √(p(1−p)/n) en MathTex, puis marge pour n = 4 000 : ±1,5 pt.]
 

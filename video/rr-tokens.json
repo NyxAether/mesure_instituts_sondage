@@ -1,0 +1,109 @@
+{
+  "$comment": "Source unique de l'identité rr/. Ne rien coder en dur ailleurs : lancer `uv run build.py` pour régénérer dist/.",
+  "brand": {
+    "name": "rr/",
+    "person": "Romain Rincé",
+    "title": "Consultant & Formateur en Intelligence Artificielle",
+    "title_short": "consultant ia",
+    "site": "romainrince.fr",
+    "email": "contact@romainrince.fr",
+    "linkedin": "rrince",
+    "github": "nyxaether",
+    "gitlab": "NyxHemera",
+    "location": "Nantes"
+  },
+  "color": {
+    "light": {
+      "bg-primary": "#E4E7DD",
+      "bg-secondary": "#D7DCCD",
+      "bg-card": "#EEF0E8",
+      "paper": "#FFFFFF",
+      "text-primary": "#1A1F19",
+      "text-secondary": "#444C42",
+      "text-muted": "#596256",
+      "line": "rgba(26, 31, 25, 0.18)",
+      "line-strong": "rgba(26, 31, 25, 0.42)",
+      "rule": "#BBBEB6",
+      "accent": "#7A2E4F",
+      "sage": "#3A6849",
+      "dusk": "#3F6283",
+      "ochre": "#835527",
+      "warning": "#805400",
+      "ascii-ink": "rgba(26, 31, 25, 0.22)",
+      "overlay": "rgba(26, 31, 25, 0.45)"
+    },
+    "dark": {
+      "bg-primary": "#161A16",
+      "bg-secondary": "#1C211C",
+      "bg-card": "#242A24",
+      "paper": "#161A16",
+      "text-primary": "#E4EADF",
+      "text-secondary": "#BAC4B5",
+      "text-muted": "#8C9788",
+      "line": "rgba(228, 234, 223, 0.14)",
+      "line-strong": "rgba(228, 234, 223, 0.38)",
+      "rule": "#3C443C",
+      "accent": "#E39CBB",
+      "sage": "#A6CDB0",
+      "dusk": "#9FBEDA",
+      "ochre": "#D9B488",
+      "warning": "#E0B050",
+      "ascii-ink": "rgba(228, 234, 223, 0.16)",
+      "overlay": "rgba(7, 9, 7, 0.65)"
+    }
+  },
+  "category": {
+    "$comment": "Une couleur fixe par domaine, partout (site, LinkedIn, slides). Valeur = nom d'un token de couleur.",
+    "ia-generative": "ochre",
+    "ml": "dusk",
+    "deep-learning": "sage",
+    "python": "accent"
+  },
+  "chart": {
+    "$comment": "Séries validées avec tools/validate_palette.js (CVD ΔE ≥ 10, contraste ≥ 3:1). Ordre fixe, jamais cyclé.",
+    "light": {
+      "surface": "#EEF0E8",
+      "grid": "#D9DED1",
+      "axis": "#A9B0A1",
+      "mark-muted": "#BFC6B6",
+      "series": ["#9E5468", "#4670A8", "#854F14", "#8368A8", "#1A653A"]
+    },
+    "dark": {
+      "surface": "#242A24",
+      "grid": "#313831",
+      "axis": "#4A534A",
+      "mark-muted": "#4F584F",
+      "series": ["#BA5F78", "#5E97CD", "#B98749", "#9E83C5", "#3F936E"]
+    },
+    "series-names": ["prune", "crépuscule", "ocre", "ardoise", "sauge"]
+  },
+  "font": {
+    "serif": { "family": "Newsreader", "stack": "'Newsreader', 'Iowan Old Style', Georgia, serif" },
+    "sans": { "family": "Inter", "stack": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+    "mono": { "family": "JetBrains Mono", "stack": "'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace" },
+    "google": "https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap"
+  },
+  "type-scale": {
+    "$comment": "rem, ratio 1,2 (tierce mineure) à partir de 1rem. Les titres display (hero) restent en clamp().",
+    "xs": "0.72rem",
+    "sm": "0.83rem",
+    "base": "1rem",
+    "md": "1.2rem",
+    "lg": "1.44rem",
+    "xl": "1.73rem",
+    "2xl": "2.07rem",
+    "3xl": "2.49rem",
+    "display": "clamp(2.2rem, 5vw, 3.4rem)",
+    "hero": "clamp(3.5rem, 9vw, 7.5rem)"
+  },
+  "space": { "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "14": "56px", "16": "64px", "20": "80px", "30": "120px" },
+  "radius": { "sm": "2px", "md": "4px", "lg": "6px" },
+  "motion": {
+    "ease": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "fast": "0.2s",
+    "smooth": "0.4s",
+    "reveal": "0.6s",
+    "modal": "0.25s"
+  },
+  "layout": { "container": "1200px", "prose": "800px", "nav-height": "64px", "gutter": "24px" }
+}
