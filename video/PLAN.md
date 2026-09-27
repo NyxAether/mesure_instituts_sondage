@@ -46,8 +46,8 @@ Les vidéos sortent dans `media/` (ignoré par git).
 | 1 | La théorie : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_theorie.py](scenes/s1_theorie.py)) ; titre et fin reformulés (« prévoit », « vérifions ») |
 | 2 | L'entonnoir : 45 % hors marge | **faite**, validée en 480p ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
 | 3 | L'excédent ne diminue pas avec la taille | **faite**, validée en 480p ([scenes/s3_taille.py](scenes/s3_taille.py)) ; zoom animé de l'axe vertical (bornes en `ValueTracker`) |
-| 4 | Taille équivalente | **en relecture** ([scenes/s4_equivalente.py](scenes/s4_equivalente.py)) : l'entonnoir de la séquence 2 s'élargit jusqu'à contenir 95 % des écarts (÷ 11, 184 personnes), puis la mesure de l'étude (222, témoin 1 973), courbes selon la taille réelle, boîtes selon les jours |
-| 5 | Erreur partagée, mimétisme | à faire |
+| 4 | Taille équivalente | **faite**, validée en 480p ([scenes/s4_equivalente.py](scenes/s4_equivalente.py)) : l'entonnoir de la séquence 2 s'élargit jusqu'à contenir 95 % des écarts (÷ 11, 184 personnes), puis la mesure de l'étude (222, témoin 1 973), courbes selon la taille réelle, boîtes selon les jours |
+| 5 | Erreur partagée, mimétisme | **en relecture** ([scenes/s5_partage.py](scenes/s5_partage.py)) : Royaume-Uni 2015 (tirages simulés puis vrais sondages, moyenne à côté), essaims consensus (80 %) et resserrement (3 %), explications des instituts et des chercheurs en deux colonnes ; Venezuela 2013 retiré (données douteuses) |
 | 6 | Une prédiction plus qu'une photographie, un présage plus qu'une prédiction | à faire ; paragraphe sur les panels à compléter avec les travaux de Romain |
 
 Séquence 1, déroulé : population de points, 3 tirages lents (résultat affiché, les personnes tirées rejoignent l'axe), tirages 4 à 40 de plus en plus rapides, fusion des traits en barres, histogramme jusqu'à 600 tirages, bande à 95 % (± 3,1 points), formule, passage à n = 4 000 (± 1,5 point), puis l'écran « ± 3 points, 19 fois sur 20 » suivi de « 1 fois sur 20 : plus de 3 points d'écart » et `> vérifions`.
@@ -56,7 +56,7 @@ Séquence 1, déroulé : population de points, 3 tirages lents (résultat affich
 
 0. Page : la médiane glissante de la taille équivalente (`analyses/erreurs.py`) dépend de l'ordre des sondages de même taille après tri, donc des versions de pandas et numpy (écarts jusqu'à ± 130 sur la médiane). À rendre déterministe (tri par taille puis identifiant) ou à remplacer par un lissage en taille.
 
-1. Séquences 0 et 4 à 6, une par une.
+1. Séquences 0, 5 et 6, une par une.
 2. Formules : essayer XeLaTeX + `fontspec` avec Newsreader (et une police mathématique proche, par exemple Libertinus Math) pour harmoniser les formules avec les titres.
 3. Voix : enregistrement, puis calage des `self.wait()` sur les durées réelles (ou `manim-voiceover`).
 4. Montage : concaténation ffmpeg des séquences, piste voix, sous-titres `.srt` issus du script, export 1080p.

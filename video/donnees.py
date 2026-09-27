@@ -44,3 +44,18 @@ def glissante_equivalents(jours, demi_largeur=0.15, effectif_min=30, bornes=(300
             ligne |= {f"{mesure}_q1": q1, f"{mesure}_med": med, f"{mesure}_q3": q3}
         lignes.append(ligne)
     return {"effectif": len(bss), "lignes": pd.DataFrame(lignes)}
+
+
+def sondages_election(pays, annee, tour, jours):
+    """Sondages d'une élection (une ligne par sondage, une colonne par parti, en %) et résultat par parti.
+
+    Source : mesure_erreurs/polls.p, filtré comme analyses.erreurs.get_polls (taille connue) et comme le mimétisme
+    (sondages réalisés au plus `jours` jours avant le scrutin). La base fusionne parfois les sondages d'un même jour
+    en une moyenne : la colonne `sample` est alors la somme des tailles.
+    """
+    import pandas as pd
+
+    df = pd.read_pickle(RACINE / "mesure_erreurs" / "polls.p")
+    s = df[(df.country == pays) & (df.yr == annee) & (df["round"] == tour) & (df.daysbeforeED <= jours) & (df["sample"] > 0)]
+    sondages = s.pivot_table(index=["idpoll", "daysbeforeED", "sample"], columns="partyid", values="poll_").reset_index()
+    return {"sondages": sondages, "resultat": s.groupby("partyid").vote_.first()}

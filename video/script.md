@@ -100,13 +100,15 @@ Chiffres : `nuage` (1 553 lignes, marge propre de chaque ligne) : 55,4 % dans la
 >
 > On entend souvent parler de mimétisme, ces instituts qui ajusteraient leurs chiffres pour ne pas trop s'écarter des concurrents. On l'a cherché : des sondages anormalement proches les uns des autres. On n'en trouve pas plus que le hasard n'en produit, environ 3 % des élections. Le mimétisme n'explique donc pas, à lui seul, cette erreur commune.
 >
-> D'où vient-elle alors ? Ces données ne permettent pas de le dire. Les candidats ne manquent pas : des électeurs difficiles à joindre, des indécis qui tranchent au dernier moment, des redressements calés sur les mêmes élections passées, des questions qui orientent les réponses, ou des panels exposés aux mêmes biais. Tous laissent la même trace : une erreur que le hasard n'explique pas, et que multiplier les sondages ne dilue pas.
+> D'où vient-elle alors ? Ces données ne permettent pas de le dire. Les instituts avancent d'ordinaire des explications de circonstance : l'opinion qui bouge au dernier moment, des électeurs qui répondent moins, une abstention difficile à prévoir. Les chercheurs regardent plutôt la fabrication du sondage : dès 1973, Pierre Bourdieu rappelait que tout le monde n'a pas d'opinion sur tout, et que les questions sont imposées aux sondés ; Alexandre Dézé, en 2022, détaille les quotas, les redressements, la formulation des questions. Dans tous les cas, c'est une erreur que le hasard n'explique pas, et que multiplier les sondages ne dilue pas.
+
+[Royaume-Uni 2015, législatives, 14 derniers jours : lignes du résultat (conservateurs 37,8, travaillistes 31,2) ; d'abord des tirages simulés de même taille, de part et d'autre, dont la moyenne tombe sur le résultat ; puis les points glissent vers les vrais sondages, tous du même côté ; moyennes 33,6 (−4,2) et 33,4 (+2,2). Puis essaim des 102 élections sur l'axe du consensus (0 à 1), bande « au hasard » autour de 0,13, les anormales s'allument (80 %, attendu 5 %), Royaume-Uni 2015 repéré. Puis essaim du resserrement (échelle log, 1 = hasard) : 3 anormales (3 %). Puis deux colonnes : ce qu'avancent les instituts, ce que pointent les chercheurs. Écran final : « Les sondages se trompent ensemble » (80 %, la moyenne ne corrige rien), puis « Pas de mimétisme » (3 %, pas plus qu'au hasard).]
+
+Chiffres : `mimetisme.nb_elections` = 102, `mimetisme.part_consensus` = 0,804, `mimetisme.consensus_median` = 0,56 contre `consensus_hasard_median` = 0,13, `mimetisme.part_resserrement` = 0,029 ; exemple lu dans `mesure_erreurs/polls.p` (`donnees.sondages_election`), 14 points qui sont des moyennes quotidiennes de sondages (la base fusionne ceux d'un même jour).
+
+> Venezuela 2013 retiré : dans la base, ses 11 points sont des tailles de 1 000 ou 2 000 à un sondage par jour (`npolls` = 1), qui descendent régulièrement de 59,6 à 42,1 % pour Maduro en dix jours. Cela ressemble à une série lissée ou interpolée plutôt qu'à « deux camps d'instituts » : son resserrement de 16 vient de cette pente. La même lecture figure sur la page (`docs/erreurs.html`, section mimétisme), à revoir.
 >
-> Et parfois, c'est l'inverse : au Venezuela en 2013, les sondages s'éparpillent de part et d'autre du résultat, comme deux camps d'instituts qui ne mesuraient pas le même pays.
-
-[Pour une élection (Royaume-Uni 2015 ou France 2017, 2d tour) : ligne du résultat, points de sondages tous du même côté ; flèche de « moyenne » qui tombe elle aussi à côté. Puis nuage consensus × resserrement, 102 points, les anormaux s'allument. Zoom Venezuela 2013.]
-
-Chiffres : `mimetisme.nb_elections` = 102, `mimetisme.part_consensus` = 0,804, `mimetisme.consensus_median` = 0,56 contre `consensus_hasard_median` = 0,13, `mimetisme.part_resserrement` = 0,029 ; Venezuela 2013 : consensus 0,05, resserrement 16.
+> Explications des instituts [UNVERIFIED] : formulées d'après les arguments courants (vote tardif, non-réponse, abstention), sans source citée. À sourcer (communiqués ou enquêtes après les ratés, par exemple l'enquête du British Polling Council sur 2015) avant l'enregistrement. Côté chercheurs, les deux postulats de Bourdieu sont repris des citations vérifiées ; la liste de Dézé reste à relire (voir les références).
 
 > Les causes citées sont présentées comme des pistes, pas comme des résultats : l'étude mesure l'erreur, pas son origine.
 
