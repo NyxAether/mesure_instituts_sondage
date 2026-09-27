@@ -292,7 +292,7 @@ class Partage(SceneRR):
             entete_ = libelle(nom, taille=16, couleur=couleur)
             corps = VGroup(
                 *[
-                    VGroup(sous_titre(t, taille=26, couleur=P.texte), *([libelle(s, taille=13, couleur=P.discret)] if s else []))
+                    VGroup(sous_titre(t, taille=24, couleur=P.texte), *([libelle(s, taille=13, couleur=P.discret)] if s else []))
                     .arrange(DOWN, aligned_edge=LEFT, buff=0.06)
                     for t, s in lignes
                 ]
@@ -301,16 +301,16 @@ class Partage(SceneRR):
             return VGroup(entete_, VGroup(filet, corps).arrange(RIGHT, buff=0.25, aligned_edge=UP)).arrange(DOWN, aligned_edge=LEFT, buff=0.25)
 
         instituts = colonne("ce qu’avancent les instituts", P.series[1], (
-            ("l’opinion bouge au dernier moment", "des indécis qui tranchent tard"),
-            ("certains électeurs répondent moins", "difficiles à joindre"),
-            ("l’abstention est dure à prévoir", None),
+            ("l’opinion bouge jusqu’au dernier moment", "Mathieu Gallard, Ipsos, 2022"),
+            ("l’abstention est mal anticipée", "Mathieu Gallard, Ipsos, 2022"),
+            ("la méthode a parfois une élection de retard", "Mathieu Gallard, Ipsos, 2022"),
         ))
         chercheurs = colonne("ce que pointent les chercheurs", P.series[0], (
             ("tout le monde n’a pas d’opinion sur tout", "Pierre Bourdieu, 1973"),
-            ("les questions sont imposées aux sondés", "Pierre Bourdieu, 1973"),
-            ("quotas, redressements, formulation", "Alexandre Dézé, 2022"),
+            ("des questions que les sondés ne se posent pas", "Alexandre Dézé, 2022"),
+            ("échantillons douteux, redressements opaques", "Alexandre Dézé, 2022"),
         ))
-        colonnes = VGroup(instituts, chercheurs).arrange(RIGHT, buff=1.0, aligned_edge=UP)
+        colonnes = VGroup(instituts, chercheurs).arrange(RIGHT, buff=0.55, aligned_edge=UP)
         VGroup(question, prudence, colonnes).arrange(DOWN, aligned_edge=LEFT, buff=0.3).move_to([0, -0.6, 0])
         prudence.shift(UP * 0.12)
         commun = sous_titre("dans tous les cas, une erreur que multiplier les sondages ne dilue pas", taille=26, couleur=P.texte_2)
