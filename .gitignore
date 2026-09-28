@@ -1,5 +1,6 @@
 *.pdf
 *.png
+!video/externe/portraits/*_decoupe.png
 *.svg
 mesure_erreurs/world_polls.csv
 elabe/to_delete.py

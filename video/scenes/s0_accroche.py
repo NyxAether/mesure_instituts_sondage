@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 from manim import (
     DOWN,
     LEFT,
@@ -17,8 +18,11 @@ from manim import (
     Dot,
     FadeIn,
     FadeOut,
+    ImageMobject,
     Line,
+    UpdateFromAlphaFunc,
     VGroup,
+    config,
 )
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -28,6 +32,37 @@ from theme import P, SceneRR, fr, libelle, sous_titre, titre  # noqa: E402
 NBSP = " "
 PRESIDENTIELLE = ("France", 2017, 2)
 CANDIDATS_2017 = {13: "Macron", 3: "Le Pen"}  # identifiants de la base
+PORTRAITS = Path(__file__).resolve().parents[1] / "externe" / "portraits"
+HAUTEUR_TETE = 1.1  # sur les courbes
+HAUTEUR_ARRIVEE = 0.8  # près du résultat, où Juppé et Sarkozy ne sont qu'à 0,8 unité l'un de l'autre
+
+
+def tete(cle, inclinaison, hauteur=HAUTEUR_TETE):
+    """Portrait découpé façon coupure de journal (voir outils/decoupe_portraits.py).
+
+    Manim réduit les images sans les filtrer, ce qui fait moirer la trame : on les réduit donc
+    d'abord (Lanczos) à leur taille à l'écran.
+    """
+    png = Image.open(PORTRAITS / f"{cle}_decoupe.png")
+    pixels = round(hauteur / config.frame_height * config.pixel_height)
+    png = png.resize((round(png.width * pixels / png.height), pixels), Image.Resampling.LANCZOS)
+    image = ImageMobject(np.array(png)).set(height=hauteur)
+    image.inclinaison = inclinaison
+    return image.rotate(inclinaison)
+
+
+def trajet(image, position, dandinement=0.07, oscillations=3, echelle=1):
+    """Déplace une tête le long de position(alpha), en la faisant tanguer comme un papier qu'on promène.
+
+    echelle : facteur de taille atteint à l'arrivée.
+    """
+    def pas(m, alpha):
+        angle = m.inclinaison + dandinement * np.sin(alpha * oscillations * 2 * np.pi)
+        taille = 1 + (echelle - 1) * alpha
+        m.rotate(angle - m.angle_courant).scale(taille / m.taille_courante).move_to(position(alpha))
+        m.angle_courant, m.taille_courante = angle, taille
+    image.angle_courant, image.taille_courante = image.inclinaison, 1
+    return UpdateFromAlphaFunc(image, pas)
 
 
 def signe(v):
@@ -69,9 +104,10 @@ class Accroche(SceneRR):
         source = libelle("sondages publiés après le deuxième débat · source : wikipédia", taille=12, couleur=P.discret)
         source.next_to(lab_x, DOWN, buff=0.15).align_to(lab_x, LEFT)
 
-        courbes, noms = VGroup(), VGroup()
+        courbes, noms, sommets = VGroup(), VGroup(), []
         for cle, (nom, couleur) in candidats.items():
             points = [np.array([x(i), y(s[cle]), 0]) for i, s in enumerate(sondages)]
+            sommets.append(points)
             ligne = VGroup(*[Line(a, b, color=couleur, stroke_width=2.5) for a, b in zip(points, points[1:])])
             dots = VGroup(*[Dot(q, radius=0.06, color=couleur) for q in points])
             courbes.add(VGroup(ligne, dots))
@@ -79,8 +115,28 @@ class Accroche(SceneRR):
 
         self.play(FadeIn(tag), FadeIn(grille), FadeIn(lab_y), run_time=0.8)
         self.play(FadeIn(lab_x, lag_ratio=0.1), FadeIn(source), run_time=1)
-        for (ligne, dots), nom in zip(courbes, noms):
-            self.play(FadeIn(nom), FadeIn(dots, lag_ratio=0.1), Create(ligne), run_time=1.2)
+
+        # Chaque tête suit la pointe de sa courbe, un peu au-dessus ; elles finissent en tas sur le dernier sondage.
+        inclinaisons = {"fillon": -0.12, "juppe": 0.08, "sarkozy": -0.03}
+        decalage_tas = {"fillon": -0.45, "juppe": 0.05, "sarkozy": 0.5}
+        tetes = {cle: tete(cle, inclinaisons[cle]) for cle in candidats}
+        dessus = UP * (HAUTEUR_TETE / 2 + 0.12)
+
+        def pointe(points, alpha):
+            # Create trace les segments l'un après l'autre, en temps égal (lag_ratio = 1).
+            u = alpha * (len(points) - 1)
+            i = min(int(u), len(points) - 2)
+            return points[i] + (u - i) * (points[i + 1] - points[i])
+
+        for ((ligne, dots), nom), cle, points in zip(zip(courbes, noms), candidats, sommets):
+            image = tetes[cle].move_to(points[0] + dessus)
+            self.play(FadeIn(nom), FadeIn(image, scale=1.4), run_time=0.4)
+            fin = points[-1] + dessus + RIGHT * decalage_tas[cle]
+            self.play(
+                FadeIn(dots, lag_ratio=0.1), Create(ligne),
+                trajet(image, lambda a, p=points, f=fin: pointe(p, a) + dessus + (f - p[-1] - dessus) * a ** 3),
+                run_time=1.4,
+            )
         premier = sondages[0]
         fillon_debut = sous_titre(f"Fillon troisième, {pour_cent(premier['fillon'])}", taille=26, couleur=P.series[0])
         fillon_debut.next_to(noms[0], DOWN, buff=0.2).align_to([gauche, 0, 0], LEFT)
@@ -89,16 +145,26 @@ class Accroche(SceneRR):
 
         # Le résultat du premier tour
         dernier = len(sondages) - 1
+        x_tetes = x_res + 0.62  # les têtes atterrissent juste à droite du résultat, les valeurs après elles
         sauts, points_res, lab_valeurs, ecarts = VGroup(), VGroup(), VGroup(), VGroup()
         for cle, (nom, couleur) in candidats.items():
             depart = np.array([x(dernier), y(sondages[dernier][cle]), 0])
             arrivee = np.array([x_res, y(resultat[cle]), 0])
             sauts.add(DashedLine(depart, arrivee, color=couleur, dash_length=0.08, stroke_width=2))
             points_res.add(Dot(arrivee, radius=0.11, color=couleur))
-            lab_valeurs.add(libelle(pour_cent(resultat[cle]), taille=15, couleur=couleur).next_to(arrivee, RIGHT, buff=0.15))
+            lab_valeurs.add(libelle(pour_cent(resultat[cle]), taille=15, couleur=couleur).next_to(arrivee, RIGHT, buff=1.15))
             ecart = resultat[cle] - sondages[dernier][cle]
             ecarts.add(libelle(f"{signe(ecart)} pts", taille=13, couleur=couleur).next_to(lab_valeurs[-1], DOWN, buff=0.06, aligned_edge=LEFT))
-        self.play(FadeIn(lab_res), *[Create(s) for s in sauts], run_time=1.2)
+        envols = []
+        for cle in candidats:
+            image = tetes[cle]
+            depart, arrivee = image.get_center(), np.array([x_tetes, y(resultat[cle]), 0])
+            # Petite parabole : la tête décolle avant de filer vers son résultat.
+            envols.append(trajet(
+                image, lambda a, d=depart, r=arrivee: d + (r - d) * a + UP * 0.6 * np.sin(np.pi * a),
+                dandinement=0.1, oscillations=2, echelle=HAUTEUR_ARRIVEE / HAUTEUR_TETE,
+            ))
+        self.play(FadeIn(lab_res), *[Create(s) for s in sauts], *envols, run_time=1.6)
         self.play(FadeIn(points_res, scale=1.5), FadeIn(lab_valeurs), run_time=0.8)
         fillon_fin = sous_titre(f"le soir du vote : {pour_cent(resultat['fillon'])}", taille=30, couleur=P.series[0])
         fillon_fin.next_to(points_res[0], UP, buff=0.35).align_to(points_res[0], RIGHT).shift(RIGHT * 0.3)
@@ -159,7 +225,14 @@ class Accroche(SceneRR):
 
         self.play(FadeIn(tag_2), FadeIn(elements), FadeIn(lab_j), FadeIn(titre_j), run_time=0.8)
         self.play(FadeIn(echelle), run_time=0.4)
-        for groupe in dots_2017:
+        # Chaque tête entre par la gauche et se pose devant sa bande, juste avant ses points.
+        for (cand, cle), groupe, inclinaison in zip({13: "macron", 3: "lepen"}.items(), dots_2017, (0.07, -0.08)):
+            b, h = panneaux[cand]
+            image = tete(cle, inclinaison, hauteur=1.3)
+            depart, arrivee = np.array([-8.2, (b + h) / 2 + 0.4, 0]), np.array([-6.2, (b + h) / 2, 0])
+            image.move_to(depart)
+            self.add(image)
+            self.play(trajet(image, lambda a, d=depart, r=arrivee: d + (r - d) * a + UP * 0.35 * np.sin(np.pi * a)), run_time=0.7)
             self.play(FadeIn(groupe, lag_ratio=0.1), run_time=1)
         dessous = all(v < res_2017[13] for v in points_2017[13])
         dessus = all(v > res_2017[3] for v in points_2017[3])

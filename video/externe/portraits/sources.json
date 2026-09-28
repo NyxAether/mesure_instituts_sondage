@@ -1,0 +1,42 @@
+{
+  "fillon": {
+    "fichier": "File:2016-10-19 16-14-37 fillon-belfort (cropped).jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:2016-10-19_16-14-37_fillon-belfort_(cropped).jpg",
+    "auteur": "Thomas Bresson",
+    "licence": "CC BY 4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0",
+    "date": "2016-10-19 16:14:37"
+  },
+  "juppe": {
+    "fichier": "File:Alain Juppé-2016 (cropped).jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Alain_Jupp%C3%A9-2016_(cropped).jpg",
+    "auteur": "Etienne Ansotte / European Union, 2016 / EC - Audiovisual Service",
+    "licence": "CC BY 4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0",
+    "date": "2016-02-24"
+  },
+  "sarkozy": {
+    "fichier": "File:Nicolas Sarkozy October 2015 (cropped).jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Nicolas_Sarkozy_October_2015_(cropped).jpg",
+    "auteur": "European People's Party",
+    "licence": "CC BY 2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/2.0",
+    "date": "2015-10-22 15:02:28"
+  },
+  "macron": {
+    "fichier": "File:Emmanuel Macron (3x4 cropped).jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Emmanuel_Macron_(3x4_cropped).jpg",
+    "auteur": "Arno Mikkor, EU2017EE Estonian Presidency",
+    "licence": "CC BY 2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/2.0",
+    "date": "2017-09-28 21:03"
+  },
+  "lepen": {
+    "fichier": "File:Marine Le Pen (2017-03-24) 01 cropped.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Marine_Le_Pen_(2017-03-24)_01_cropped.jpg",
+    "auteur": "The Russian Presidential Press and Information Office",
+    "licence": "CC BY 4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0",
+    "date": "2017-03-24"
+  }
+}
