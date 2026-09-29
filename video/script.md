@@ -19,19 +19,47 @@ Crédits photos (séquence 0, portraits détourés, passés en trame de journal 
 - Emmanuel Macron : Arno Mikkor, EU2017EE Estonian Presidency, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Emmanuel_Macron_(3x4_cropped).jpg), CC BY 2.0 ;
 - Marine Le Pen : The Russian Presidential Press and Information Office, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Marine_Le_Pen_(2017-03-24)_01_cropped.jpg), CC BY 4.0.
 
+Photos des corps (séquence 0, photomontage, détourées et recadrées par [outils/decoupe_corps.py](outils/decoupe_corps.py), sans la tête) :
+- Alain Juppé : R. D. Ward, U.S. Department of Defense, 8 février 2011, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Defense.gov_News_Photo_110208-D-9880W-006_-_Secretary_of_Defense_Robert_M._Gates_left_escorts_French_Minister_of_Defense_Alain_Juppe_through_an_honor_cordon_and_into_the_Pentagon_on_Feb._8.jpg), domaine public ;
+- Nicolas Sarkozy : Thomas Bresson, Belfort, 4 novembre 2016, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:2016-11-04_18-28-37_sarkozy-belfort.jpg), CC BY 4.0 ;
+- François Fillon : corps d'un militant debout à côté de Nicolas Sarkozy sur la même photo (Thomas Bresson, Belfort, 4 novembre 2016, CC BY 4.0), faute de photo libre de Fillon en pied et seul.
+
+Extrait vidéo (séquence 0, mème « Quelle indignité ! », 2,35 s, [externe/meme/](externe/meme/)) : France 2, « Primaire, le débat décisif », 17 novembre 2016, récupéré sur [YouTube](https://www.youtube.com/watch?v=DPdfuKXWr_4) ; © France Télévisions, courte citation.
+
 Les chiffres sont arrondis pour l'oral ; les scènes les liront dans les données et non dans ce texte.
 
 ---
 
-## 0. Accroche (0:30)
+## 0. Accroche (1:30)
 
-> Novembre 2016, primaire de la droite. Début novembre, les sondages placent François Fillon troisième, autour de 20 %, loin derrière Alain Juppé. Le soir du premier tour, il obtient 44 %. Juppé, 29.
->
+> En novembre 2016, trois candidats de droite s'opposent dans la course à la présidentielle française de 2017. Alain Juppé, Nicolas Sarkozy et François Fillon.
+
+[Les têtes des trois candidats en coupures de journal apparaissent sur des corps mal dessinés en sautillant sur place.]
+
+> Afin de définir lequel sera le candidat de la droite, sera initiée la « primaire de la droite et du centre »
+
+[Un bandeau apparaît au-dessus des trois candidats avec marqué « Primaire de la droite et du centre », l'ensemble reste dessiné comme par un enfant.]
+
+> notamment connue pour son illustre mème : -silence-
+
+[Le mème de Nicolas Sarkozy « Quelle indignité ! ». Le mème disparaît et les petits bonhommes reviennent à l'écran.]
+
+> Début novembre, moins de deux semaines avant le résultat de la primaire, les sondages placent Alain et Nicolas en tête, respectivement à 39 et 31 %.
+> François, quant à lui, est à 17 %, loin derrière Nicolas et Alain.
+
+[Les têtes des trois candidats en coupures de journal se détachent des corps mal dessinés pour se placer sur le graphe des sondages à côté de leur score respectif au 7 novembre dans les sondages.]
+
+> À deux jours de la primaire, François est remonté et Alain est bien descendu. Les trois candidats sont maintenant au coude à coude.
+
+[Têtes des trois candidats en coupures de journal, qui suivent la pointe de leur courbe. Courbes Fillon / Juppé / Sarkozy sondage par sondage (Harris 7–9 nov. → Ipsos 18 nov., dix sondages), « Fillon troisième, 17 % »,]
+
+> Mais, à la surprise générale, François l'emporte très largement devant ses deux malheureux concurrents
+
+[puis sauts en pointillé vers le résultat 44,1 / 28,6 / 20,7, les têtes, en tas sur le dernier sondage, s'envolent vers leur résultat. « Accident isolé ? » Puis présidentielle 2017, 2d tour, les têtes de Macron et Le Pen entrent par la gauche devant leur bande : une bande par candidat autour de sa ligne de résultat (± 6 points), 12 moyennes quotidiennes, toutes du même côté. Titre « Que valent vraiment les sondages ? » avec 102 élections, 45 pays, 15 252 sondages.]
+
 > Accident isolé ? Six mois plus tard, au second tour de la présidentielle, pendant les deux dernières semaines, les sondages se trompent tous du même côté du résultat : Macron sous-estimé, Le Pen surestimée. Pas un seul de l'autre côté.
 >
 > Alors, que valent vraiment les sondages ? Pour le savoir, on les a confrontés aux résultats de plus de cent élections, dans 45 pays.
-
-[Têtes des trois candidats en coupures de journal, qui suivent la pointe de leur courbe. Courbes Fillon / Juppé / Sarkozy sondage par sondage (Harris 7–9 nov. → Ipsos 18 nov., dix sondages), « Fillon troisième, 17 % », puis sauts en pointillé vers le résultat 44,1 / 28,6 / 20,7, les têtes, en tas sur le dernier sondage, s'envolent vers leur résultat. « Accident isolé ? » Puis présidentielle 2017, 2d tour, les têtes de Macron et Le Pen entrent par la gauche devant leur bande : une bande par candidat autour de sa ligne de résultat (± 6 points), 12 moyennes quotidiennes, toutes du même côté. Titre « Que valent vraiment les sondages ? » avec 102 élections, 45 pays, 15 252 sondages.]
 
 Chiffres : `externe.primaire` = [externe/primaire_2016.json](externe/primaire_2016.json), relevé dans le wikitexte de la révision 233412902 (18 février 2026) de la page citée (Fillon de 17 à 22 % jusqu'au 14 nov., 25 % chez OpinionWay le 15, 27 puis 30 % dans les deux derniers ; résultat 44,1 / 28,6 / 20,7) ; `erreurs.tous.mimetisme.elections` France 2017 tour 2 (12 moyennes quotidiennes sur 14 jours, lues dans `mesure_erreurs/polls.p`, consensus 0,996) ; `mimetisme.nb_elections` = 102, `source.pays` = 45.
 

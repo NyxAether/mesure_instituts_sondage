@@ -1,7 +1,14 @@
 """Séquence 0 — Accroche : primaire de la droite 2016, puis second tour de la présidentielle 2017.
 
+Les trois candidats de la primaire sont d'abord un photomontage à la Karambolage : corps en costume découpés
+dans des photos (externe/corps/, outils/decoupe_corps.py), tête en coupure de journal, qui sautillent sans arrêt ;
+vient le mème « Quelle indignité ! », joué avec son son (externe/meme/, source dans sources.json) ; puis les
+têtes quittent les corps pour le graphe des sondages.
+
 Rendu : .venv/Scripts/python.exe -m manim -ql scenes/s0_accroche.py Accroche
 """
+import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -10,6 +17,7 @@ from PIL import Image
 from manim import (
     DOWN,
     LEFT,
+    ORIGIN,
     RIGHT,
     UL,
     UP,
@@ -18,23 +26,145 @@ from manim import (
     Dot,
     FadeIn,
     FadeOut,
+    Group,
     ImageMobject,
     Line,
+    ManimColor,
+    Polygon,
     UpdateFromAlphaFunc,
     VGroup,
+    Write,
     config,
 )
+from manimpango import list_fonts
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from donnees import TOUS, primaire_2016, sondages_election  # noqa: E402
-from theme import P, SceneRR, fr, libelle, sous_titre, titre  # noqa: E402
+from theme import SERIF, P, SceneRR, ecrire, fr, libelle, sous_titre, terminal, titre  # noqa: E402
 
 NBSP = " "
 PRESIDENTIELLE = ("France", 2017, 2)
 CANDIDATS_2017 = {13: "Macron", 3: "Le Pen"}  # identifiants de la base
 PORTRAITS = Path(__file__).resolve().parents[1] / "externe" / "portraits"
-HAUTEUR_TETE = 1.1  # sur les courbes
-HAUTEUR_ARRIVEE = 0.8  # près du résultat, où Juppé et Sarkozy ne sont qu'à 0,8 unité l'un de l'autre
+CORPS = Path(__file__).resolve().parents[1] / "externe" / "corps"
+MEME = Path(__file__).resolve().parents[1] / "externe" / "meme" / "quelle_indignite.mp4"
+LARGEUR_MEME = 9.6  # à l'écran, dans sa fenêtre terminal (l'extrait est en 16/9)
+HAUTEUR_TETE = 1.4  # sur les corps
+COU_BAS = 4.6  # du col au bas de la photo : le bas des corps sort du cadre, même quand ils sautent
+ECHELLE_CORPS = {"sarkozy": 0.85}  # bras levé et cadrage serré : sans réduction, il paraît plus massif que les autres
+PAPIER = ManimColor.from_rgb((240, 234, 220))  # le papier des coupures (outils/decoupe_portraits.py)
+HAUTEUR_GRAPHE = 0.8  # sur le graphe, où Juppé et Sarkozy ne sont qu'à 0,8 unité l'un de l'autre
+# Police manuscrite de Windows pour les étiquettes écrites à la main ; à défaut, la serif de la charte.
+POLICE_ENFANT = "Ink Free" if "Ink Free" in list_fonts() else SERIF
+
+
+def corps_photo(cle):
+    """Corps en costume découpé dans une photo (outils/decoupe_corps.py), réduit (Lanczos) à sa taille à l'écran.
+
+    Renvoie l'image et la position du col dans l'image, en fraction (depuis la gauche, depuis le haut).
+    """
+    x_cou, y_cou = json.loads((CORPS / "cous.json").read_text(encoding="utf-8"))[cle]
+    png = Image.open(CORPS / f"{cle}_decoupe.png")
+    hauteur = COU_BAS * ECHELLE_CORPS.get(cle, 1) / (1 - y_cou)
+    pixels = round(hauteur / config.frame_height * config.pixel_height)
+    png = png.resize((round(png.width * pixels / png.height), pixels), Image.Resampling.LANCZOS)
+    return ImageMobject(np.array(png)).set(height=hauteur), (x_cou, y_cou)
+
+
+def papier_decoupe(points, graine, couleur=PAPIER):
+    """Morceau de papier coupé aux ciseaux : polygone aux sommets un peu déplacés, bord discret de la charte."""
+    rng = np.random.default_rng(graine)
+    sommets = [np.array([x + rng.normal(0, 0.02), y + rng.normal(0, 0.02), 0]) for x, y in points]
+    return Polygon(
+        *sommets, fill_color=couleur, fill_opacity=1,
+        stroke_color=P.ligne_forte[0], stroke_opacity=P.ligne_forte[1], stroke_width=1.2,
+    )
+
+
+def sautiller(groupe, graine, bascule_max=0.14):
+    """Fait sautiller le groupe sans arrêt, à son propre rythme : hauteurs, durées et pauses tirées au hasard,
+    petits pas de côté, bascule en l'air. Chaque bonhomme a sa graine, donc ils ne sont jamais synchronisés.
+
+    Renvoie la fonction qui arrête les sauts et repose le groupe droit.
+    """
+    rng = np.random.default_rng(graine)
+    pivot = groupe.get_bottom()
+    etat = {"t": 0.0, "saut": None, "prochain": rng.uniform(0, 0.3), "x": 0.0, "decalage": np.zeros(3), "angle": 0.0}
+
+    def placer(m, decalage, angle):
+        m.rotate(-etat["angle"], about_point=pivot + etat["decalage"])
+        m.shift(decalage - etat["decalage"])
+        m.rotate(angle, about_point=pivot + decalage)
+        etat.update(decalage=decalage, angle=angle)
+
+    def maj(m, dt):
+        etat["t"] += dt
+        s = etat["t"]
+        if etat["saut"] is None and s >= etat["prochain"]:
+            dx = float(np.clip(rng.normal(0, 0.1) - 0.5 * etat["x"], -0.18, 0.18))  # rappel vers la place de départ
+            etat["saut"] = (etat["prochain"], rng.uniform(0.25, 0.5), rng.uniform(0.08, 0.3), dx, rng.uniform(-bascule_max, bascule_max))
+        decalage, angle = RIGHT * etat["x"], 0.0
+        if etat["saut"] is not None:
+            debut, d, h, dx, bascule = etat["saut"]
+            u = min((s - debut) / d, 1)
+            decalage = decalage + RIGHT * dx * u + UP * h * np.sin(np.pi * u)
+            angle = bascule * np.sin(np.pi * u)
+            if u >= 1:
+                etat["x"] += dx
+                etat["saut"] = None
+                etat["prochain"] = s + rng.uniform(0, 0.15)
+        placer(m, decalage, angle)
+
+    def arreter():
+        groupe.remove_updater(maj)
+        placer(groupe, RIGHT * etat["x"], 0.0)
+
+    groupe.add_updater(maj)
+    return arreter
+
+
+def jouer_meme(scene):
+    """Joue l'extrait image par image, à la cadence du rendu, avec son son, dans une fenêtre terminal de la charte.
+
+    ffmpeg en tire les images (à leur taille à l'écran) et le son dans le dossier media/, ignoré par git.
+    """
+    hauteur = LARGEUR_MEME * 9 / 16
+    pixels = 2 * round(hauteur / config.frame_height * config.pixel_height / 2)  # ffmpeg veut une hauteur paire
+    cache = Path(config.media_dir) / "meme"
+    cache.mkdir(parents=True, exist_ok=True)
+    fps = config.frame_rate
+    son = cache / "quelle_indignite.wav"
+    prefixe = f"image_{pixels}p{fps:g}_"
+    for vieux in cache.glob(prefixe + "*.png"):
+        vieux.unlink()
+    ffmpeg = ["ffmpeg", "-loglevel", "error", "-y", "-i", str(MEME)]
+    subprocess.run([*ffmpeg, "-vn", str(son)], check=True)
+    subprocess.run([
+        *ffmpeg, "-vf", f"fps={fps},scale=-2:{pixels}:flags=lanczos", str(cache / (prefixe + "%04d.png")),
+    ], check=True)
+    images = [np.array(Image.open(f).convert("RGBA")) for f in sorted(cache.glob(prefixe + "*.png"))]
+
+    marge = 0.16
+    fenetre, centre = terminal(
+        LARGEUR_MEME + 2 * marge, hauteur + 2 * marge, "play quelle_indignite.mp4",
+        statut="france 2 · 17 nov. 2016", dossier="~/sondages",
+    )
+    VGroup(fenetre).move_to(ORIGIN)
+    centre = fenetre[0].get_bottom() + UP * (hauteur / 2 + marge)
+    ecran = ImageMobject(images[0]).set(height=hauteur).move_to(centre)
+    horloge = {"t": 0.0}
+
+    def defiler(m, dt):
+        horloge["t"] += dt
+        m.pixel_array = images[min(int(horloge["t"] * fps), len(images) - 1)]
+
+    scene.play(FadeIn(fenetre), run_time=0.3)
+    scene.add(ecran)
+    scene.add_sound(str(son))
+    ecran.add_updater(defiler)
+    scene.wait(len(images) / fps)
+    ecran.clear_updaters()
+    scene.remove(ecran, fenetre)
 
 
 def tete(cle, inclinaison, hauteur=HAUTEUR_TETE):
@@ -48,6 +178,7 @@ def tete(cle, inclinaison, hauteur=HAUTEUR_TETE):
     png = png.resize((round(png.width * pixels / png.height), pixels), Image.Resampling.LANCZOS)
     image = ImageMobject(np.array(png)).set(height=hauteur)
     image.inclinaison = inclinaison
+    image.set_z_index(10)  # toujours devant les courbes et les points, ajoutés après elles
     return image.rotate(inclinaison)
 
 
@@ -113,35 +244,103 @@ class Accroche(SceneRR):
             courbes.add(VGroup(ligne, dots))
             noms.add(libelle(nom.lower(), taille=14, couleur=couleur).next_to(points[0], DOWN if cle == "fillon" else UP, buff=0.15))
 
-        self.play(FadeIn(tag), FadeIn(grille), FadeIn(lab_y), run_time=0.8)
-        self.play(FadeIn(lab_x, lag_ratio=0.1), FadeIn(source), run_time=1)
-
-        # Chaque tête suit la pointe de sa courbe, un peu au-dessus ; elles finissent en tas sur le dernier sondage.
         inclinaisons = {"fillon": -0.12, "juppe": 0.08, "sarkozy": -0.03}
         decalage_tas = {"fillon": -0.45, "juppe": 0.05, "sarkozy": 0.5}
         tetes = {cle: tete(cle, inclinaisons[cle]) for cle in candidats}
-        dessus = UP * (HAUTEUR_TETE / 2 + 0.12)
+        dessus = UP * (HAUTEUR_GRAPHE / 2 + 0.1)
 
+        # --- Les trois candidats, en photomontage -------------------------------------------------
+        # Dans l'ordre où le narrateur les nomme : Juppé, Sarkozy, Fillon.
+        ordre = {"juppe": (-4.5, "Alain"), "sarkozy": (0, "Nicolas"), "fillon": (4.6, "François")}
+        corps, prenoms, candidats_photo = {}, Group(), {}
+        for i, (cle, (x_c, prenom)) in enumerate(ordre.items()):
+            image, (fx, fy) = corps_photo(cle)
+            # Col placé pour que le bas de la photo reste sous le cadre (−4), avec la marge d'un saut
+            y_cou = -4.3 + COU_BAS * ECHELLE_CORPS.get(cle, 1)
+            # Le col de la photo vient au point (x_c, y_cou)
+            image.move_to([x_c + (0.5 - fx) * image.width, y_cou + (fy - 0.5) * image.height, 0])
+            corps[cle] = image
+            tetes[cle].move_to([x_c, y_cou + HAUTEUR_TETE / 2 - 0.2, 0])
+            couleur = candidats[cle][1]
+            if cle == "sarkozy":  # le gris du graphe est trop pâle pour une écriture
+                couleur = couleur.interpolate(P.texte, 0.35)
+            mot = ecrire(prenom, POLICE_ENFANT, 30, couleur)
+            l, r, b, h = mot.get_left()[0] - 0.2, mot.get_right()[0] + 0.2, mot.get_bottom()[1] - 0.1, mot.get_top()[1] + 0.12
+            etiquette = VGroup(papier_decoupe([(l, b), (l, h), (r, h), (r, b)], graine=20 + i), mot)
+            prenoms.add(etiquette.move_to([x_c, -3.45, 0]).rotate(0.05 * (-1) ** i))
+            candidats_photo[cle] = Group(corps[cle], tetes[cle])
+
+        self.play(*[FadeIn(corps[cle], shift=UP * 1.5) for cle in ordre], run_time=0.9)
+        self.play(*[FadeIn(tetes[cle], scale=1.4) for cle in ordre], FadeIn(prenoms, lag_ratio=0.3), run_time=0.8)
+        self.add(*candidats_photo.values())
+        self.add(prenoms)  # les étiquettes restent devant les corps
+        arrets = [sautiller(groupe, graine=100 + i, bascule_max=0.04) for i, groupe in enumerate(candidats_photo.values())]
+        self.wait(4.5)
+
+        # La banderole de la primaire : un ruban de papier découpé, pans fourchus
+        mot = titre("Primaire de la ", "droite", " et du centre", taille=40)
+        mot.move_to([0, 3.05, 0])
+        l, r = mot.get_left()[0] - 0.4, mot.get_right()[0] + 0.4
+        b, h = mot.get_bottom()[1] - 0.22, mot.get_top()[1] + 0.22
+        m = (b + h) / 2
+        pans = Group(
+            papier_decoupe([(l + 0.3, h - 0.25), (l - 0.9, h - 0.25), (l - 0.55, m - 0.18), (l - 0.9, b - 0.18), (l + 0.3, b - 0.18)], 31),
+            papier_decoupe([(r - 0.3, h - 0.25), (r + 0.9, h - 0.25), (r + 0.55, m - 0.18), (r + 0.9, b - 0.18), (r - 0.3, b - 0.18)], 32),
+        )
+        ruban = papier_decoupe([(l, b), (l, h), (r, h + 0.03), (r, b - 0.02)], 33)
+        banderole = Group(pans, ruban, mot)
+        self.play(FadeIn(Group(pans, ruban), shift=DOWN * 0.8), run_time=0.7)
+        self.play(Write(mot), run_time=1.5)
+        self.wait(2.5)
+
+        # Le mème « Quelle indignité ! », en coupe franche, avec son son (le narrateur se tait)
+        dessin = [*candidats_photo.values(), prenoms, pans, ruban, mot]  # tels qu'ajoutés à la scène
+        self.remove(*dessin)
+        jouer_meme(self)
+        self.add(*dessin)
+        self.wait(1.5)
+        for arreter in arrets:
+            arreter()
+
+        # --- Les têtes quittent les corps pour le graphe des sondages ------------------------------
+        # Chacune se pose à gauche de l'axe, en face de son score dans le premier sondage (Harris, 7 au 9 novembre).
+        envols = []
+        for cle, points in zip(candidats, sommets):
+            depart, arrivee = tetes[cle].get_center(), np.array([gauche - 1.3, points[0][1], 0])
+            envols.append(trajet(
+                tetes[cle], lambda a, d=depart, r=arrivee: d + (r - d) * a + UP * 0.8 * np.sin(np.pi * a),
+                echelle=HAUTEUR_GRAPHE / HAUTEUR_TETE,
+            ))
+        self.play(
+            FadeOut(Group(prenoms, banderole, *corps.values())), *envols,
+            FadeIn(tag), FadeIn(grille), FadeIn(lab_y), FadeIn(lab_x, lag_ratio=0.1), FadeIn(source),
+            run_time=1.8,
+        )
+        premier = sondages[0]
+        fillon_debut = sous_titre(f"Fillon troisième, {pour_cent(premier['fillon'])}", taille=26, couleur=P.series[0])
+        fillon_debut.next_to(noms[0], DOWN, buff=0.2).align_to([gauche, 0, 0], LEFT)
+        self.play(FadeIn(noms), FadeIn(VGroup(*[dots[0] for _, dots in courbes])), run_time=0.6)
+        self.play(FadeIn(fillon_debut), run_time=0.6)
+        self.wait(4)
+
+        # Chaque tête rejoint la pointe de sa courbe et la suit, un peu au-dessus ; elles finissent en tas sur le dernier sondage.
         def pointe(points, alpha):
             # Create trace les segments l'un après l'autre, en temps égal (lag_ratio = 1).
             u = alpha * (len(points) - 1)
             i = min(int(u), len(points) - 2)
             return points[i] + (u - i) * (points[i + 1] - points[i])
 
-        for ((ligne, dots), nom), cle, points in zip(zip(courbes, noms), candidats, sommets):
-            image = tetes[cle].move_to(points[0] + dessus)
-            self.play(FadeIn(nom), FadeIn(image, scale=1.4), run_time=0.4)
-            fin = points[-1] + dessus + RIGHT * decalage_tas[cle]
-            self.play(
-                FadeIn(dots, lag_ratio=0.1), Create(ligne),
-                trajet(image, lambda a, p=points, f=fin: pointe(p, a) + dessus + (f - p[-1] - dessus) * a ** 3),
-                run_time=1.4,
-            )
-        premier = sondages[0]
-        fillon_debut = sous_titre(f"Fillon troisième, {pour_cent(premier['fillon'])}", taille=26, couleur=P.series[0])
-        fillon_debut.next_to(noms[0], DOWN, buff=0.2).align_to([gauche, 0, 0], LEFT)
-        self.play(FadeIn(fillon_debut), run_time=0.6)
-        self.wait(1.5)
+        suivis = []
+        for (ligne, dots), cle, points in zip(courbes, candidats, sommets):
+            debut, fin = tetes[cle].get_center(), points[-1] + dessus + RIGHT * decalage_tas[cle]
+            suivis += [
+                FadeIn(dots[1:], lag_ratio=0.1), Create(ligne),
+                trajet(tetes[cle], lambda a, p=points, d=debut, f=fin: (
+                    pointe(p, a) + dessus + (d - p[0] - dessus) * (1 - a) ** 3 + (f - p[-1] - dessus) * a ** 3
+                )),
+            ]
+        self.play(*suivis, run_time=3.5)
+        self.wait(2)
 
         # Le résultat du premier tour
         dernier = len(sondages) - 1
@@ -162,7 +361,7 @@ class Accroche(SceneRR):
             # Petite parabole : la tête décolle avant de filer vers son résultat.
             envols.append(trajet(
                 image, lambda a, d=depart, r=arrivee: d + (r - d) * a + UP * 0.6 * np.sin(np.pi * a),
-                dandinement=0.1, oscillations=2, echelle=HAUTEUR_ARRIVEE / HAUTEUR_TETE,
+                dandinement=0.1, oscillations=2,
             ))
         self.play(FadeIn(lab_res), *[Create(s) for s in sauts], *envols, run_time=1.6)
         self.play(FadeIn(points_res, scale=1.5), FadeIn(lab_valeurs), run_time=0.8)

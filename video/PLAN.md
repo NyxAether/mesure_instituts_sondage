@@ -43,7 +43,7 @@ Les vidéos sortent dans `media/` (ignoré par git).
 
 | # | Séquence | État |
 |---|---|---|
-| 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | **en relecture** ([scenes/s0_accroche.py](scenes/s0_accroche.py)) : courbes des dix sondages de la primaire puis saut vers le résultat, 2017 en deux bandes autour du résultat, titre |
+| 0 | Accroche : primaire 2016, présidentielle 2017 (2d tour) | **en relecture** ([scenes/s0_accroche.py](scenes/s0_accroche.py)) : photomontage à la Karambolage : corps en costume découpés dans des photos de Commons ([outils/decoupe_corps.py](outils/decoupe_corps.py), `externe/corps/`), têtes en coupure de journal, qui sautillent sans arrêt chacun à son rythme, prénoms sur étiquettes manuscrites (police Ink Free de Windows), banderole en papier découpé, mème « Quelle indignité ! » joué image par image avec son son dans une fenêtre terminal de la charte (`externe/meme/`, source dans `sources.json`), puis courbes des dix sondages de la primaire puis saut vers le résultat, 2017 en deux bandes autour du résultat, titre |
 | 1 | La théorie : ce que veut dire « ± 3 points » | **faite**, relue et validée en 480p ([scenes/s1_theorie.py](scenes/s1_theorie.py)) ; titre et fin reformulés (« prévoit », « vérifions ») |
 | 2 | L'entonnoir : 45 % hors marge | **faite**, validée en 480p ([scenes/s2_entonnoir.py](scenes/s2_entonnoir.py)) |
 | 3 | L'excédent ne diminue pas avec la taille | **faite**, validée en 480p ([scenes/s3_taille.py](scenes/s3_taille.py)) ; zoom animé de l'axe vertical (bornes en `ValueTracker`) |

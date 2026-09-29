@@ -4,6 +4,7 @@ Le thème se choisit avec la variable d'environnement RR_THEME (« light » par 
 """
 import json
 import os
+import re
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -12,8 +13,12 @@ from manimpango import MarkupUtils
 from manim import (
     DOWN,
     LEFT,
+    RIGHT,
+    UP,
+    DashedLine,
     ManimColor,
     MarkupText,
+    RoundedRectangle,
     Scene,
     VGroup,
     config,
@@ -32,6 +37,15 @@ SANS = TOKENS["font"]["sans"]["family"]
 MONO = TOKENS["font"]["mono"]["family"]
 
 
+def couleur_rgba(valeur):
+    """Token « rgba(r, g, b, a) » en (ManimColor, opacité) ; un token hexadécimal est opaque."""
+    m = re.fullmatch(r"rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)", valeur)
+    if not m:
+        return ManimColor(valeur), 1.0
+    r, g, b, a = m.groups()
+    return ManimColor.from_rgb((int(r), int(g), int(b))), float(a)
+
+
 class Palette:
     def __init__(self, theme):
         couleurs = TOKENS["color"][theme]
@@ -43,6 +57,9 @@ class Palette:
         self.discret = ManimColor(couleurs["text-muted"])
         self.accent = ManimColor(couleurs["accent"])
         self.filet = ManimColor(couleurs["rule"])
+        self.sauge = ManimColor(couleurs["sage"])
+        self.ligne = couleur_rgba(couleurs["line"])  # (couleur, opacité)
+        self.ligne_forte = couleur_rgba(couleurs["line-strong"])
         self.grille = ManimColor(graphique["grid"])
         self.axe = ManimColor(graphique["axis"])
         self.muet = ManimColor(graphique["mark-muted"])
@@ -58,6 +75,8 @@ TAILLE_TITRE = 52
 TAILLE_TEXTE = 30
 TAILLE_LIBELLE = 17
 OPACITE_AIRE = 0.15
+PIXEL = config.frame_height / 1080  # un pixel du rendu 1080p, en unités Manim
+RAYON = float(TOKENS["radius"]["md"].removesuffix("px")) * PIXEL
 # Pango arrondit la position des lettres à la taille de rendu : aux petites tailles, la chasse
 # devient irrégulière (« ti rages »). On rend donc chaque texte SURECHELLE fois plus grand, puis on le réduit.
 SURECHELLE = 10
@@ -158,3 +177,35 @@ class SceneRR(Scene):
 
     def setup(self):
         self.camera.background_color = P.fond
+
+
+def terminal(largeur, hauteur_corps, commande, statut=None, dossier="~/rr"):
+    """Fenêtre terminal de la charte (motifs.md) : rayon de 4 px, bordure line-strong de 1 px, fond bg-card,
+    barre « dossier $ commande » en mono discret séparée du corps par un filet tireté, statut à droite,
+    sans pastilles.
+
+    Renvoie (fenêtre, centre du corps) : le contenu se place au centre du corps.
+    """
+    invite = libelle(f"{dossier} $ {commande}", taille=15, couleur=P.discret)
+    hauteur_barre = invite.height + 0.3
+    fenetre = RoundedRectangle(
+        width=largeur, height=hauteur_barre + hauteur_corps, corner_radius=RAYON,
+        stroke_color=P.ligne_forte[0], stroke_opacity=P.ligne_forte[1], stroke_width=1.5,
+        fill_color=P.carte, fill_opacity=1,
+    )
+    haut, gauche, droite = fenetre.get_top()[1], fenetre.get_left()[0], fenetre.get_right()[0]
+    y_filet = haut - hauteur_barre
+    invite.move_to([0, haut - hauteur_barre / 2, 0]).align_to([gauche + 0.25, 0, 0], LEFT)
+    filet = DashedLine(
+        [gauche, y_filet, 0], [droite, y_filet, 0], dash_length=0.06,
+        stroke_color=P.ligne[0], stroke_opacity=P.ligne[1], stroke_width=1.5,
+    )
+    elements = VGroup(fenetre, filet, invite)
+    if statut:
+        etat = ecrire(
+            f"<span foreground='{P.sauge.to_hex()}'>●</span> {escape(statut)}", MONO, 15, P.discret, markup=True,
+        )
+        etat.move_to(invite.get_center()).align_to([droite - 0.25, 0, 0], RIGHT)
+        elements.add(etat)
+    centre_corps = fenetre.get_bottom() + UP * hauteur_corps / 2
+    return elements, centre_corps
