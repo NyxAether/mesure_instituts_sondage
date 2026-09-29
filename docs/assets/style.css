@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════
    Mesure des instituts de sondage
-   Charte rr/ (rr-style) : sauge & prune, touches ASCII discrètes
+   Charte rr/ : sauge & prune, touches ASCII discrètes
    ═══════════════════════════════════════════ */
 
 /* Jetons (couleurs clair/sombre, séries des graphiques, polices, rayons) : rr-tokens.css,
-   généré par rr-style (C:/Users/Romain/Prog/rr-style) et chargé avant cette feuille.
+   généré et chargé avant cette feuille.
    Séries validées (dataviz validate_palette.js) ; au-delà des courbes, 2 séries au plus. */
 
 /* ── Base ── */

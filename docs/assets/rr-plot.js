@@ -1,4 +1,4 @@
-// Généré par rr-style/build.py depuis tokens.json — ne pas éditer.
+// Fichier généré — ne pas éditer.
 // Thème rr/ pour Observable Plot (script classique : fonctionne en file://).
 // Requiert d3 et rr-tokens.css. Expose window.rrPlot.
 (function () {

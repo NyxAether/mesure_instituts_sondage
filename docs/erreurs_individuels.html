@@ -211,7 +211,7 @@
     <p class="note">Dans cette base, les sondages réalisés le même jour sont regroupés par les auteurs en une seule ligne : leur moyenne, avec apparemment la somme des échantillons. Ces lignes sont traitées comme les autres : une moyenne de sondages qui partagent la même erreur ne la corrige pas davantage.</p>
 
     <h2 id="annexe">Annexe : méthodes et métriques</h2>
-    <p>Cette annexe détaille chaque mesure utilisée dans la page. Les calculs sont dans <code>analyses/erreurs.py</code>, <code>analyses/taille_equivalente.py</code> et <code>analyses/mimetisme.py</code>.</p>
+    <p>Cette annexe détaille chaque mesure utilisée dans la page. Les calculs sont dans <a href="https://github.com/NyxAether/mesure_instituts_sondage/blob/main/analyses/erreurs.py"><code>analyses/erreurs.py</code></a>, <a href="https://github.com/NyxAether/mesure_instituts_sondage/blob/main/analyses/taille_equivalente.py"><code>analyses/taille_equivalente.py</code></a> et <a href="https://github.com/NyxAether/mesure_instituts_sondage/blob/main/analyses/mimetisme.py"><code>analyses/mimetisme.py</code></a>.</p>
 
     <details class="annexe" id="a-donnees">
       <summary><h3>A. Données et sélections</h3></summary>
@@ -231,7 +231,7 @@
         <li><strong>Marge d'erreur à 95 %</strong> : $L_{95} = 1{,}96\,\sigma$. L'entonnoir du nuage de points trace $\pm L_{95}$ pour $p = 50\,\%$, la marge la plus large.</li>
         <li><strong>Erreur</strong> d'un sondage sur un parti : $e = |\hat p - p|$, en points de pourcentage.</li>
         <li><strong>Part hors marge</strong> : proportion des lignes où $e &gt; L_{95}$, chaque ligne avec sa propre marge. Pour de vrais tirages aléatoires, elle vaudrait 5 %.</li>
-        <li><strong>Erreur moyenne attendue</strong> d'un tirage aléatoire (espérance de la valeur absolue d'une loi normale) : $$\mathbb{E}\,|\hat p - p| = \sqrt{\tfrac{2}{\pi}}\;\sigma \approx 0{,}80\,\sigma$$ Le notebook d'origine utilisait $0{,}67\,\sigma$, qui est l'erreur <em>médiane</em> ; la page compare des moyennes et utilise donc $0{,}80\,\sigma$.</li>
+        <li><strong>Erreur moyenne attendue</strong> d'un tirage aléatoire (espérance de la valeur absolue d'une loi normale) : $$\mathbb{E}\,|\hat p - p| = \sqrt{\tfrac{2}{\pi}}\;\sigma \approx 0{,}80\,\sigma$$ Le calcul d'origine utilisait $0{,}67\,\sigma$, qui est l'erreur <em>médiane</em> ; la page compare des moyennes et utilise donc $0{,}80\,\sigma$.</li>
       </ul>
     </details>
 
@@ -272,7 +272,7 @@
       <ul>
         <li id="a-temoin"><strong>Témoin</strong> : on remplace le sondage réel par <em>un seul</em> tirage aléatoire de $n$ personnes selon $y$, et on applique la même recherche (divergence KL). Un tirage aléatoire donne en médiane une taille équivalente proche de $n$, mais très dispersée d'un tirage à l'autre : c'est la référence à laquelle comparer les sondages réels.</li>
         <li><strong>Nombre de partis</strong> : nombre de partis du sondage, plus un si la catégorie « autres » existe.</li>
-        <li>Les tailles équivalentes affichées proviennent du calcul d'origine (<code>mesure_erreurs/bss.p</code>). Le module <code>analyses/taille_equivalente.py</code> reproduit la même méthode avec des tirages multinomiaux et une graine fixe.</li>
+        <li>Les tailles équivalentes affichées proviennent du calcul d'origine. Le module <a href="https://github.com/NyxAether/mesure_instituts_sondage/blob/main/analyses/taille_equivalente.py"><code>analyses/taille_equivalente.py</code></a> reproduit la même méthode avec des tirages multinomiaux et une graine fixe.</li>
       </ul>
     </details>
 
@@ -316,7 +316,7 @@
     </details>
   </main>
 
-  <footer class="footer">Données : Jennings &amp; Wlezien, <em>Election polling errors across time and space</em>, Nature Human Behaviour (2018) ; calculs dans <code>analyses/</code>.</footer>
+  <footer class="footer">Données : Jennings &amp; Wlezien, <em>Election polling errors across time and space</em>, Nature Human Behaviour (2018) ; calculs dans <a href="https://github.com/NyxAether/mesure_instituts_sondage/blob/main/analyses"><code>analyses/</code></a>.</footer>
 
   <script src="data/erreurs_individuels.js"></script>
   <script src="assets/rr-plot.js"></script>

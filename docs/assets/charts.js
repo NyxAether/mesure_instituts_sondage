@@ -19,7 +19,7 @@
   };
 
   // --- Thème -------------------------------------------------------------
-  // Couleurs des graphiques : rr-plot.js (charte rr-style), relues sur les variables CSS du thème courant.
+  // Couleurs des graphiques : rr-plot.js (charte rr/), relues sur les variables CSS du thème courant.
   const theme = () => rrPlot.theme();
 
   // Thème clair/sombre : choix mémorisé, sinon préférence système (appliqué avant rendu
