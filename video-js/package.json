@@ -1,0 +1,26 @@
+{
+  "name": "video-js",
+  "version": "0.0.0",
+  "private": true,
+  "description": "La vidéo sur les sondages, en Remotion",
+  "scripts": {
+    "ressources": "node ressources.mjs",
+    "studio": "npm run ressources && remotion studio",
+    "render": "npm run ressources && remotion render Video out/video.mp4",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "@remotion/fonts": "4.0.529",
+    "d3-scale": "^4.0.2",
+    "katex": "^0.18.9",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/d3-scale": "^4.0.9",
+    "@types/react": "19.3.0",
+    "typescript": "7.0.2"
+  }
+}

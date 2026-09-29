@@ -1,0 +1,183 @@
+{
+  "primaire_2016": {
+    "source": "https://fr.wikipedia.org/wiki/Sondages_sur_la_primaire_fran%C3%A7aise_de_la_droite_et_du_centre_de_2016",
+    "revision": 233412902,
+    "revision_date": "2026-02-18",
+    "section": "Premier tour, Campagne officielle : sondages réalisés après le deuxième débat (3 novembre 2016)",
+    "note": "echantillon = second nombre de la colonne Panel (répondants retenus comme votants à la primaire) ; fin = dernier jour de terrain",
+    "sondages": [
+      {
+        "institut": "Harris Interactive",
+        "terrain": "7 au 9 novembre",
+        "fin": "2016-11-09",
+        "echantillon": 975,
+        "fillon": 17,
+        "juppe": 39,
+        "sarkozy": 31
+      },
+      {
+        "institut": "Kantar Sofres",
+        "terrain": "7 au 10 novembre",
+        "fin": "2016-11-10",
+        "echantillon": 714,
+        "fillon": 18,
+        "juppe": 36,
+        "sarkozy": 30
+      },
+      {
+        "institut": "Odoxa",
+        "terrain": "9 au 11 novembre",
+        "fin": "2016-11-11",
+        "echantillon": 554,
+        "fillon": 20,
+        "juppe": 36,
+        "sarkozy": 26
+      },
+      {
+        "institut": "BVA",
+        "terrain": "3 au 13 novembre",
+        "fin": "2016-11-13",
+        "echantillon": 926,
+        "fillon": 18,
+        "juppe": 37,
+        "sarkozy": 29
+      },
+      {
+        "institut": "Ipsos",
+        "terrain": "8 au 13 novembre",
+        "fin": "2016-11-13",
+        "echantillon": 1337,
+        "fillon": 22,
+        "juppe": 36,
+        "sarkozy": 29
+      },
+      {
+        "institut": "Ifop",
+        "terrain": "31 octobre au 14 novembre",
+        "fin": "2016-11-14",
+        "echantillon": 647,
+        "fillon": 20,
+        "juppe": 33,
+        "sarkozy": 30
+      },
+      {
+        "institut": "Elabe",
+        "terrain": "9 au 15 novembre",
+        "fin": "2016-11-15",
+        "echantillon": 680,
+        "fillon": 21,
+        "juppe": 34,
+        "sarkozy": 30
+      },
+      {
+        "institut": "OpinionWay",
+        "terrain": "13 au 15 novembre",
+        "fin": "2016-11-15",
+        "echantillon": 828,
+        "fillon": 25,
+        "juppe": 33,
+        "sarkozy": 25
+      },
+      {
+        "institut": "Ifop",
+        "terrain": "10 au 17 novembre",
+        "fin": "2016-11-17",
+        "echantillon": 744,
+        "fillon": 27,
+        "juppe": 31,
+        "sarkozy": 30
+      },
+      {
+        "institut": "Ipsos",
+        "terrain": "18 novembre",
+        "fin": "2016-11-18",
+        "echantillon": 807,
+        "fillon": 30,
+        "juppe": 29,
+        "sarkozy": 29
+      }
+    ],
+    "resultat": {
+      "date": "2016-11-20",
+      "fillon": 44.1,
+      "juppe": 28.6,
+      "sarkozy": 20.7
+    }
+  },
+  "presidentielle_2017": {
+    "source": "mesure_erreurs/polls.p (base Jennings et Wlezien), filtré comme video/donnees.py:sondages_election",
+    "jours_max": 14,
+    "note": "une ligne par jour : la base fusionne les sondages d'un même jour en une moyenne",
+    "sondages": [
+      {
+        "jours_avant": 14,
+        "macron": 61.75,
+        "lepen": 38.25
+      },
+      {
+        "jours_avant": 13,
+        "macron": 61.5,
+        "lepen": 38.75
+      },
+      {
+        "jours_avant": 12,
+        "macron": 60.0,
+        "lepen": 40.5
+      },
+      {
+        "jours_avant": 11,
+        "macron": 60.0,
+        "lepen": 40.0
+      },
+      {
+        "jours_avant": 10,
+        "macron": 59.0,
+        "lepen": 41.0
+      },
+      {
+        "jours_avant": 8,
+        "macron": 60.0,
+        "lepen": 40.0
+      },
+      {
+        "jours_avant": 7,
+        "macron": 59.6667,
+        "lepen": 40.6667
+      },
+      {
+        "jours_avant": 6,
+        "macron": 60.0,
+        "lepen": 40.0
+      },
+      {
+        "jours_avant": 5,
+        "macron": 61.0,
+        "lepen": 39.0
+      },
+      {
+        "jours_avant": 4,
+        "macron": 62.3333,
+        "lepen": 37.6667
+      },
+      {
+        "jours_avant": 3,
+        "macron": 62.0,
+        "lepen": 38.3333
+      },
+      {
+        "jours_avant": 2,
+        "macron": 63.0,
+        "lepen": 37.0
+      }
+    ],
+    "resultat": {
+      "macron": 66.1,
+      "lepen": 33.9
+    }
+  },
+  "titre": {
+    "elections": 102,
+    "pays": 45,
+    "sondages": 15252
+  }
+}
