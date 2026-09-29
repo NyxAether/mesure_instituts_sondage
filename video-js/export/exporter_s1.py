@@ -1,22 +1,37 @@
-"""Exporte en JSON les tirages et constantes de la séquence 1 (la théorie), identiques à ceux de la scène Manim.
+"""Exporte en JSON les tirages et constantes de la séquence 1 (la théorie).
 
-Les constantes sont lues dans video/scenes/s1_theorie.py, et les tirages numpy refaits dans le même ordre que
-Theorie.construct (binomiales, permutation de la population, puis un choix de personnes par tirage montré).
+Les tirages numpy sont faits dans l'ordre de la scène Manim d'origine (binomiales, permutation de la population,
+puis un choix de personnes par tirage montré), pour que l'histogramme reste identique à la version validée.
 
 Lancement (depuis la racine du dépôt) : video/.venv/Scripts/python.exe video-js/export/exporter_s1.py
 Écrit video-js/donnees/s1.json.
 """
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
 
 ICI = Path(__file__).resolve().parent
-VIDEO = ICI.parent.parent / "video"
-sys.path.insert(0, str(VIDEO))
-sys.path.insert(0, str(VIDEO / "scenes"))
-import s1_theorie as s1  # noqa: E402
+
+
+class s1:  # noqa: N801  constantes de la séquence, reprises de la scène Manim d'origine
+    GRAINE = 2016
+    NB_TIRAGES = 600
+    NB_RAPIDES = 40  # tirages montrés un par un (les premiers lentement, puis de plus en plus vite)
+    NB_LENTS = 3  # premiers tirages montrés lentement
+    LOTS = [80, 150, 300, NB_TIRAGES]  # tirages cumulés affichés ensuite, par lots
+    UNITE_MAX = 0.3  # hauteur d'un tirage dans l'histogramme tant qu'il y a peu de tirages
+    BORNES = np.arange(44, 56.001, 0.5)  # tranches de l'histogramme, en points de %
+    Z95 = 1.96
+    HAUTEUR = 3.0  # hauteur maximale d'une barre
+    NB_ECHANTILLON = 110  # points mis en évidence dans la population (symbolique)
+    OPACITE_AIRE = 0.15
+
+    @staticmethod
+    def marge(n, p=0.5):
+        """Marge d'erreur à 95 %, en points de pourcentage."""
+        return 100 * s1.Z95 * np.sqrt(p * (1 - p) / n)
+
 
 TAILLE_PETIT, TAILLE_GRAND = 1000, 4000  # tailles d'échantillon des deux binomiales de la scène
 P_VOTE = 0.5
@@ -41,7 +56,7 @@ comptes = lambda valeurs: np.histogram(valeurs, bornes)[0].tolist()  # noqa: E73
 durees = np.geomspace(0.7, 0.12, s1.NB_RAPIDES - s1.NB_LENTS)  # durées des tirages rapides (copie de la scène)
 
 sortie = {
-    "source": "video/scenes/s1_theorie.py : mêmes graine et ordre de tirage que la scène Manim",
+    "source": "mêmes graine et ordre de tirage que la scène Manim d'origine",
     "graine": s1.GRAINE,
     "p": P_VOTE,
     "taille_petit": TAILLE_PETIT,

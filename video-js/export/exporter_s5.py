@@ -3,7 +3,7 @@
 Lancement (depuis la racine du dépôt) : video/.venv/Scripts/python.exe video-js/export/exporter_s5.py
 Écrit video-js/donnees/s5.json.
 
-Les sondages « si seul le hasard jouait » sont le même tirage multinomial que dans video/scenes/s5_partage.py (graine 2015).
+Les sondages « si seul le hasard jouait » sont le même tirage multinomial que dans la scène Manim d'origine (graine 2015).
 """
 import json
 import sys

@@ -13,7 +13,7 @@ ICI = Path(__file__).resolve().parent
 sys.path.insert(0, str(ICI.parent.parent / "video"))
 from donnees import TOUS, glissante_equivalents  # noqa: E402
 
-# Mêmes constantes que video/scenes/s4_equivalente.py
+# Mêmes constantes que la scène Manim d'origine
 Z95 = 1.96
 CIBLE = 0.95  # part des écarts que l'entonnoir élargi doit contenir
 JOURS_LISSAGE = 7

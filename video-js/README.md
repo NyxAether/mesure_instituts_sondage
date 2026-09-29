@@ -1,6 +1,6 @@
 # Vidéo « Ce que valent vraiment les sondages » en Remotion
 
-La vidéo est écrite avec [Remotion](https://www.remotion.dev/) (React, rendu par Chromium puis ffmpeg). Elle reprend le plan et le minutage de la version Manim ([video/scenes/](../video/scenes/)), séquence par séquence. Le bilan du premier essai (séquence 0) est dans [COMPARAISON.md](COMPARAISON.md).
+La vidéo est écrite avec [Remotion](https://www.remotion.dev/) (React, rendu par Chromium puis ffmpeg). Elle reprend le plan et le minutage de la version Manim d'origine, retirée du dépôt après le portage (dernière version : `video/scenes/` au commit `1ea94a2`). Le bilan du premier essai (séquence 0) est dans [COMPARAISON.md](COMPARAISON.md).
 
 ## Rendu
 

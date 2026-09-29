@@ -13,7 +13,7 @@ ICI = Path(__file__).resolve().parent
 sys.path.insert(0, str(ICI.parent.parent / "video"))
 from donnees import TOUS  # noqa: E402
 
-# Mêmes constantes que video/scenes/s2_entonnoir.py
+# Mêmes constantes que la scène Manim d'origine
 GRAINE = 2002
 Z95 = 1.96
 EXEMPLE = {"pays": "France", "annee": 2002, "n": 1000.0, "vote": 0.1686, "poll": 0.13}

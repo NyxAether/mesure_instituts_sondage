@@ -1,6 +1,6 @@
 # Séquence 0 : Remotion face à Manim
 
-Même séquence, même minutage (50,95 s), mêmes ressources, mêmes chiffres. Version Manim : [video/scenes/s0_accroche.py](../video/scenes/s0_accroche.py). Version Remotion : [src/](src/), rendu dans `out/sequence0.mp4`.
+Même séquence, même minutage (50,95 s), mêmes ressources, mêmes chiffres. Version Manim (retirée du dépôt, à retrouver dans l'historique au commit `1ea94a2`) : `video/scenes/s0_accroche.py`. Version Remotion : [src/](src/), rendu dans `out/sequence0.mp4`.
 
 ## Pourquoi Remotion
 
