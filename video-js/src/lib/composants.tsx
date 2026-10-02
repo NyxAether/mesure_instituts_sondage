@@ -1,7 +1,7 @@
 // Briques de mise en page reprises de video/theme.py : titre à un mot italique, en-tête de section, curseur.
 import React from 'react';
-import {C, MONO, SERIF} from './charte';
-import {F, Txt, UNITE} from './outils';
+import {C, MONO, SERIF, V} from './charte';
+import {Txt} from './outils';
 
 /** Titre en Newsreader 400 dont un seul mot est en italique prune. Taille Manim 52 par défaut. */
 export const Titre: React.FC<{avant?: string; mot: string; apres?: string; taille?: number}> = ({avant = '', mot, apres = '', taille = 52}) => (
@@ -12,20 +12,34 @@ export const Titre: React.FC<{avant?: string; mot: string; apres?: string; taill
 	</>
 );
 
-/** En-tête « // 0N · nom » + titre, calé en haut à gauche (to_corner(UL, buff=0.55) de Manim). */
-export const Entete: React.FC<{numero: number; nom: string; avant?: string; mot: string; apres?: string; opacite?: number}> = ({
+const H = V.header;
+/** Interligne du titre d'en-tête (gabarit templates/video/titre.html). */
+export const INTERLIGNE_TITRE = 1.02;
+/** Bas de l'en-tête rangé, en px : le contenu placé sous lui part de là. */
+export const BAS_ENTETE = V.margin.top + H.tag + H.gap + H.title * INTERLIGNE_TITRE;
+
+/** Ligne facultative sous l'en-tête rangé (source, précision) : une seule, en mono discret. */
+export const SousEntete: React.FC<{opacite?: number; children: React.ReactNode}> = ({opacite = 1, children}) => (
+	<div style={{position: 'absolute', left: V.margin.x, top: BAS_ENTETE + H.subtitle.gap, fontFamily: MONO, fontSize: H.subtitle.size, lineHeight: 1, color: C['text-muted'], whiteSpace: 'pre', opacity: opacite}}>
+		{children}
+	</div>
+);
+
+/** En-tête « // 0N · nom » + titre, rangé dans le coin haut gauche aux marges de la charte (`video.header`). */
+export const Entete: React.FC<{numero: number; nom: string; avant?: string; mot: string; apres?: string; opacite?: number; style?: React.CSSProperties}> = ({
 	numero,
 	nom,
 	avant,
 	mot,
 	apres,
 	opacite = 1,
+	style,
 }) => (
-	<div style={{position: 'absolute', left: 0.55 * UNITE, top: 0.55 * UNITE, opacity: opacite, display: 'flex', flexDirection: 'column', gap: 0.18 * UNITE}}>
-		<div style={{fontFamily: MONO, fontSize: F(17), lineHeight: 1, color: C['text-muted'], whiteSpace: 'pre'}}>
+	<div style={{position: 'absolute', left: V.margin.x, top: V.margin.top, opacity: opacite, display: 'flex', flexDirection: 'column', gap: H.gap, ...style}}>
+		<div style={{fontFamily: MONO, fontSize: H.tag, lineHeight: 1, color: C['text-muted'], whiteSpace: 'pre'}}>
 			{`// ${String(numero).padStart(2, '0')} · ${nom}`}
 		</div>
-		<div style={{fontFamily: SERIF, fontSize: F(52), lineHeight: 1, color: C['text-primary'], whiteSpace: 'pre'}}>
+		<div style={{fontFamily: SERIF, fontSize: H.title, lineHeight: INTERLIGNE_TITRE, letterSpacing: '-.02em', color: C['text-primary'], whiteSpace: 'pre'}}>
 			<Titre avant={avant} mot={mot} apres={apres} />
 		</div>
 	</div>

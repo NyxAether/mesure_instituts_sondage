@@ -14,6 +14,9 @@ export const MONO = tokens.font.mono.stack;
 // Police manuscrite de Windows pour les étiquettes écrites à la main, comme dans la version Manim ; à défaut, la serif.
 export const MAIN = `'Ink Free', ${SERIF}`;
 export const RAYON = tokens.radius.md;
+export const RAYON_FIN = tokens.radius.sm;
+// Mise en page et minutage propres à la vidéo (guide/video.md de la charte) : marges, en-tête, écran de chapitre.
+export const V = tokens.video;
 // Le papier des coupures : l'exception déjà en place, tirée de video/outils/decoupe_portraits.py (ressources.mjs).
 export const PAPIER = papier;
 

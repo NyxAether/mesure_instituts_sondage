@@ -1,4 +1,4 @@
-// Fichier généré — ne pas éditer.
+// Généré par rr-style/build.py depuis tokens.json — ne pas éditer.
 // Thème rr/ pour Observable Plot (script classique : fonctionne en file://).
 // Requiert d3 et rr-tokens.css. Expose window.rrPlot.
 (function () {
@@ -16,6 +16,13 @@
       grid: css("--grid"),
       axis: css("--axis"),
       deemph: css("--mark-muted"),
+      context: css("--mark-ink"),
+      sequential: {
+        prune: [1, 2, 3, 4, 5].map((i) => css(`--seq-prune-${i}`)),
+        dusk: [1, 2, 3, 4, 5].map((i) => css(`--seq-dusk-${i}`)),
+      },
+      diverging: [1, 2, 3, 4, 5].map((i) => css(`--div-${i}`)),
+      areaOpacity: Number(css("--area-opacity")),
       accent: css("--accent"),
     };
   }

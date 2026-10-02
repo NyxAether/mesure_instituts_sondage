@@ -4,7 +4,8 @@ import donnees from '../../../donnees/s4.json';
 import {echelle} from '../../lib/axes';
 import {C, G, SERIF} from '../../lib/charte';
 import {F, Txt, UNITE as U, X, Y, avance, fr} from '../../lib/outils';
-import {DISCRET, Fondu, HAUT_SERIF, LIBELLE, LigneTiretee, SERIE, SOURCE_Y, TRAIT, CHIFFRES_SERIF, cheminLisse, largeurLibelle, apparition, centreAuDessus, centreSous, chemin, entier} from './commun';
+import {DISCRET, Fondu, HAUT_SERIF, LIBELLE, LigneTiretee, SERIE, TRAIT, CHIFFRES_SERIF, cheminLisse, largeurLibelle, apparition, centreAuDessus, centreSous, chemin, entier} from './commun';
+import {SousEntete} from '../../lib/composants';
 import {LISSAGE as L} from './temps';
 
 const lissage = donnees.lissage;
@@ -79,9 +80,9 @@ export const Courbes: React.FC<{t: number}> = ({t}) => {
 				<Courbe mesure="oneshot" couleur={TEMOIN} t={t} debut={L.temoin} />
 			</svg>
 			<Fondu opacite={apparition(t, L.grille, 1)}>
-				<Txt x={0.55 * U} y={SOURCE_Y} taille={14} couleur={DISCRET}>
+				<SousEntete>
 					{`${fr(lissage.effectif, 0)} sondages de la dernière semaine avant le vote · médiane et quartiles, sondages de taille voisine`}
-				</Txt>
+				</SousEntete>
 				{GRADUATIONS_Y.map((v) => (
 					<Txt key={v} x={xLabY} y={pt(nMin, v)[1]} ax={1} ay={0.5} taille={14} couleur={LIBELLE}>
 						{fr(v, 0)}

@@ -101,7 +101,5 @@ export const chemin = (points: [number, number][], ferme = false) =>
 
 /** Hauteur d'encre chiffrée d'un texte en Newsreader, en fraction du corps. */
 export const HAUT_SERIF = 0.65;
-/** Ligne « source » sous l'en-tête (Entete : tag de 17, écart de 0,18, titre de 52, puis 0,2 unité de marge). */
-export const SOURCE_Y = 0.55 * U + F(17) + 0.18 * U + F(52) + 0.17 * U;
 /** Décalage vertical qui ramène le centre d'une boîte Newsreader sur le centre de ses chiffres (ay = 0,5). */
 export const CHIFFRES_SERIF = 0.11;

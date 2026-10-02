@@ -4,7 +4,7 @@ import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import donnees from '../../../donnees/s3.json';
 import {C, G, SERIF} from '../../lib/charte';
-import {Entete, Titre} from '../../lib/composants';
+import {SousEntete, Titre} from '../../lib/composants';
 import {F, FPS, NBSP, Txt, UNITE as U, X, Y, avance, echelonne, fr, largeurMono, lerp} from '../../lib/outils';
 import {Grille} from './Grille';
 import {
@@ -125,13 +125,10 @@ export const Taille: React.FC = () => {
 
 	return (
 		<AbsoluteFill style={{background: C['bg-primary'], overflow: 'hidden'}}>
-			{/* En-tête, puis la source des données */}
-			<div style={{position: 'absolute', inset: 0, transform: `translateY(${-(1 - avance(t, T.entete, 1)) * 0.15 * U}px)`, opacity: avance(t, T.entete, 1)}}>
-				<Entete numero={3} nom="la taille" avant="L’erreur selon la " mot="taille" apres={`${NBSP}de l’échantillon`} />
-			</div>
-			<Txt x={0.55 * U} y={0.55 * U + F(17) + 0.18 * U + F(52)} taille={14} couleur={DISCRET} opacite={apparition(T.source, 0.6)}>
+			{/* La source des données, sous l’en-tête */}
+			<SousEntete opacite={apparition(T.source, 0.6)}>
 				{`les mêmes ${fr(donnees.nb_lignes, 0)} intentions de vote · regroupées en ${nbTranches} tranches de taille`}
-			</Txt>
+			</SousEntete>
 
 			<Grille bas={bas} haut={haut} visible={visible} />
 

@@ -4,7 +4,8 @@ import donnees from '../../../donnees/s4.json';
 import {echelle} from '../../lib/axes';
 import {C, G, SERIF} from '../../lib/charte';
 import {F, Txt, UNITE as U, X, Y, avance, fr} from '../../lib/outils';
-import {DISCRET, Fondu, LIBELLE, SERIE, SOURCE_Y, TRAIT, CHIFFRES_SERIF, largeurLibelle, apparition, centreAuDessus, centreSous, entier} from './commun';
+import {DISCRET, Fondu, LIBELLE, SERIE, TRAIT, CHIFFRES_SERIF, largeurLibelle, apparition, centreAuDessus, centreSous, entier} from './commun';
+import {SousEntete} from '../../lib/composants';
 import {JOURS as J} from './temps';
 
 const jours = donnees.jours;
@@ -32,9 +33,9 @@ export const Jours: React.FC<{t: number}> = ({t}) => {
 				))}
 			</svg>
 			<Fondu opacite={aGrille}>
-				<Txt x={0.55 * U} y={SOURCE_Y} taille={14} couleur={DISCRET}>
+				<SousEntete>
 					{`${fr(donnees.effectif_30_jours, 0)} sondages du dernier mois avant le vote · taille équivalente médiane et quartiles`}
-				</Txt>
+				</SousEntete>
 				{GRADUATIONS.map((v) => (
 					<Txt key={v} x={X(GAUCHE) - 0.15 * U} y={yEcran(v)} ax={1} ay={0.5} taille={14} couleur={LIBELLE}>
 						{fr(v, 0)}

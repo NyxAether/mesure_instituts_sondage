@@ -76,7 +76,7 @@ export const AxeTexte: React.FC<{t: number}> = ({t}) => {
 };
 
 // --- Tirages et compteur --------------------------------------------------
-/** Nombre de tirages affiché par le compteur : (avant, après, mélange) pour un fondu entre deux valeurs. */
+/** Nombre de tirages affiché par le compteur : (avant, après, avancement) d'un saut entre deux valeurs. */
 const compteurEn = (t: number): [number, number, number] => {
 	const nbLents = D1.nb_lents;
 	let n = nbLents;
@@ -92,18 +92,13 @@ const compteurEn = (t: number): [number, number, number] => {
 export const Compteur: React.FC<{t: number}> = ({t}) => {
 	if (t < T.compteur) return null;
 	const o = avance(t, T.compteur, D.compteur) * (1 - avance(t, T.zone, D.zone));
+	// Pendant un saut, le compteur défile de l'ancienne valeur à la nouvelle, comme un compteur qui tourne.
 	const [avant, apres, u] = compteurEn(t);
 	const haut = 0.9 + HAUTEUR + 6 / UNITE; // bas du texte au-dessus de l'axe (6 px de plus : encre de Manim)
-	const un = (n: number, op: number) => (
-		<Txt x={xAxe(bornes[bornes.length - 1])} y={Y(AXE_CENTRE[1] + haut)} taille={17} ax={1} ay={1} couleur={C['text-primary']} opacite={op * o}>
-			{`tirages · ${n}`}
-		</Txt>
-	);
 	return (
-		<>
-			{un(avant, 1 - u)}
-			{avant !== apres && un(apres, u)}
-		</>
+		<Txt x={xAxe(bornes[bornes.length - 1])} y={Y(AXE_CENTRE[1] + haut)} taille={17} ax={1} ay={1} couleur={C['text-primary']} opacite={o}>
+			{`tirages · ${Math.round(lerp(avant, apres, u))}`}
+		</Txt>
 	);
 };
 

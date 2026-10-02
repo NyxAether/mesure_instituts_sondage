@@ -4,9 +4,9 @@ import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import donnees from '../../../donnees/s6.json';
 import {C, G, SERIF} from '../../lib/charte';
-import {Entete, Titre} from '../../lib/composants';
+import {BAS_ENTETE, Titre} from '../../lib/composants';
 import {avance, echelonne, F, fr, FPS, NBSP, Txt, UNITE, X, Y} from '../../lib/outils';
-import {CRITIQUE, DUREE_TOTALE, FONDU_SORTIE, FORMULE, HASARD, MOTS, PANELS, PRECAUTIONS, TETE} from './temps';
+import {CRITIQUE, DUREE_TOTALE, FONDU_SORTIE, FORMULE, HASARD, MOTS, PANELS, PRECAUTIONS} from './temps';
 import {Apparition, Citation, Colonne, Libelle, Serif, useTemps} from './elements';
 
 const {base, france, par_taille: tailles} = donnees;
@@ -18,12 +18,11 @@ const E_MAX = Math.max(...tailles.map((t) => t.obs));
 if (!(E_MAX > 0)) throw new Error('erreur observée maximale nulle');
 
 // Bas de l'en-tête (en px) : tout ce qui se place « sous l'en-tête » part de là.
-const BAS_TETE = 0.55 * UNITE + F(17) + 0.18 * UNITE + F(52);
 const GAUCHE = 0.55 * UNITE;
 
 /** Bloc de texte qui commence sous l'en-tête, aligné à gauche. */
 const SousTete: React.FC<{ecart: number; gap: number; opacite?: number; children: React.ReactNode}> = ({ecart, gap, opacite = 1, children}) => (
-	<div style={{position: 'absolute', left: GAUCHE, top: BAS_TETE + ecart * UNITE, opacity: opacite}}>
+	<div style={{position: 'absolute', left: GAUCHE, top: BAS_ENTETE + ecart * UNITE, opacity: opacite}}>
 		<Colonne gap={gap}>{children}</Colonne>
 	</div>
 );
@@ -94,7 +93,7 @@ const Hasard: React.FC<{t: number}> = ({t}) => {
 	return (
 		<AbsoluteFill style={{opacity: sortie(t, H.sortie)}}>
 			{/* légende et titre du graphique, sous l'en-tête */}
-			<div style={{position: 'absolute', left: GAUCHE, top: BAS_TETE + 0.3 * UNITE}}>
+			<div style={{position: 'absolute', left: GAUCHE, top: BAS_ENTETE + 0.3 * UNITE}}>
 				<Colonne gap={0.2}>
 					<Apparition t={t} debut={H.axes} duree={0.8}>
 						<Libelle taille={15} couleur={C['text-primary']}>erreur typique d’un sondage, selon sa taille</Libelle>
@@ -129,24 +128,23 @@ const Hasard: React.FC<{t: number}> = ({t}) => {
 				const x = x0 + i * pas;
 				const hTh = (tr.th / E_MAX) * hautMax;
 				const hObs = (tr.obs / E_MAX) * hautMax;
+				// Les barres poussent depuis l'axe, l'une après l'autre.
+				const hThVu = hTh * echelonne(t, H.hasard, 1, tailles.length, i, 0.1);
+				const hObsVu = hObs * echelonne(t, H.observe, 1.2, tailles.length, i, 0.1);
 				return (
 					<React.Fragment key={tr.n}>
-						<Apparition t={t} debut={H.hasard} duree={1} decalage={[0, 0.1 * UNITE]} absolu>
-							<div style={{position: 'absolute', left: X(x - lb / 2), top: Y(baseY + hTh), width: lb * UNITE, height: hTh * UNITE, background: C.accent, opacity: 0.6}} />
-						</Apparition>
-						<Apparition t={t} debut={H.observe} duree={1.2} decalage={[0, 0.1 * UNITE]} absolu>
-							<div
-								style={{
-									position: 'absolute',
-									left: X(x + lb + ecartBarres - lb / 2),
-									top: Y(baseY + hObs),
-									width: lb * UNITE,
-									height: hObs * UNITE,
-									background: C['text-secondary'],
-									opacity: 0.85,
-								}}
-							/>
-						</Apparition>
+						<div style={{position: 'absolute', left: X(x - lb / 2), top: Y(baseY + hThVu), width: lb * UNITE, height: hThVu * UNITE, background: C.accent, opacity: 0.6}} />
+						<div
+							style={{
+								position: 'absolute',
+								left: X(x + lb + ecartBarres - lb / 2),
+								top: Y(baseY + hObsVu),
+								width: lb * UNITE,
+								height: hObsVu * UNITE,
+								background: C['text-secondary'],
+								opacity: 0.85,
+							}}
+						/>
 						<div style={{opacity: echelonne(t, H.rapports, 1, tailles.length, i, 0.1)}}>
 							<Txt x={X(centre(i))} y={Y(baseY + hObs) - 0.1 * UNITE} taille={22} ax={0.5} ay={1} police={SERIF} couleur={C['text-primary']}>
 								{`×${fr(tr.obs / tr.th)}`}
@@ -322,7 +320,6 @@ export const Presage: React.FC = () => {
 	const t = useTemps();
 	return (
 		<AbsoluteFill style={{background: C['bg-primary'], overflow: 'hidden'}}>
-			<Entete numero={6} nom="photographie, prédiction, présage" avant="Un " mot="présage" apres=" plus qu’une prédiction" opacite={avance(t, TETE.debut, TETE.duree)} />
 			{t < HASARD.axes && <Precautions t={t} />}
 			{t >= HASARD.axes && t < CRITIQUE.bourdieu && <Hasard t={t} />}
 			{t >= CRITIQUE.bourdieu && t < PANELS.nom && <Critique t={t} />}

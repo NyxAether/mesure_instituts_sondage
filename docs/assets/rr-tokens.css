@@ -1,4 +1,4 @@
-/* Fichier généré — ne pas éditer.
+/* Généré par rr-style/build.py depuis tokens.json — ne pas éditer.
    Thème rr/ : clair par défaut, sombre sur préférence système ou [data-theme="dark"].
    Polices : charger https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap
    ou dist/rr-fonts.css (fichiers locaux, hors ligne). */
@@ -26,11 +26,27 @@
   --grid: #D9DED1;
   --axis: #A9B0A1;
   --mark-muted: #BFC6B6;
+  --mark-ink: #6F736A;
   --series-1: #9E5468;
   --series-2: #4670A8;
   --series-3: #854F14;
   --series-4: #8368A8;
   --series-5: #1A653A;
+  --seq-prune-1: #C58292;
+  --seq-prune-2: #B26B7D;
+  --seq-prune-3: #9E5568;
+  --seq-prune-4: #814152;
+  --seq-prune-5: #652E3D;
+  --seq-dusk-1: #759BCD;
+  --seq-dusk-2: #5D85BB;
+  --seq-dusk-3: #4770A7;
+  --seq-dusk-4: #34598A;
+  --seq-dusk-5: #23436D;
+  --div-1: #34598A;
+  --div-2: #5D85BB;
+  --div-3: #BFC6B6;
+  --div-4: #B26B7D;
+  --div-5: #814152;
   --cat-ia-generative: var(--ochre);
   --cat-ml: var(--dusk);
   --cat-deep-learning: var(--sage);
@@ -73,6 +89,7 @@
   --prose: 800px;
   --nav-height: 64px;
   --gutter: 24px;
+  --area-opacity: 0.15;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -99,11 +116,27 @@
     --grid: #313831;
     --axis: #4A534A;
     --mark-muted: #4F584F;
+    --mark-ink: #8F948B;
     --series-1: #BA5F78;
     --series-2: #5E97CD;
     --series-3: #B98749;
     --series-4: #9E83C5;
     --series-5: #3F936E;
+    --seq-prune-1: #8B3D54;
+    --seq-prune-2: #AC546C;
+    --seq-prune-3: #C57288;
+    --seq-prune-4: #DE91A4;
+    --seq-prune-5: #F6B1C1;
+    --seq-dusk-1: #2C5E8C;
+    --seq-dusk-2: #4179AC;
+    --seq-dusk-3: #6294C4;
+    --seq-dusk-4: #83B0DB;
+    --seq-dusk-5: #A4CCF3;
+    --div-1: #83B0DB;
+    --div-2: #4179AC;
+    --div-3: #4F584F;
+    --div-4: #AC546C;
+    --div-5: #DE91A4;
   }
 }
 
@@ -130,9 +163,25 @@
   --grid: #313831;
   --axis: #4A534A;
   --mark-muted: #4F584F;
+  --mark-ink: #8F948B;
   --series-1: #BA5F78;
   --series-2: #5E97CD;
   --series-3: #B98749;
   --series-4: #9E83C5;
   --series-5: #3F936E;
+  --seq-prune-1: #8B3D54;
+  --seq-prune-2: #AC546C;
+  --seq-prune-3: #C57288;
+  --seq-prune-4: #DE91A4;
+  --seq-prune-5: #F6B1C1;
+  --seq-dusk-1: #2C5E8C;
+  --seq-dusk-2: #4179AC;
+  --seq-dusk-3: #6294C4;
+  --seq-dusk-4: #83B0DB;
+  --seq-dusk-5: #A4CCF3;
+  --div-1: #83B0DB;
+  --div-2: #4179AC;
+  --div-3: #4F584F;
+  --div-4: #AC546C;
+  --div-5: #DE91A4;
 }

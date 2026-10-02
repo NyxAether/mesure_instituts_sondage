@@ -41,12 +41,36 @@ THEMES = {
       "grid": "#D9DED1",
       "axis": "#A9B0A1",
       "mark-muted": "#BFC6B6",
+      "mark-ink": "#6F736A",
       "series": [
         "#9E5468",
         "#4670A8",
         "#854F14",
         "#8368A8",
         "#1A653A"
+      ],
+      "sequential": {
+        "prune": [
+          "#C58292",
+          "#B26B7D",
+          "#9E5568",
+          "#814152",
+          "#652E3D"
+        ],
+        "dusk": [
+          "#759BCD",
+          "#5D85BB",
+          "#4770A7",
+          "#34598A",
+          "#23436D"
+        ]
+      },
+      "diverging": [
+        "#34598A",
+        "#5D85BB",
+        "#BFC6B6",
+        "#B26B7D",
+        "#814152"
       ]
     }
   },
@@ -75,12 +99,36 @@ THEMES = {
       "grid": "#313831",
       "axis": "#4A534A",
       "mark-muted": "#4F584F",
+      "mark-ink": "#8F948B",
       "series": [
         "#BA5F78",
         "#5E97CD",
         "#B98749",
         "#9E83C5",
         "#3F936E"
+      ],
+      "sequential": {
+        "prune": [
+          "#8B3D54",
+          "#AC546C",
+          "#C57288",
+          "#DE91A4",
+          "#F6B1C1"
+        ],
+        "dusk": [
+          "#2C5E8C",
+          "#4179AC",
+          "#6294C4",
+          "#83B0DB",
+          "#A4CCF3"
+        ]
+      },
+      "diverging": [
+        "#83B0DB",
+        "#4179AC",
+        "#4F584F",
+        "#AC546C",
+        "#DE91A4"
       ]
     }
   }
@@ -122,3 +170,24 @@ def fr_number(digits: int = 0, suffix: str = "") -> FuncFormatter:
 
 def series(mode: str = "light") -> list[str]:
     return THEMES[mode]["chart"]["series"]
+
+
+def sequential(name: str = "prune", mode: str = "light") -> list[str]:
+    """Rampe de 5 pas, de la plus faible à la plus forte valeur : "prune" ou "dusk" (crépuscule)."""
+    return THEMES[mode]["chart"]["sequential"][name]
+
+
+def diverging(mode: str = "light") -> list[str]:
+    """5 pas : crépuscule (−), −, neutre, +, prune (+)."""
+    return THEMES[mode]["chart"]["diverging"]
+
+
+def cmap(name: str = "prune", mode: str = "light"):
+    """Colormap discrète pour imshow/pcolormesh : une rampe séquentielle, ou "diverging"."""
+    from matplotlib.colors import ListedColormap
+    colors = diverging(mode) if name == "diverging" else sequential(name, mode)
+    return ListedColormap(colors, name=f"rr-{name}-{mode}")
+
+
+INK = {m: THEMES[m]["chart"]["mark-ink"] for m in THEMES}  # gris de contexte foncé (marque, pas texte)
+AREA_ALPHA = 0.15  # opacité des aplats (zones, intervalles)

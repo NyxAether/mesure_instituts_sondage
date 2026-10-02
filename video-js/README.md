@@ -34,9 +34,11 @@ video/.venv/Scripts/python.exe video-js/export/exporter_s0.py
 |---|---|
 | `src/sequences.ts` | liste ordonnée des séquences ; chacune est une composition (`Sequence0` … `Sequence6`) et une partie de la composition `Video` |
 | `src/sequences/sN_*/` | une séquence : composants et `temps.ts` (minutage plan par plan, en constantes nommées, pour pouvoir le caler plus tard sur la voix) |
-| `src/lib/charte.ts` | couleurs, polices, rayon et courbe d'animation lus dans `video/rr-tokens.json` |
+| `src/lib/charte.ts` | couleurs, polices, rayon, courbe d'animation et mesures vidéo (`video`) lus dans `video/rr-tokens.json` |
 | `src/lib/outils.tsx` | repère Manim (8 unités de haut, 135 px par unité), avancement et échelonnement, hasard reproductible, nombres à la française, texte positionné |
 | `src/lib/composants.tsx` | en-tête de section, titre à un mot italique, curseur |
+| `src/lib/chapitres.ts` | les six chapitres : nom (sommaire, tag) et titre (tapé, puis en-tête) |
+| `src/lib/ouverture.tsx` | ouverture des séquences 1 à 6 (`guide/video.md` de la charte) : écran de chapitre, dont le titre et la ligne choisie glissent en en-tête du premier plan |
 | `src/lib/axes.ts` | échelles des graphes (d3-scale) |
 | `src/lib/papier.tsx` | papier découpé (étiquettes, banderole), fenêtre terminal de la charte |
 | `src/lib/sautiller.ts` | programme des sauts, tiré d'avance avec une graine par candidat |

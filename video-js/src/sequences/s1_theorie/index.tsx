@@ -2,7 +2,6 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {C, MONO, SERIF} from '../../lib/charte';
-import {Entete} from '../../lib/composants';
 import {F, FPS, NBSP, Txt, UNITE, avance, fr} from '../../lib/outils';
 import {X, Y} from '../../lib/axes';
 import {Conclusion} from './Conclusion';
@@ -126,12 +125,8 @@ export const Theorie: React.FC = () => {
 	const t = useCurrentFrame() / FPS;
 	// « tout » (axe, histogramme, formules...) s'efface avant l'écran final ; l'en-tête reste.
 	const sortie = 1 - avance(t, T.sortie, D.sortie);
-	const eTete = avance(t, T.tete, D.tete);
 	return (
 		<AbsoluteFill style={{background: C['bg-primary'], overflow: 'hidden'}}>
-			<Fondu o={eTete} dy={-(1 - eTete) * 0.15 * UNITE}>
-				<Entete numero={1} nom="la théorie" avant="Ce que prévoit la " mot="marge" apres={`${NBSP}d’erreur`} />
-			</Fondu>
 			<Calque>
 				<Population t={t} />
 				<g opacity={sortie}>

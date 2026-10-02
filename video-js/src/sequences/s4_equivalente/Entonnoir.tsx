@@ -5,7 +5,8 @@ import {echelle} from '../../lib/axes';
 import {C, G, MONO, SERIF} from '../../lib/charte';
 import {Titre} from '../../lib/composants';
 import {F, NBSP, Txt, UNITE as U, X, Y, avance, echelonne, fr, lerp} from '../../lib/outils';
-import {DISCRET, Fondu, LIBELLE, SERIE, SOURCE_Y, TRAIT, largeurLibelle, apparition, centreAuDessus, centreSous, chemin, entier, signeEntier} from './commun';
+import {DISCRET, Fondu, LIBELLE, SERIE, TRAIT, largeurLibelle, apparition, centreAuDessus, centreSous, chemin, entier, signeEntier} from './commun';
+import {SousEntete} from '../../lib/composants';
 import {ENTONNOIR as E} from './temps';
 
 const Z95 = donnees.z95;
@@ -121,9 +122,9 @@ export const Entonnoir: React.FC<{t: number}> = ({t}) => {
 				</Txt>
 			</Fondu>
 			<Fondu opacite={apparition(t, E.source, 0.6)}>
-				<Txt x={0.55 * U} y={SOURCE_Y} taille={14} couleur={DISCRET}>
+				<SousEntete>
 					{`les mêmes ${fr(donnees.nb_lignes, 0)} intentions de vote qu’à la séquence 2 · dernière semaine avant le vote`}
-				</Txt>
+				</SousEntete>
 			</Fondu>
 			<Fondu opacite={apparition(t, E.compteur, 0.6)}>
 				<div style={{position: 'absolute', right: 1920 - coin[0], top: coin[1] + 0.1 * U, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.08 * U}}>

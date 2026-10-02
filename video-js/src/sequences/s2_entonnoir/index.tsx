@@ -4,7 +4,7 @@ import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import donnees from '../../../donnees/s2.json';
 import {C, G, SERIF} from '../../lib/charte';
-import {Entete, Titre} from '../../lib/composants';
+import {SousEntete, Titre} from '../../lib/composants';
 import {F, FPS, NBSP, Txt, UNITE as U, Y, avance, echelonne, fr, largeurMono, lerp} from '../../lib/outils';
 import {AxesLog, Compteur, Entonnoir as ZoneEntonnoir, LegendeEntonnoir, Nuage, TRAIT, Trace, creerRepere, type PointNuage} from './EntonnoirGraphe';
 import {T} from './temps';
@@ -158,18 +158,13 @@ export const Entonnoir: React.FC = () => {
 	const hautAttendu = repere.haut + 0.1 * U + 1.15 * U;
 
 	const ligneSource = `jennings & wlezien · ${fr(donnees.nb_lignes, 0)} intentions de vote · ${fr(donnees.nb_sondages, 0)} sondages · ${donnees.nb_pays} pays · dernière semaine · depuis ${donnees.annee_min}`;
-	const entete = avance(t, T.entete, 1);
-	const hautSource = 0.55 * U + F(17) + 0.18 * U + F(52) + 0.2 * U;
 
 	return (
 		<AbsoluteFill style={{background: C['bg-primary'], overflow: 'hidden'}}>
-			<div style={{position: 'absolute', inset: 0, transform: `translateY(${-0.15 * U * (1 - entete)}px)`}}>
-				<Entete numero={2} nom="l’entonnoir" avant="Les sondages face aux " mot="résultats" opacite={entete} />
-			</div>
 			<div style={{opacity: graphe}}>
-				<Txt x={0.55 * U} y={hautSource} taille={14} couleur={C['text-muted']} opacite={avance(t, T.source, 0.8)}>
+				<SousEntete opacite={avance(t, T.source, 0.8)}>
 					{ligneSource}
-				</Txt>
+				</SousEntete>
 				{t >= T.axes && (
 					<AxesLog
 						repere={repere}

@@ -3,7 +3,7 @@
 #   uvx --from git+https://gitlab.com/NyxHemera/rr-design.git rr-design pull
 # Les fichiers listés ci-dessous sont tirés de la charte : ne pas les modifier ici.
 source = "https://gitlab.com/NyxHemera/rr-design.git"
-version = "v1.0.0"
+version = "v1.8.0"
 
 [files]
 # "chemin/dans/ce/projet" = "chemin/dans/la/charte"   (dossier/* = tout le dossier)

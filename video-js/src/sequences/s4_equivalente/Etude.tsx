@@ -3,8 +3,9 @@ import React from 'react';
 import donnees from '../../../donnees/s4.json';
 import {C, MONO, SERIF} from '../../lib/charte';
 import {Titre} from '../../lib/composants';
-import {F, Txt, UNITE as U, X, Y, avance, fr} from '../../lib/outils';
-import {DISCRET, Fondu, NBSP, SERIE, SOURCE_Y, apparition, entier} from './commun';
+import {F, UNITE as U, X, Y, avance, fr} from '../../lib/outils';
+import {DISCRET, Fondu, NBSP, SERIE, apparition, entier} from './commun';
+import {SousEntete} from '../../lib/composants';
 import {CONSTAT, ETUDE} from './temps';
 
 const nReel = donnees.median_reel;
@@ -22,9 +23,9 @@ const LIGNES = [
 export const Etude: React.FC<{t: number}> = ({t}) => (
 	<div style={{position: 'absolute', inset: 0, opacity: 1 - avance(t, ETUDE.sortie, 0.8)}}>
 		<Fondu opacite={apparition(t, ETUDE.titre, 0.6)}>
-			<Txt x={0.55 * U} y={SOURCE_Y} taille={14} couleur={DISCRET}>
+			<SousEntete>
 				{`la mesure de l’étude, sondage par sondage · ${fr(donnees.nb_proches, 0)} sondages des 14 derniers jours · médianes`}
-			</Txt>
+			</SousEntete>
 		</Fondu>
 		<div style={{position: 'absolute', left: X(-0.5) + 8, top: Y(-0.6) + 8, transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.405 * U}}>
 			{LIGNES.map((l, k) => {

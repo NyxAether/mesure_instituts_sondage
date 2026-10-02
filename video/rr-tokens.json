@@ -3,8 +3,8 @@
   "brand": {
     "name": "rr/",
     "person": "Romain Rincé",
-    "title": "Consultant & Formateur en Intelligence Artificielle",
-    "title_short": "consultant ia",
+    "title": "Spécialiste en Intelligence Artificielle",
+    "title_short": "spécialiste ia",
     "site": "romainrince.fr",
     "email": "contact@romainrince.fr",
     "linkedin": "rrince",
@@ -60,22 +60,72 @@
     "python": "accent"
   },
   "chart": {
-    "$comment": "Séries validées avec tools/validate_palette.js (CVD ΔE ≥ 10, contraste ≥ 3:1). Ordre fixe, jamais cyclé.",
+    "$comment": "Séries validées avec tools/validate_palette.js (CVD ΔE ≥ 10, contraste ≥ 3:1). Ordre fixe, jamais cyclé. Rampes séquentielles (prune, crépuscule) : de la plus faible à la plus forte valeur, contrôle ordinal sur les trois fonds ; le pas 3 du thème clair est la série. Divergente : crépuscule (−) ↔ mark-muted ↔ prune (+), tirée des rampes (pas 4 et 2).",
     "light": {
       "surface": "#EEF0E8",
       "grid": "#D9DED1",
       "axis": "#A9B0A1",
       "mark-muted": "#BFC6B6",
-      "series": ["#9E5468", "#4670A8", "#854F14", "#8368A8", "#1A653A"]
+      "mark-ink": "#6F736A",
+      "series": ["#9E5468", "#4670A8", "#854F14", "#8368A8", "#1A653A"],
+      "sequential": {
+        "prune": ["#C58292", "#B26B7D", "#9E5568", "#814152", "#652E3D"],
+        "dusk": ["#759BCD", "#5D85BB", "#4770A7", "#34598A", "#23436D"]
+      },
+      "diverging": ["#34598A", "#5D85BB", "#BFC6B6", "#B26B7D", "#814152"]
     },
     "dark": {
       "surface": "#242A24",
       "grid": "#313831",
       "axis": "#4A534A",
       "mark-muted": "#4F584F",
-      "series": ["#BA5F78", "#5E97CD", "#B98749", "#9E83C5", "#3F936E"]
+      "mark-ink": "#8F948B",
+      "series": ["#BA5F78", "#5E97CD", "#B98749", "#9E83C5", "#3F936E"],
+      "sequential": {
+        "prune": ["#8B3D54", "#AC546C", "#C57288", "#DE91A4", "#F6B1C1"],
+        "dusk": ["#2C5E8C", "#4179AC", "#6294C4", "#83B0DB", "#A4CCF3"]
+      },
+      "diverging": ["#83B0DB", "#4179AC", "#4F584F", "#AC546C", "#DE91A4"]
     },
-    "series-names": ["prune", "crépuscule", "ocre", "ardoise", "sauge"]
+    "series-names": ["prune", "crépuscule", "ocre", "ardoise", "sauge"],
+    "area-opacity": 0.15
+  },
+  "video": {
+    "$comment": "Vidéo 1920×1080 (guide/video.md). Tailles en px de l'image, durées en secondes, courbe motion.ease.",
+    "size": [1920, 1080],
+    "fps": 60,
+    "margin": { "x": 75, "top": 58 },
+    "header": {
+      "$comment": "En-tête compact des plans de contenu : tag mono « // 0N · nom » au-dessus du titre, ligne facultative dessous (source, précision). title-max : longueur du titre en caractères.",
+      "tag": 24,
+      "title": 56,
+      "gap": 14,
+      "title-max": 40,
+      "subtitle": { "size": 24, "gap": 14 },
+      "enter": {
+        "$comment": "top : haut du bloc agrandi, en fraction de la hauteur ; le bloc garde margin.x (origine en haut à gauche).",
+        "fade-in": 0.4, "scale": 1.9, "top": 0.38, "hold": 1.4, "move": 0.9, "content-delay": 0.5, "content-fade": 0.6
+      }
+    },
+    "chapter": {
+      "$comment": "Écran de chapitre « sommaire » : compteur qui suit le curseur, liste, sélection, titre tapé. list.top : haut de la boîte de la ligne (interligne 1).",
+      "counter": { "size": 403, "x": 125, "travel": 0.3 },
+      "list": { "x": 845, "top": 250, "size": 31, "pitch": 53, "rise": 15 },
+      "cursor-x": 799,
+      "band": { "x": 783, "width": 576, "height": 50, "scale-from": 0.96 },
+      "title": {
+        "$comment": "offset : haut du titre sous le haut de la ligne suivante, avant ouverture. cursor : curseur bloc en em du titre.",
+        "size": 71, "x": 919, "opening": 123, "offset": 2,
+        "cursor": { "width": 0.55, "height": 1, "gap": 0.15 }
+      },
+      "timing": {
+        "$comment": "Le déplacement du curseur finit à chaque pas : il se pose sur la ligne N à cursor + (N − 1) × step.",
+        "row-stagger": 0.08, "row-fade": 0.35, "cursor": 0.9, "cursor-fade": 0.2, "step": 0.5, "move": 0.28,
+        "select-after": 0.45, "band-fade": 0.18, "open-after": 0.15, "open": 0.4, "type-after": 0.1, "char": 0.055,
+        "blink": 1.0, "hold": 1.5, "exit": 0.4
+      }
+    },
+    "chart-label": 24
   },
   "font": {
     "serif": { "family": "Newsreader", "stack": "'Newsreader', 'Iowan Old Style', Georgia, serif" },
